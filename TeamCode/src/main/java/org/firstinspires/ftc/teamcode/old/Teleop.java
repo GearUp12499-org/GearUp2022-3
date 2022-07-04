@@ -1,38 +1,18 @@
 package org.firstinspires.ftc.teamcode.old;
-import android.app.Activity;
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import android.graphics.Color;
-import android.view.View;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
-import com.qualcomm.robotcore.hardware.SwitchableLight;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.robot.Robot;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.util.Hardware;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import org.firstinspires.ftc.robotcore.external.Func;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.SwitchableLight;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @TeleOp(name="GearUp: Drive TeleOp", group="Pushbot")
@@ -46,7 +26,6 @@ public abstract class Teleop extends LinearOpMode {
     
     // Lift & gripper positions
     int liftZero = 0;
-    int liftdelta = 0;
     /*
      540
         291
@@ -59,11 +38,7 @@ public abstract class Teleop extends LinearOpMode {
     int liftTop = liftMid + 725; // was 580
     int gripArmPos=0;
     double cameraAngle=.175; //0.5 good for red barrier :) .175 for red caro
-    int kek =0;
 
-    // Other
-    double power = 0.54;
-    String mode = "";
     String alliance = "";
     boolean gripperOpen = true;
     double gripPos;
@@ -78,8 +53,6 @@ public abstract class Teleop extends LinearOpMode {
     
     // IMU
     BNO055IMU imu;
-    Orientation angles;
-    Acceleration gravity;
 
     public void init_imu() {
         // IMU setup

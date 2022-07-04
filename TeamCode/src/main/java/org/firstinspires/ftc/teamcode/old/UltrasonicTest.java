@@ -30,14 +30,13 @@
 package org.firstinspires.ftc.teamcode.old;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 /**
- * {@link SensorMRRangeSensor} illustrates how to use the Modern Robotics
+ * {@link UltrasonicTest} illustrates how to use the Modern Robotics
  * Range Sensor.
  *
  * The op mode assumes that the range sensor is configured with a name of "sensor_range".
