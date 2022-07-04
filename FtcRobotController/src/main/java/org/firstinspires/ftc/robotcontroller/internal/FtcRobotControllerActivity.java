@@ -381,7 +381,7 @@ public class FtcRobotControllerActivity extends Activity
     programmingModeManager.register(new OnBotJavaProgrammingMode());
 
     updateUI = createUpdateUI();
-    callback = createUICallback(updateUI);
+    callback = createUICallback();
 
     PreferenceManager.setDefaultValues(this, R.xml.app_settings, false);
 
@@ -420,7 +420,7 @@ public class FtcRobotControllerActivity extends Activity
     return result;
   }
 
-  protected UpdateUI.Callback createUICallback(UpdateUI updateUI) {
+  protected UpdateUI.Callback createUICallback() {
     UpdateUI.Callback result = updateUI.new Callback();
     result.setStateMonitor(new SoundPlayingRobotMonitor());
     return result;
