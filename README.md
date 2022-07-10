@@ -1,3 +1,8 @@
+## NOTICE NOTICE
+You be looking at a fork of this here repo!
+
+*(This repositiory is a fork of the original, to contain Gear Up's FTC code.)*
+
 ## NOTICE
 
 This repository contains the public FTC SDK for the Freight Frenzy (2021-2022) competition season.
