@@ -10,7 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="MecanumDrive_v1")
 public class SimpleMecanum extends LinearOpMode {
-
     @Override
     public void runOpMode() {
         prepareHardware(hardwareMap);
@@ -34,6 +33,11 @@ public class SimpleMecanum extends LinearOpMode {
             rearLeft.setPower(rearLeftPower);
             frontRight.setPower(frontRightPower);
             rearRight.setPower(rearRightPower);
+
+            int pos = frontRight.getCurrentPosition();
+            telemetry.addData("pos", pos);
+
+            telemetry.update();
         }
     }
 }
