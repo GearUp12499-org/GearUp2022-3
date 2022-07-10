@@ -19,7 +19,9 @@ public class EncoderReader extends LinearOpMode {
             if (!lastA && gamepad1.a) {
                 targetEncCount += 1000;
             }
-            double scaledPower = Math.min(1, (targetEncCount - pos) / 1000);
+            telemetry.addData("target", targetEncCount);
+            double scaledPower = Math.min(0.2, (targetEncCount - pos) / 1000f);
+            telemetry.addData("power", scaledPower);
             frontRight.setPower(scaledPower);
             frontLeft.setPower(scaledPower);
             rearLeft.setPower(scaledPower);
