@@ -833,7 +833,7 @@ public abstract class Auto extends LinearOpMode {
             average = (Math.abs(robot.leftFront.getCurrentPosition())+
                     Math.abs(robot.leftBack.getCurrentPosition())+
                     Math.abs(robot.rightFront.getCurrentPosition())+
-                    Math.abs(robot.rightBack.getCurrentPosition()))/4;
+                    Math.abs(robot.rightBack.getCurrentPosition()))/4f;
     
             /*telemetry.addData("heading",angles.firstAngle);
             telemetry.update();*/
@@ -884,7 +884,7 @@ public abstract class Auto extends LinearOpMode {
             average = (Math.abs(robot.leftFront.getCurrentPosition())+
                     Math.abs(robot.leftBack.getCurrentPosition())+
                     Math.abs(robot.rightFront.getCurrentPosition())+
-                    Math.abs(robot.rightBack.getCurrentPosition()))/4;
+                    Math.abs(robot.rightBack.getCurrentPosition()))/4f;
     
             /*telemetry.addData("heading",angles.firstAngle);
             telemetry.update();*/
@@ -933,7 +933,7 @@ public abstract class Auto extends LinearOpMode {
             average = (robot.leftFront.getCurrentPosition()+
                     robot.leftBack.getCurrentPosition()+
                     robot.rightFront.getCurrentPosition()+
-                    robot.rightBack.getCurrentPosition())/4;
+                    robot.rightBack.getCurrentPosition())/4f;
 
             /*telemetry.addData("heading",angles.firstAngle);
             telemetry.update();*/
@@ -1002,7 +1002,7 @@ public abstract class Auto extends LinearOpMode {
             average = (robot.leftFront.getCurrentPosition()+
                     robot.leftBack.getCurrentPosition()+
                     robot.rightFront.getCurrentPosition()+
-                    robot.rightBack.getCurrentPosition())/4;
+                    robot.rightBack.getCurrentPosition())/4f;
 
             /*telemetry.addData("heading",angles.firstAngle);
             telemetry.update();*/
@@ -1056,7 +1056,7 @@ public abstract class Auto extends LinearOpMode {
             average = (robot.leftFront.getCurrentPosition()+
                     robot.leftBack.getCurrentPosition()+
                     robot.rightFront.getCurrentPosition()+
-                    robot.rightBack.getCurrentPosition())/4;
+                    robot.rightBack.getCurrentPosition())/4f;
 
             /*telemetry.addData("heading",angles.firstAngle);
             telemetry.update();*/
@@ -1095,7 +1095,7 @@ public abstract class Auto extends LinearOpMode {
             average = (robot.leftFront.getCurrentPosition()+
                     robot.leftBack.getCurrentPosition()+
                     robot.rightFront.getCurrentPosition()+
-                    robot.rightBack.getCurrentPosition())/4;
+                    robot.rightBack.getCurrentPosition())/4f;
 
             /*telemetry.addData("heading",angles.firstAngle);
             telemetry.update();*/
