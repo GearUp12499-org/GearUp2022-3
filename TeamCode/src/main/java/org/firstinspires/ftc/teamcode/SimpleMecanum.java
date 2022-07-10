@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.SharedHardware.*;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,25 +11,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="MecanumDrive_v1")
 public class SimpleMecanum extends LinearOpMode {
 
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeft;
-    private DcMotor frontRight;
-    private DcMotor rearLeft;
-    private DcMotor rearRight;
-
-    private void prepareHardware() {
-        // Correct names as of July 9 2022
-        frontLeft = hardwareMap.get(DcMotor.class, "front_left");
-        frontRight = hardwareMap.get(DcMotor.class, "front_right");
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        rearLeft = hardwareMap.get(DcMotor.class, "rear_left");
-        rearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        rearRight = hardwareMap.get(DcMotor.class, "rear_right");
-    }
-
     @Override
     public void runOpMode() {
-        prepareHardware();
+        prepareHardware(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
             // Literally stolen from gm0
