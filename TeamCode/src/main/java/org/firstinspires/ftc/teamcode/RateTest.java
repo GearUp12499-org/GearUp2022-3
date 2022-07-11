@@ -16,6 +16,9 @@ public class RateTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         prepareHardware(hardwareMap);
+        telemetry.addLine("CONFIGURATION:");
+        telemetry.addData("Clicks", CLICK_TARGET);
+        telemetry.addData("Speed", SPEED);
         waitForStart();
         frontLeft.setPower(SPEED);
         frontRight.setPower(SPEED);
@@ -42,10 +45,10 @@ public class RateTest extends LinearOpMode {
         // Calculate the rate of encoder ticks per second
         double rate = CLICK_TARGET / finishTime;
         telemetry.addLine("Rate per second (slow):");
-        telemetry.addLine(String.format(Locale.US, "%f", rate));
-        double realRate = rate * (1/SPEED);
+        telemetry.addLine(String.format(Locale.US, "%1.2f", rate));
+        int realRate = (int) (rate * (1/SPEED));
         telemetry.addLine("PUT THIS IN THE PROGRAM:");
-        telemetry.addLine(String.format(Locale.US, "%f", realRate));
+        telemetry.addLine(String.format(Locale.US, "%d", realRate));
         telemetry.addLine();
         telemetry.addLine("Press and hold A to stop");
         telemetry.update();

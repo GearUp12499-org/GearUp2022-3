@@ -6,8 +6,8 @@ REAL_CLICKS_PER_SECOND = 10000
 ACC = 0.2
 CAP = 1
 
-RUNTIME = 30
-TARGET = 100000
+RUNTIME = 10
+TARGET = 1000
 
 def process(distance_to_target: int, current_power: float, dt: float):
     global CAP, ACC, CLICKS_PER_SECOND
