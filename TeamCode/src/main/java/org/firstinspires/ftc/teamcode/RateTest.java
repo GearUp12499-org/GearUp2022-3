@@ -10,15 +10,17 @@ import java.util.Locale;
 
 @Autonomous(name="OdometryRateTest", group="Test")
 public class RateTest extends LinearOpMode {
-    public static final int CLICK_TARGET = 100000;
-    public static final double SPEED = 0.1;
+    public static final int CLICK_TARGET = 50000;
+    public static final double SPEED = 0.2;
     private boolean lastA = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
         prepareHardware(hardwareMap);
         telemetry.addLine("CONFIGURATION:");
         telemetry.addData("Clicks", CLICK_TARGET);
         telemetry.addData("Speed", SPEED);
+        telemetry.update();
         waitForStart();
         frontLeft.setPower(SPEED);
         frontRight.setPower(SPEED);
@@ -26,8 +28,9 @@ public class RateTest extends LinearOpMode {
         rearRight.setPower(SPEED);
         ElapsedTime timer = new ElapsedTime();
         // Start a timer, and keep track of the number of encoder ticks
+        int pos = 0;
         while (opModeIsActive()) {
-            int pos = frontRight.getCurrentPosition();
+            pos = -frontRight.getCurrentPosition();
             telemetry.addData("clicks:", pos);
             if (pos > CLICK_TARGET) {
                 break;
@@ -43,7 +46,7 @@ public class RateTest extends LinearOpMode {
         rearLeft.setPower(0);
         rearRight.setPower(0);
         // Calculate the rate of encoder ticks per second
-        double rate = CLICK_TARGET / finishTime;
+        double rate = pos / finishTime;
         telemetry.addLine("Rate per second (slow):");
         telemetry.addLine(String.format(Locale.US, "%1.2f", rate));
         int realRate = (int) (rate * (1/SPEED));

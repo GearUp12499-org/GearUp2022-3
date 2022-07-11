@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="Run To Odometer Test", group="Testing")
 public class RunToClickCount extends LinearOpMode {
     // TODO: get actual data.
-    public static int CLICKS_PER_SECOND = 10000;  // 10,000 clicks per second at full speed.
+    public static int CLICKS_PER_SECOND = 89577;  // 10,000 clicks per second at full speed.
     public static double MAX_ACCELERATION = 0.2;  // How much power is allowed to be added per second.
     public static double MAX_POWER = 1;  // How much power is allowed on the motor.
 
