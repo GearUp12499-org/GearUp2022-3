@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp
 public class EncoderReader extends LinearOpMode {
 //    CPR 8192, 35mm encoder wheels
-    int targetEncCount = 7500;
+    int targetEncCount = 50000;
     double lastUpdated = 0;
     boolean lastA = false;
     @Override
@@ -21,14 +21,15 @@ public class EncoderReader extends LinearOpMode {
             int err = targetEncCount - pos;
             telemetry.addData("pos", pos);
             telemetry.addData("target", targetEncCount);
-            double scaledPower = pos < targetEncCount ? Math.min(0.4, err/65536f)/2  : 0;
-            frontRight.setPower(scaledPower);
-            frontLeft.setPower(scaledPower);
-            rearLeft.setPower(scaledPower);
-            rearRight.setPower(scaledPower);
+            telemetry.addData("dt", runtime.seconds() - lastUpdated);
+            double previousPower = frontRight.getPower();
+            telemetry.addData("power", previousPower);
             if (runtime.seconds() - lastUpdated > 0.01) {
-                double previousPower = frontRight.getPower();
-
+                double scaledPower = computeNextPower(err, previousPower, runtime.seconds() - lastUpdated);
+                frontRight.setPower(scaledPower);
+                frontLeft.setPower(scaledPower);
+                rearLeft.setPower(scaledPower);
+                rearRight.setPower(scaledPower);
                 lastUpdated = runtime.seconds();
             }
             lastA = gamepad1.a;

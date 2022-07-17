@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class RunToClickCount extends LinearOpMode {
     // TODO: get actual data.
     public static int CLICKS_PER_SECOND = 89577;  // 10,000 clicks per second at full speed.
-    public static double MAX_ACCELERATION = 0.2;  // How much power is allowed to be added per second.
-    public static double MAX_POWER = 1;  // How much power is allowed on the motor.
+    public static double MAX_ACCELERATION = 0.05;  // How much power is allowed to be added per second.
+    public static double MAX_POWER = 0.5;  // How much power is allowed on the motor.
 
     /**
      * Runs the robot to a given position by providing power values for motors.
