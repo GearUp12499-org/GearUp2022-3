@@ -42,7 +42,7 @@ public class SharedHardware {
 
         //copy motors over to encoders
         encoderLeft = frontRight;   // 0
-        encoderRight = frontLeft; // 1
-        encoderRear = rearRight;   // 2
+        encoderRight = frontLeft;   // 1
+        encoderRear = rearRight;    // 2
     }
 }
