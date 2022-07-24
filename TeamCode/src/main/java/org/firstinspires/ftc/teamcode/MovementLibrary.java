@@ -18,8 +18,9 @@ public class MovementLibrary {
 
     public MovementLibrary(MotorEtcConf configuration) {}
 
+    private static final int TUNER = -2000;
+
     /**
-     *
      * @param distance Meters
      * @param power Motor power to use
      * @return
@@ -28,6 +29,6 @@ public class MovementLibrary {
         double x = (Math.pow(power, 2) * 1.340964) / 2.18;
         double distBeforeBraking = distance - x;
         double targetEncoderCounts = distBeforeBraking/0.0000134;
-        return targetEncoderCounts;
+        return targetEncoderCounts + TUNER;
     }
 }
