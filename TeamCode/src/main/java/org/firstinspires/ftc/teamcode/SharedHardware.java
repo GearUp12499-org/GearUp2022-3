@@ -41,8 +41,8 @@ public class SharedHardware {
         rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //copy motors over to encoders
-        encoderLeft = frontLeft;
-        encoderRight = frontRight;
-        encoderRear = rearLeft;
+        encoderLeft = frontRight;   // 0
+        encoderRight = frontLeft; // 1
+        encoderRear = rearRight;   // 2
     }
 }
