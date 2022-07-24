@@ -6,6 +6,8 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.lib.Recorder;
+
 @TeleOp
 public class EncoderReader extends LinearOpMode {
 //    CPR 8192, 35mm encoder wheels
@@ -45,7 +47,9 @@ public class EncoderReader extends LinearOpMode {
                 frontLeft.setPower(0.0);
                 rearRight.setPower(0.0);
                 rearLeft.setPower(0.0);
-                finalTime = runtime.seconds();
+                finalTime = now;
+                pos1R.finalize(now);
+                pos2R.finalize(now);
                 break;
             }
             lastA = gamepad1.a;
@@ -54,6 +58,9 @@ public class EncoderReader extends LinearOpMode {
         while (opModeIsActive()) {
             int pos2 = -encoderLeft.getCurrentPosition();
             int pos = encoderRight.getCurrentPosition();
+            double now = runtime.seconds();
+            pos1R.put(now, pos);
+            pos2R.put(now, pos2);
             telemetry.addData("pos", pos);
             telemetry.addData("pos2", pos2);
             telemetry.addData("pos1_hist", pos1R.toString());

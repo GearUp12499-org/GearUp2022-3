@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.lib;
 
 import androidx.annotation.NonNull;
 
@@ -8,15 +8,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Hashmap wrapper becacuse... yeah
+ * Hashmap wrapper because... yeah
  */
 public class Recorder {
     public Map<Double, Double> storage = new HashMap<>();
 
+    public double FINISH_EXTEND_TIME = 2.0;
+
+    private boolean disallowFilter = false;
+    public double disallowAfter = 0.0;
+
     public Recorder() {}
 
     public void put(double time, double data) {
+        if (disallowFilter && time > disallowAfter) return;
         storage.put(time, data);
+    }
+
+    public void finalize(double secondsNow) {
+        disallowAfter = secondsNow + FINISH_EXTEND_TIME;
+        disallowFilter = true;
     }
 
     @NonNull @Override
