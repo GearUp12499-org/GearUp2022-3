@@ -11,9 +11,19 @@ import java.util.Map;
  * Hashmap wrapper because... yeah
  */
 public class Recorder {
+    public enum State {
+        OPEN,
+        CLOSED
+    }
+
     public Map<Double, Double> storage = new HashMap<>();
 
     public double FINISH_EXTEND_TIME = 2.0;
+
+    private State state = State.OPEN;
+    public State getState() {
+        return state;
+    }
 
     private boolean disallowFilter = false;
     public double disallowAfter = 0.0;
@@ -28,6 +38,7 @@ public class Recorder {
     public void finalize(double secondsNow) {
         disallowAfter = secondsNow + FINISH_EXTEND_TIME;
         disallowFilter = true;
+        state = State.CLOSED;
     }
 
     @NonNull @Override
