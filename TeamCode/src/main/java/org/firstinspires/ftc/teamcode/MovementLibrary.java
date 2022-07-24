@@ -18,7 +18,9 @@ public class MovementLibrary {
 
     public MovementLibrary(MotorEtcConf configuration) {}
 
-    private static final int TUNER = -2000;
+    // To compensate for differences in field setup
+    // definitely not a cheap hack that wont work in the long run
+    private static final int TUNER = -3000;
 
     /**
      * @param distance Meters
