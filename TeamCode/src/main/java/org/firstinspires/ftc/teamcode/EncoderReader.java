@@ -33,6 +33,9 @@ public class EncoderReader extends LinearOpMode {
             double now = runtime.seconds();
             pos1R.put(now, pos);
             pos2R.put(now, pos2);
+
+            telemetry.addData("pos1R", pos1R.combinedStateString());
+            telemetry.addData("pos2R", pos2R.combinedStateString());
             telemetry.addData("pos", pos);
             telemetry.addData("pos2", pos2);
             telemetry.addData("target", target);
@@ -48,6 +51,8 @@ public class EncoderReader extends LinearOpMode {
                 rearRight.setPower(0.0);
                 rearLeft.setPower(0.0);
                 finalTime = now;
+
+                // Prepare to stop
                 pos1R.finalize(now);
                 pos2R.finalize(now);
                 break;
@@ -61,13 +66,19 @@ public class EncoderReader extends LinearOpMode {
             double now = runtime.seconds();
             pos1R.put(now, pos);
             pos2R.put(now, pos2);
+
+            telemetry.addData("pos1R", pos1R.combinedStateString());
+            telemetry.addData("pos2R", pos2R.combinedStateString());
             telemetry.addData("pos", pos);
             telemetry.addData("pos2", pos2);
-            telemetry.addData("pos1_hist", pos1R.toString());
-            telemetry.addData("pos2_hist", pos2R.toString());
             telemetry.addData("target", target);
             telemetry.addData("time", finalTime);
             telemetry.update();
+
+            pos1R.writeIfClosed(now, "pos1.csv");
+            pos2R.writeIfClosed(now, "pos2.csv");
         }
+        pos1R.writeOnce("pos1.csv");
+        pos2R.writeOnce("pos2.csv");
     }
 }
