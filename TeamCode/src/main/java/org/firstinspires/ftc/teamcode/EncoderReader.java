@@ -75,10 +75,10 @@ public class EncoderReader extends LinearOpMode {
             telemetry.addData("time", finalTime);
             telemetry.update();
 
-            pos1R.writeIfClosed(now, "pos1.csv");
-            pos2R.writeIfClosed(now, "pos2.csv");
+            pos1R.writeIfClosed(now, "export_pos1.csv");
+            pos2R.writeIfClosed(now, "export_pos2.csv");
         }
-        pos1R.writeOnce("pos1.csv");
-        pos2R.writeOnce("pos2.csv");
+        pos1R.writeOnce("export_pos1.csv");
+        pos2R.writeOnce("export_pos2.csv");
     }
 }
