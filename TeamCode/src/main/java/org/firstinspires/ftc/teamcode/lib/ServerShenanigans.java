@@ -7,17 +7,11 @@ import com.qualcomm.robotcore.util.WebHandlerManager;
 
 import org.apache.commons.io.FileUtils;
 import org.firstinspires.ftc.ftccommon.external.WebHandlerRegistrar;
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
