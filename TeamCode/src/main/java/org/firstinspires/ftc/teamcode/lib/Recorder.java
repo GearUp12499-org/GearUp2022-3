@@ -71,7 +71,12 @@ public class Recorder {
     public String toCSV() {
         StringBuilder b = new StringBuilder();
         b.append("Time,Value\n");
-        for (Map.Entry<Double, Double> entry : storage.entrySet()) {
+
+        List<Map.Entry<Double, Double>> sortedEntries = new ArrayList<>(storage.entrySet());
+        // not available in api
+        //noinspection ComparatorCombinators
+        Collections.sort(sortedEntries, (o1, o2) -> Double.compare(o1.getKey(), o2.getKey()));
+        for (Map.Entry<Double, Double> entry : sortedEntries) {
             b.append(entry.getKey().toString()).append(",").append(entry.getValue().toString()).append('\n');
         }
         return b.toString();
