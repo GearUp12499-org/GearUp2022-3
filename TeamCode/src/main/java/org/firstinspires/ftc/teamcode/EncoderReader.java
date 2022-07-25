@@ -3,18 +3,21 @@ package org.firstinspires.ftc.teamcode;
 import static org.firstinspires.ftc.teamcode.SharedHardware.*;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.lib.Recorder;
 
-@TeleOp
+@TeleOp @Config
 public class EncoderReader extends LinearOpMode {
 //    CPR 8192, 35mm encoder wheels
     double lastUpdated = 0;
     boolean lastA = false;
     double finalTime = 0;
-    double POWER = .5;
+    public static double POWER = .9;
+    public static boolean USE_DISTANCE = false;
+    public static double TARGET = 40000;
     Recorder pos1R = new Recorder();
     Recorder pos2R = new Recorder();
     @Override
@@ -25,8 +28,12 @@ public class EncoderReader extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-        double target = MovementLibrary.getTargetEncoder(1.0, POWER);
-//        double target = 20000;
+        double target;
+        if (USE_DISTANCE) {
+            target = MovementLibrary.getTargetEncoder(TARGET, POWER);
+        } else {
+            target = TARGET;
+        }
         while (opModeIsActive()) {
             int pos2 = -encoderLeft.getCurrentPosition();
             int pos = encoderRight.getCurrentPosition();

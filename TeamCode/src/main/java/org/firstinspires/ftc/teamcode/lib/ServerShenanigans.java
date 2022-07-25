@@ -5,13 +5,21 @@ import android.content.Context;
 
 import com.qualcomm.robotcore.util.WebHandlerManager;
 
-import org.apache.commons.io.FileUtils;
 import org.firstinspires.ftc.ftccommon.external.WebHandlerRegistrar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -19,10 +27,48 @@ import fi.iki.elonen.NanoHTTPD;
 
 public class ServerShenanigans {
     private static final String MIME_ZIP = "application/zip";
+    public static final Logger LOGGER = LoggerFactory.getLogger("File Server");
+
+    public static String readFile(File file, Charset encoding) throws FileNotFoundException {
+        Scanner scanner = new Scanner(file, encoding.name()).useDelimiter("\\A");
+        String result = scanner.hasNext() ? scanner.next() : "";
+        scanner.close();
+        return result;
+    }
 
     @WebHandlerRegistrar
     public static void attachWebServer(Context context, WebHandlerManager manager) {
-        manager.register("/retrieve", session -> {
+        manager.register("/files", session -> {
+            File[] files_ = context.getFilesDir()
+                    .listFiles((dir, name) -> name.startsWith("export_"));
+            List<File> files = files_ == null ? Collections.emptyList() : Arrays.asList(files_);
+
+            StringBuilder sb = new StringBuilder();
+            sb
+                    .append("<!DOCTYPE html>")
+                    .append("<html>")
+                    .append("<head>")
+                    .append("<title>Files</title>")
+                    .append("</head>")
+                    .append("<body>")
+                    .append("<h1>Files</h1>")
+                    .append("<ul>");
+            for (File file : files) {
+                sb.append("<li>").append(file.getName()).append("</li>");
+            }
+            sb.append("</ul>")
+                    .append("<br><a href=\"/files/retrieve\">Export</a>")
+                    .append("<br><a href=\"/files/delete_all\">Delete All</a>")
+                    .append("<br><br><a href=\"/files/test_create\">Create Dummy File</a>")
+                    .append("</body>")
+                    .append("</html>");
+            return NanoHTTPD.newFixedLengthResponse(
+                    NanoHTTPD.Response.Status.OK,
+                    NanoHTTPD.MIME_HTML, sb.toString()
+            );
+        });
+
+        manager.register("/files/retrieve", session -> {
             // This is where the bulk of the code is.
             // <schema: NanoHTTPD.Response getResponse(NanoHTTPD.IHTTPSession session) throws IOException, NanoHTTPD.ResponseException;>
 
@@ -54,9 +100,13 @@ public class ServerShenanigans {
             ZipOutputStream zip = new ZipOutputStream(out);
             for (File file : files) {
                 zip.putNextEntry(new ZipEntry(file.getName()));
-                zip.write(FileUtils.readFileToByteArray(file));
+                String fd = readFile(file, StandardCharsets.UTF_8);
+                LOGGER.info("fdata read " + fd.length() + " char snippet " + fd.substring(0, 32));
+                zip.write(fd.getBytes(StandardCharsets.UTF_8));
+
                 zip.closeEntry();
             }
+            zip.close();
 
             // Create an InputStream of the output stream
             ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
@@ -69,7 +119,7 @@ public class ServerShenanigans {
             );
         });
 
-        manager.register("/test_create", session -> {
+        manager.register("/files/test_create", session -> {
             Recorder testing = new Recorder();
             Random rng = new Random();
             for (int i = 0; i < 100; i++) {
@@ -85,7 +135,7 @@ public class ServerShenanigans {
             );
         });
 
-        manager.register("/delete_all_data", session -> {
+        manager.register("/files/delete_all", session -> {
             File[] files = context.getFilesDir()
                     .listFiles((dir, name) -> name.startsWith("export_"));
             if (files == null || files.length == 0) {
