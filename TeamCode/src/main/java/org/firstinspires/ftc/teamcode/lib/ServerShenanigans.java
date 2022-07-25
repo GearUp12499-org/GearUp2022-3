@@ -92,33 +92,44 @@ public class ServerShenanigans {
         });
 
         manager.register("/delete_all_data", session -> {
-            final String DATA = "<!DOCTYPE html>" +
+            File[] files = context.getFilesDir()
+                    .listFiles((dir, name) -> name.startsWith("export_"));
+            if (files == null || files.length == 0) {
+                return NanoHTTPD.newFixedLengthResponse(
+                        NanoHTTPD.Response.Status.OK,
+                        NanoHTTPD.MIME_PLAINTEXT, "No files to delete."
+                );
+            }
+            final StringBuilder DATA = new StringBuilder("<!DOCTYPE html>" +
                     "<html>" +
                     "<head>" +
                     "<title>Delete All Data</title>" +
                     "</head>" +
                     "<body>" +
                     "<h1>Delete All Data</h1>" +
-                    "Are you sure you want to delete all data?<br>" +
-                    "<form method=\"POST\"><input type=\"submit\" value=\"yes\"></form>" +
+                    "Are you sure you want to delete <em>these " + files.length + " files</em>?<br>" +
+                    "<ul>");
+
+            for (File file : files) {
+                DATA.append("<li>").append(file.getName()).append("</li>");
+            }
+
+            final String DATA2 = "</ul><form method=\"POST\"><input type=\"submit\" value=\"yes\"></form>" +
                     "</body>" +
                     "</html>";
+            DATA.append(DATA2);
             switch (session.getMethod()) {
                 case GET:
                     return NanoHTTPD.newFixedLengthResponse(
                             NanoHTTPD.Response.Status.OK,
                             NanoHTTPD.MIME_HTML,
-                            DATA
+                            DATA.toString()
                     );
                 case POST:
                     // Delete all files that start with "export_"
-                    File[] files = context.getFilesDir()
-                            .listFiles((dir, name) -> name.startsWith("export_"));
                     int count = 0;
-                    if (files != null) {
-                        for (File file : files) {
-                            count += file.delete()?1:0;
-                        }
+                    for (File file : files) {
+                        count += file.delete() ? 1 : 0;
                     }
                     return NanoHTTPD.newFixedLengthResponse(
                             NanoHTTPD.Response.Status.OK,
