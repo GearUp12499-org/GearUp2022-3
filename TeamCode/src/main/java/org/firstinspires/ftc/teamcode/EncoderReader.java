@@ -18,6 +18,7 @@ public class EncoderReader extends LinearOpMode {
     public static double POWER = .9;
     public static boolean USE_DISTANCE = false;
     public static double TARGET = 40000;
+    public static String TASK_NAME = "";
     Recorder pos1R = new Recorder();
     Recorder pos2R = new Recorder();
     @Override
@@ -82,10 +83,10 @@ public class EncoderReader extends LinearOpMode {
             telemetry.addData("time", finalTime);
             telemetry.update();
 
-            pos1R.writeIfClosed(now, "export_pos1.csv");
-            pos2R.writeIfClosed(now, "export_pos2.csv");
+            pos1R.writeIfClosed(now, "export_pos1" + (TASK_NAME.length() == 0 ? "" : "_" + TASK_NAME) + ".csv");
+            pos2R.writeIfClosed(now, "export_pos2" + (TASK_NAME.length() == 0 ? "" : "_" + TASK_NAME) + ".csv");
         }
-        pos1R.writeOnce("export_pos1.csv");
-        pos2R.writeOnce("export_pos2.csv");
+        pos1R.writeOnce("export_pos1" + (TASK_NAME.length() == 0 ? "" : "_" + TASK_NAME) + ".csv");
+        pos2R.writeOnce("export_pos2" + (TASK_NAME.length() == 0 ? "" : "_" + TASK_NAME) + ".csv");
     }
 }
