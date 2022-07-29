@@ -16,7 +16,6 @@ apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 
 android {
-
     androidResources {
         noCompress 'tflite'
     }
@@ -25,6 +24,7 @@ android {
             pickFirsts += ['**/*.so']
         }
     }
+    namespace = 'org.firstinspires.ftc.teamcode'
 }
 
 dependencies {
