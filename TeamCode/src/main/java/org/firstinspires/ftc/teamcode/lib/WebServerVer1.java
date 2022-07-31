@@ -25,7 +25,7 @@ import java.util.zip.ZipOutputStream;
 
 import fi.iki.elonen.NanoHTTPD;
 
-public class ServerShenanigans {
+public class WebServerVer1 {
     private static final String MIME_ZIP = "application/zip";
     public static final Logger LOGGER = LoggerFactory.getLogger("File Server");
 
