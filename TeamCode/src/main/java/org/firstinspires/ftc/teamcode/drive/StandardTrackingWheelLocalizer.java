@@ -39,8 +39,13 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     // BATCH 2 = 98.73244343478059
     // BATCH 3 = 98.26362355716793
     // JJ SAYS = 98.46178077614168
+
+    // BATCH 1 = 99.17099944933457
+    // BATCH 2 = 99.12105217287485
+
+    // BATCH 3 = 70.71023263791385 @72in
     public static double X_MULTIPLIER = 1.015887256; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
+    public static double Y_MULTIPLIER = 1.008613297; // Multiplier in the Y direction
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
