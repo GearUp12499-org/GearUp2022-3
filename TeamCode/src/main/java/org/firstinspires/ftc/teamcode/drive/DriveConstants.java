@@ -22,6 +22,9 @@ public class DriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
+    // https://learnroadrunner.com/drive-constants.html#ticks-per-rev-max-rpm
+    // possible typo on the roadrunner website
+    // https://www.robotshop.com/en/andymark-neverest-orbital-20-12v-340rpm-175-oz-in-gearmotor-w--encoder.html
     public static final double TICKS_PER_REV = 537.6;
     public static final double MAX_RPM = 340;
 
