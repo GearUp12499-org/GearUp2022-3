@@ -46,6 +46,10 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     // BATCH 3 = 89.39152717340066 @90in
     // BATCH 4 = 89.55914563846005 @90in
     // BatcH 5 = 89.33550121378164
+
+    // STRAFE
+    // 37.5597354218156 @60
+    // 49.63018773359754, 1.597455342 @60
     public static double X_MULTIPLIER = 1.015887256; // Multiplier in the X direction
     public static double Y_MULTIPLIER = 1.006388052; // Multiplier in the Y direction
 

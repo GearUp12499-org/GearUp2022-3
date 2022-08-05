@@ -56,7 +56,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
-    public static double LATERAL_MULTIPLIER = 1;
+    public static double LATERAL_MULTIPLIER = 1.597455342;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -119,8 +119,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         leftFront = hardwareMap.get(DcMotorEx.class, "front_left");
         leftRear = hardwareMap.get(DcMotorEx.class, "rear_left");
-        rightRear = hardwareMap.get(DcMotorEx.class, "front_right");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rear_right");
+        rightFront = hardwareMap.get(DcMotorEx.class, "front_right");
+        rightRear = hardwareMap.get(DcMotorEx.class, "rear_right");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -141,8 +141,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         // TODONE: reverse any motors using DcMotor.setDirection()
-        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // TODO: if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
