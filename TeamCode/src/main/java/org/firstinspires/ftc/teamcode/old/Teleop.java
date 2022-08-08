@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.old;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 
 @TeleOp(name="GearUp: Drive TeleOp", group="Pushbot")
+@Disabled
 public abstract class Teleop extends LinearOpMode {
     GearUpHardware robot = new GearUpHardware();
     public ElapsedTime runtime = new ElapsedTime();

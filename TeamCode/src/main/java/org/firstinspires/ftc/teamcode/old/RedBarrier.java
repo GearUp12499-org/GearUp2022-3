@@ -4,6 +4,7 @@
 package org.firstinspires.ftc.teamcode.old;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * This file illustrates the concept of driving a path based on encoder counts.
@@ -33,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
  */
 
 @Autonomous(name="red_barrier" , group="Pushbot")
+@Disabled
 //@Disabled
 public class RedBarrier extends Auto {
 

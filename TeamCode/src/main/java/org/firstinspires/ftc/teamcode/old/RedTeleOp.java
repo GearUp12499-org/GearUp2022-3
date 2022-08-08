@@ -3,6 +3,7 @@
 
 package org.firstinspires.ftc.teamcode.old;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
@@ -33,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp(name="Red TeleOp" , group="Pushbot")
+@Disabled
 //@Disabled
 public class RedTeleOp extends Teleop {
 
