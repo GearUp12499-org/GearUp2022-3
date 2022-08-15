@@ -56,7 +56,15 @@ public class SampleMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
-    public static double LATERAL_MULTIPLIER = 2; // changed by jj/andrew on 08.06, battery change seemed to have large effect // 1.597455342;
+    // real:
+    // 1. 38.5
+    // 2. 37.875
+    // 3. 37.375
+//    public static double LATERAL_MULTIPLIER = 1.582417582*1.2;
+    public static double LATERAL_MULTIPLIER = 4;  // oh god FIXME
+
+    // aug 14, re-tuned
+    // changed by jj/andrew on 08.06, battery change seemed to have large effect // 1.597455342;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
