@@ -50,8 +50,13 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     // OLD TUNING DATA v1 | STRAFE
     // OLD TUNING DATA v1 | 37.5597354218156 @60
     // OLD TUNING DATA v1 | 49.63018773359754, 1.597455342 @60
+
+    // New tuning data v2 | Localization test
+    // batch 1 : 90.06822974599585
+    // batch 2 : 90.0395918962902
+    // batch 3 : 89.46262111828426
 //    public static double X_MULTIPLIER = 1.015887256; // Multiplier in the X direction
-    public static double X_MULTIPLIER = 1; // Multiplier in the X direction
+    public static double X_MULTIPLIER = 1.001593488; // Multiplier in the X direction
 //    public static double Y_MULTIPLIER = 1.006388052; // Multiplier in the Y direction
     public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
 
