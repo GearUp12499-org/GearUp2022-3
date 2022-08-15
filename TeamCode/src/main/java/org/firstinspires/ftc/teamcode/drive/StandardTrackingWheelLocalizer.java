@@ -31,7 +31,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     public static double WHEEL_RADIUS = 0.69; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 13.625; // in; distance between the left and right wheels
+    public static double LATERAL_DISTANCE = 13.688697112094044; // in; distance between the left and right wheels
     public static double FORWARD_OFFSET = 3.75; // in; offset of the lateral wheel
 
     // OLD TUNING DATA v1 | TUNING
@@ -52,13 +52,22 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     // OLD TUNING DATA v1 | 49.63018773359754, 1.597455342 @60
 
     // New tuning data v2 | Localization test
-    // batch 1 : 90.06822974599585
-    // batch 2 : 90.0395918962902
-    // batch 3 : 89.46262111828426
+    // batch 1 : 87.9596325542518
+    // batch 2 : 88.4284241044561
+    // batch 3 : 88.06987535613582
+    // batch 4 : 88.52328934277412
+    //
+    // Strafing
+    // batch 1 : 88.97377843017097 (left)
+    // batch 2 : 89.17401168653471 (right)
+    // batch 3 : 88.44773176771093 (left)
+    // batch 4 : 89.10083779274552 (right)
+
+    // lat dist 13.688697112094044
 //    public static double X_MULTIPLIER = 1.015887256; // Multiplier in the X direction
-    public static double X_MULTIPLIER = 1.001593488; // Multiplier in the X direction
+    public static double X_MULTIPLIER = 1.019884283; // Multiplier in the X direction
 //    public static double Y_MULTIPLIER = 1.006388052; // Multiplier in the Y direction
-    public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
+    public static double Y_MULTIPLIER = 1.012099197; // Multiplier in the Y direction
 
     public Encoder leftEncoder, rightEncoder, frontEncoder;
 
