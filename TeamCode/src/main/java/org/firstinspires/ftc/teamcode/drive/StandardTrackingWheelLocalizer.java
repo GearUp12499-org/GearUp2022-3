@@ -31,27 +31,29 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     public static double WHEEL_RADIUS = 0.69; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 13.6; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 3.625; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 13.625; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = 3.75; // in; offset of the lateral wheel
 
-    // TUNING
-    // BATCH 1 = 98.31229344142051
-    // BATCH 2 = 98.73244343478059
-    // BATCH 3 = 98.26362355716793
-    // JJ SAYS = 98.46178077614168
+    // OLD TUNING DATA v1 | TUNING
+    // OLD TUNING DATA v1 | BATCH 1 = 98.31229344142051
+    // OLD TUNING DATA v1 | BATCH 2 = 98.73244343478059
+    // OLD TUNING DATA v1 | BATCH 3 = 98.26362355716793
+    // OLD TUNING DATA v1 | JJ SAYS = 98.46178077614168
+    // OLD TUNING DATA v1 |
+    // OLD TUNING DATA v1 | BATCH 1 = 99.17099944933457
+    // OLD TUNING DATA v1 | BATCH 2 = 99.12105217287485
+    // OLD TUNING DATA v1 |
+    // OLD TUNING DATA v1 | BATCH 3 = 89.39152717340066 @90in
+    // OLD TUNING DATA v1 | BATCH 4 = 89.55914563846005 @90in
+    // OLD TUNING DATA v1 | BatcH 5 = 89.33550121378164
 
-    // BATCH 1 = 99.17099944933457
-    // BATCH 2 = 99.12105217287485
-
-    // BATCH 3 = 89.39152717340066 @90in
-    // BATCH 4 = 89.55914563846005 @90in
-    // BatcH 5 = 89.33550121378164
-
-    // STRAFE
-    // 37.5597354218156 @60
-    // 49.63018773359754, 1.597455342 @60
-    public static double X_MULTIPLIER = 1.015887256; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1.006388052; // Multiplier in the Y direction
+    // OLD TUNING DATA v1 | STRAFE
+    // OLD TUNING DATA v1 | 37.5597354218156 @60
+    // OLD TUNING DATA v1 | 49.63018773359754, 1.597455342 @60
+//    public static double X_MULTIPLIER = 1.015887256; // Multiplier in the X direction
+    public static double X_MULTIPLIER = 1; // Multiplier in the X direction
+//    public static double Y_MULTIPLIER = 1.006388052; // Multiplier in the Y direction
+    public static double Y_MULTIPLIER = 1; // Multiplier in the Y direction
 
     public Encoder leftEncoder, rightEncoder, frontEncoder;
 
