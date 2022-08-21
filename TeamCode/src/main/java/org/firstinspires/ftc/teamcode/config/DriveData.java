@@ -160,12 +160,18 @@ public class DriveData {
     public static class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
         @Override
         public double getXMultiplier() {
-            return super.getXMultiplier();
+            // 89.25
+            // 89.19
+            // 89
+            return 1.009572241;
         }
 
         @Override
         public double getYMultiplier() {
-            return super.getYMultiplier();
+            // 88.95
+            // 89.63
+            // 88.72
+            return 1.011292769;
         }
     }
 
