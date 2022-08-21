@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public interface RobotConfig {
+    // DriveConstants
     double getTicksPerRev();
     double getMaxRPM();
     boolean getRunUsingEncoder();
@@ -25,16 +26,18 @@ public interface RobotConfig {
     double getMaxAngVel();
     double getMaxAngAccel();
 
+    // StandardTrackingWheelLocalizer
     double getEncoderTicksPerRev();
     double getEncoderWheelRadius(); // in
     double getEncoderGearRatio(); // output (wheel) speed / input (encoder) speed
     double getEncoderLateralDistance(); // in; distance between the left and right wheels
     double getEncoderForwardOffset(); // in; offset of the lateral wheel
-
     default double getXMultiplier() { return 1; }
     default double getYMultiplier() { return 1; }
 
+
     interface MotorConfiguration {
+        // SampleMecanumDrive
         @Nullable
         DcMotorEx getLeftFrontMotor();
         DcMotorEx getLeftFrontMotor(HardwareMap hardwareMap);
@@ -48,6 +51,7 @@ public interface RobotConfig {
         DcMotorEx getRightRearMotor();
         DcMotorEx getRightRearMotor(HardwareMap hardwareMap);
 
+        // StandardTrackingWheelLocalizer
         @Nullable
         Encoder getLeftEncoder();
         Encoder getLeftEncoder(HardwareMap hardwareMap);
