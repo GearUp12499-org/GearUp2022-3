@@ -55,8 +55,8 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
     // wow feedforward so good we no need no pid
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = DriveData.currentInstance.getTranslationalPID();
+    public static PIDCoefficients HEADING_PID = DriveData.currentInstance.getHeadingPID();
 
     // real:
     // 1. 38.5

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.config;
 
 import androidx.annotation.Nullable;
 
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -287,6 +288,16 @@ public class DriveData {
         }
 
         @Override
+        public PIDCoefficients getHeadingPID() {
+            return new PIDCoefficients(0, 0, 0);
+        }
+
+        @Override
+        public PIDCoefficients getTranslationalPID() {
+            return new PIDCoefficients(0, 0, 0);
+        }
+
+        @Override
         public MotorConfiguration getMotorConfiguration() {
             return currentMotorConfiguration;
         }
@@ -331,6 +342,16 @@ public class DriveData {
         @Override
         public double getLateralMultiplier() {
             return 4; // FIXME! today
+        }
+
+        @Override
+        public PIDCoefficients getHeadingPID() {
+            return new PIDCoefficients(8, 0, 0);
+        }
+
+        @Override
+        public PIDCoefficients getTranslationalPID() {
+            return new PIDCoefficients(8, 0, 0);
         }
     }
 
@@ -497,6 +518,16 @@ public class DriveData {
         @Override
         public double getLateralMultiplier() {
             return 4;
+        }
+
+        @Override
+        public PIDCoefficients getHeadingPID() {
+            return new PIDCoefficients(8, 0, 0);
+        }
+
+        @Override
+        public PIDCoefficients getTranslationalPID() {
+            return new PIDCoefficients(8, 0, 0);
         }
 
         @Override

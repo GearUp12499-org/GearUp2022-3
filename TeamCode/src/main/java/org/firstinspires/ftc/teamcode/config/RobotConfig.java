@@ -2,13 +2,18 @@ package org.firstinspires.ftc.teamcode.config;
 
 import androidx.annotation.Nullable;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
+/**
+ * Robot configuration template base.
+ * Use the I↓ or O↓ action icons (in the gutter) to go to a configuration class and change values.
+ * COMMENTS are the file that the values below are used in.
+ */
 public interface RobotConfig {
     // DriveConstants
     double getTicksPerRev();
@@ -37,6 +42,8 @@ public interface RobotConfig {
 
     // SampleMecanumDrive
     default double getLateralMultiplier() { return 1; }
+    PIDCoefficients getHeadingPID();
+    PIDCoefficients getTranslationalPID();
 
 
     interface MotorConfiguration {
