@@ -1,8 +1,65 @@
 package org.firstinspires.ftc.teamcode.config;
 
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.teamcode.util.Encoder;
+
 public class DriveData {
+    public static class GoBuildaV5MotorConf implements RobotConfig.MotorConfiguration {
+
+        @Override
+        public DcMotorEx getLeftFrontMotor(HardwareMap hardwareMap) {
+            DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "front_left");
+            motor.setDirection(DcMotorSimple.Direction.FORWARD);
+            return motor;
+        }
+
+        @Override
+        public DcMotorEx getLeftRearMotor(HardwareMap hardwareMap) {
+            DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "rear_left");
+            motor.setDirection(DcMotorSimple.Direction.FORWARD);
+            return motor;
+        }
+
+        @Override
+        public DcMotorEx getRightFrontMotor(HardwareMap hardwareMap) {
+            DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "front_right");
+            motor.setDirection(DcMotorSimple.Direction.REVERSE);
+            return motor;
+        }
+
+        @Override
+        public DcMotorEx getRightRearMotor(HardwareMap hardwareMap) {
+            DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "rear_right");
+            motor.setDirection(DcMotorSimple.Direction.REVERSE);
+            return motor;
+        }
+
+        @Override
+        public Encoder getLeftEncoder(HardwareMap hardwareMap) {
+            Encoder encoder = new Encoder(hardwareMap.get(DcMotorEx.class, "front_left"));
+            encoder.setDirection(Encoder.Direction.REVERSE);
+            return encoder;
+        }
+
+        @Override
+        public Encoder getRightEncoder(HardwareMap hardwareMap) {
+            Encoder encoder = new Encoder(hardwareMap.get(DcMotorEx.class, "front_right"));
+            encoder.setDirection(Encoder.Direction.REVERSE);
+            return encoder;
+        }
+
+        @Override
+        public Encoder getFrontEncoder(HardwareMap hardwareMap) {
+            Encoder encoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rear_right"));
+            encoder.setDirection(Encoder.Direction.REVERSE);
+            return encoder;
+        }
+    }
+
     public static class GoBuildaStraferV5Base implements RobotConfig {
         /*
          * These are motor constants that should be listed online for your motors.
@@ -151,6 +208,11 @@ public class DriveData {
         @Override
         public double getEncoderForwardOffset() {
             return 1.375f;
+        }
+
+        @Override
+        public MotorConfiguration getMotorConfiguration() {
+            return null;
         }
 
         private GoBuildaStraferV5Base() {
@@ -353,6 +415,11 @@ public class DriveData {
         @Override
         public double getYMultiplier() {
             return 1.012099197;
+        }
+
+        @Override
+        public MotorConfiguration getMotorConfiguration() {
+            return null;
         }
 
         private OldBuild() {

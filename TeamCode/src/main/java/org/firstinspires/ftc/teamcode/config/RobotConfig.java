@@ -1,6 +1,11 @@
 package org.firstinspires.ftc.teamcode.config;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public interface RobotConfig {
     double getTicksPerRev();
@@ -26,6 +31,19 @@ public interface RobotConfig {
 
     default double getXMultiplier() { return 1; }
     default double getYMultiplier() { return 1; }
+
+    interface MotorConfiguration {
+        DcMotorEx getLeftFrontMotor(HardwareMap hardwareMap);
+        DcMotorEx getLeftRearMotor(HardwareMap hardwareMap);
+        DcMotorEx getRightFrontMotor(HardwareMap hardwareMap);
+        DcMotorEx getRightRearMotor(HardwareMap hardwareMap);
+
+        Encoder getLeftEncoder(HardwareMap hardwareMap);
+        Encoder getRightEncoder(HardwareMap hardwareMap);
+        Encoder getFrontEncoder(HardwareMap hardwareMap);
+    }
+
+    MotorConfiguration getMotorConfiguration();
     // TODO add motor + encoder direction configuration
     // TODO add hardware configuration (motors + odometry)
 
