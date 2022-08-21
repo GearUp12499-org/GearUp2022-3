@@ -39,7 +39,7 @@ public class DriveConstants {
      * from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = DriveData.currentInstance.getRunUsingEncoder();
-    public static PIDFCoefficients MOTOR_VELO_PID = DriveData.currentInstance.getModerVeloPID();
+    public static PIDFCoefficients MOTOR_VELO_PID = DriveData.currentInstance.getMotorVeloPID();
 
     /*
      * These are physical constants that can be determined from your robot (including the track

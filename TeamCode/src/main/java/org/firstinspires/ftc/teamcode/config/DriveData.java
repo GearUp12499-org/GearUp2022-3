@@ -164,7 +164,7 @@ public class DriveData {
         }
 
         @Override
-        public PIDFCoefficients getModerVeloPID() {
+        public PIDFCoefficients getMotorVeloPID() {
             return new PIDFCoefficients(0, 0, 0,
                     getMotorVelocityF(getMaxRPM() / 60 * getTicksPerRev()));
         }
@@ -327,6 +327,11 @@ public class DriveData {
         public double getMaxAngVel() {
             return 8.021820929253712;
         }
+
+        @Override
+        public double getLateralMultiplier() {
+            return 4; // FIXME! today
+        }
     }
 
     public static class OldBuild implements RobotConfig {
@@ -357,7 +362,7 @@ public class DriveData {
         }
 
         @Override
-        public PIDFCoefficients getModerVeloPID() {
+        public PIDFCoefficients getMotorVeloPID() {
             return new PIDFCoefficients(0, 0, 0,
                     getMotorVelocityF(getMaxRPM() / 60 * getTicksPerRev()));
         }
@@ -487,6 +492,11 @@ public class DriveData {
         @Override
         public double getYMultiplier() {
             return 1.012099197;
+        }
+
+        @Override
+        public double getLateralMultiplier() {
+            return 4;
         }
 
         @Override

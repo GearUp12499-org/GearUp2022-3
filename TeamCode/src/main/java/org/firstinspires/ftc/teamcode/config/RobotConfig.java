@@ -14,13 +14,13 @@ public interface RobotConfig {
     double getTicksPerRev();
     double getMaxRPM();
     boolean getRunUsingEncoder();
-    PIDFCoefficients getModerVeloPID();
+    PIDFCoefficients getMotorVeloPID();
     double getWheelRadius();
     double getGearRatio();
     double getTrackWidth();
-    double getKV();
-    double getKA();
-    double getKStatic();
+    double getKV();       // Feedforward tuning
+    double getKA();       // Feedforward tuning
+    double getKStatic();  // Feedforward tuning
     double getMaxVel();
     double getMaxAccel();
     double getMaxAngVel();
@@ -34,6 +34,9 @@ public interface RobotConfig {
     double getEncoderForwardOffset(); // in; offset of the lateral wheel
     default double getXMultiplier() { return 1; }
     default double getYMultiplier() { return 1; }
+
+    // SampleMecanumDrive
+    default double getLateralMultiplier() { return 1; }
 
 
     interface MotorConfiguration {
