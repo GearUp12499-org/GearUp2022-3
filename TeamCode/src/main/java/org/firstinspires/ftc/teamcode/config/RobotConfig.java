@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.config;
 
+import androidx.annotation.Nullable;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -33,13 +35,27 @@ public interface RobotConfig {
     default double getYMultiplier() { return 1; }
 
     interface MotorConfiguration {
+        @Nullable
+        DcMotorEx getLeftFrontMotor();
         DcMotorEx getLeftFrontMotor(HardwareMap hardwareMap);
+        @Nullable
+        DcMotorEx getLeftRearMotor();
         DcMotorEx getLeftRearMotor(HardwareMap hardwareMap);
+        @Nullable
+        DcMotorEx getRightFrontMotor();
         DcMotorEx getRightFrontMotor(HardwareMap hardwareMap);
+        @Nullable
+        DcMotorEx getRightRearMotor();
         DcMotorEx getRightRearMotor(HardwareMap hardwareMap);
 
+        @Nullable
+        Encoder getLeftEncoder();
         Encoder getLeftEncoder(HardwareMap hardwareMap);
+        @Nullable
+        Encoder getRightEncoder();
         Encoder getRightEncoder(HardwareMap hardwareMap);
+        @Nullable
+        Encoder getFrontEncoder();
         Encoder getFrontEncoder(HardwareMap hardwareMap);
     }
 

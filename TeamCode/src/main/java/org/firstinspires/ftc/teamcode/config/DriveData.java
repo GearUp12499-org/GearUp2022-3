@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.config;
 
+import androidx.annotation.Nullable;
+
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -9,54 +11,118 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 
 public class DriveData {
     public static class GoBuildaV5MotorConf implements RobotConfig.MotorConfiguration {
+        private DcMotorEx leftFront = null;
+        private DcMotorEx leftRear = null;
+        private DcMotorEx rightFront = null;
+        private DcMotorEx rightRear = null;
+
+        public Encoder leftEncoder = null;
+        public Encoder rightEncoder = null;
+        public Encoder frontEncoder = null;
+
+        @Nullable
+        @Override
+        public DcMotorEx getLeftFrontMotor() {
+            return leftFront;
+        }
 
         @Override
         public DcMotorEx getLeftFrontMotor(HardwareMap hardwareMap) {
-            DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "front_left");
-            motor.setDirection(DcMotorSimple.Direction.FORWARD);
-            return motor;
+            if (leftFront == null) {
+                leftFront = hardwareMap.get(DcMotorEx.class, "front_left");
+                leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            }
+            return leftFront;
+        }
+
+        @Nullable
+        @Override
+        public DcMotorEx getLeftRearMotor() {
+            return leftRear;
         }
 
         @Override
         public DcMotorEx getLeftRearMotor(HardwareMap hardwareMap) {
-            DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "rear_left");
-            motor.setDirection(DcMotorSimple.Direction.FORWARD);
-            return motor;
+            if (leftRear == null) {
+                leftRear = hardwareMap.get(DcMotorEx.class, "rear_left");
+                leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+            }
+            return leftRear;
+        }
+
+        @Nullable
+        @Override
+        public DcMotorEx getRightFrontMotor() {
+            return rightFront;
         }
 
         @Override
         public DcMotorEx getRightFrontMotor(HardwareMap hardwareMap) {
-            DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "front_right");
-            motor.setDirection(DcMotorSimple.Direction.REVERSE);
-            return motor;
+            if (rightFront == null) {
+                rightFront = hardwareMap.get(DcMotorEx.class, "front_right");
+                rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+            }
+            return rightFront;
+        }
+
+        @Nullable
+        @Override
+        public DcMotorEx getRightRearMotor() {
+            return rightRear;
         }
 
         @Override
         public DcMotorEx getRightRearMotor(HardwareMap hardwareMap) {
-            DcMotorEx motor = hardwareMap.get(DcMotorEx.class, "rear_right");
-            motor.setDirection(DcMotorSimple.Direction.REVERSE);
-            return motor;
+            if (rightRear == null) {
+                rightRear = hardwareMap.get(DcMotorEx.class, "rear_right");
+                rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+            }
+            return rightRear;
+        }
+
+        @Nullable
+        @Override
+        public Encoder getLeftEncoder() {
+            return leftEncoder;
         }
 
         @Override
         public Encoder getLeftEncoder(HardwareMap hardwareMap) {
-            Encoder encoder = new Encoder(hardwareMap.get(DcMotorEx.class, "front_left"));
-            encoder.setDirection(Encoder.Direction.REVERSE);
-            return encoder;
+            if (leftEncoder == null) {
+                leftEncoder = new Encoder(getLeftFrontMotor());
+                leftEncoder.setDirection(Encoder.Direction.REVERSE);
+            }
+            return leftEncoder;
+        }
+
+        @Nullable
+        @Override
+        public Encoder getRightEncoder() {
+            return rightEncoder;
         }
 
         @Override
         public Encoder getRightEncoder(HardwareMap hardwareMap) {
-            Encoder encoder = new Encoder(hardwareMap.get(DcMotorEx.class, "front_right"));
-            encoder.setDirection(Encoder.Direction.REVERSE);
-            return encoder;
+            if (rightEncoder == null) {
+                rightEncoder = new Encoder(getRightFrontMotor());
+                rightEncoder.setDirection(Encoder.Direction.REVERSE);
+            }
+            return rightEncoder;
+        }
+
+        @Nullable
+        @Override
+        public Encoder getFrontEncoder() {
+            return frontEncoder;
         }
 
         @Override
         public Encoder getFrontEncoder(HardwareMap hardwareMap) {
-            Encoder encoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rear_right"));
-            encoder.setDirection(Encoder.Direction.REVERSE);
-            return encoder;
+            if (frontEncoder == null) {
+                frontEncoder = new Encoder(getRightRearMotor());
+                frontEncoder.setDirection(Encoder.Direction.REVERSE);
+            }
+            return frontEncoder;
         }
     }
     public static RobotConfig.MotorConfiguration currentMotorConfiguration = new GoBuildaV5MotorConf();
