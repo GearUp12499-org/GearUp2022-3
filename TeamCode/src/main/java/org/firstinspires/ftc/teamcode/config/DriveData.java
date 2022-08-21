@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.config;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 public class DriveData {
-    public static class GoBuildaStraferV5Build1 implements RobotConfig {
+    public static class GoBuildaStraferV5Base implements RobotConfig {
         /*
          * These are motor constants that should be listed online for your motors.
          */
@@ -128,10 +128,14 @@ public class DriveData {
             return Math.toRadians(184.02607784577722);
         }
 
-        private GoBuildaStraferV5Build1() {
+        private GoBuildaStraferV5Base() {
 
         }
     }
+    public static class GoBuildaStraferV5Mods extends GoBuildaStraferV5Base {
+
+    }
+
     public static class OldBuild implements RobotConfig {
         /*
          * These are motor constants that should be listed online for your motors.
@@ -261,5 +265,5 @@ public class DriveData {
 
         }
     }
-    public static RobotConfig currentInstance = new GoBuildaStraferV5Build1();
+    public static RobotConfig currentInstance = new GoBuildaStraferV5Mods();
 }
