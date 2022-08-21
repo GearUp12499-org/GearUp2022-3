@@ -60,8 +60,6 @@ public interface RobotConfig {
     }
 
     MotorConfiguration getMotorConfiguration();
-    // TODO add motor + encoder direction configuration
-    // TODO add hardware configuration (motors + odometry)
 
     default double rpmToVelocity(double rpm) {
         return rpm * getGearRatio() * 2 * Math.PI * getWheelRadius() / 60.0;
