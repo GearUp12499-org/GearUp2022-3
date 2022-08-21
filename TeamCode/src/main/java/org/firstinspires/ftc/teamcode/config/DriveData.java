@@ -150,7 +150,7 @@ public class DriveData {
 
         @Override
         public double getEncoderForwardOffset() {
-            return 0;
+            return 1f + (3f/8f);
         }
 
         private GoBuildaStraferV5Base() {

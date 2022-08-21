@@ -26,7 +26,7 @@ public interface RobotConfig {
 
     default double getXMultiplier() { return 1; }
     default double getYMultiplier() { return 1; }
-    // TODO add motor direction configuration
+    // TODO add motor + encoder direction configuration
     // TODO add hardware configuration (motors + odometry)
 
     default double rpmToVelocity(double rpm) {
