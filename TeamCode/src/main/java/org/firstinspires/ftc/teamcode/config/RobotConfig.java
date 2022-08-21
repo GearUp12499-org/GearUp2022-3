@@ -18,6 +18,17 @@ public interface RobotConfig {
     double getMaxAngVel();
     double getMaxAngAccel();
 
+    double getEncoderTicksPerRev();
+    double getEncoderWheelRadius();
+    double getEncoderGearRatio();
+    double getEncoderLateralDistance();
+    double getEncoderForwardOffset();
+
+    default double getXMultiplier() { return 1; }
+    default double getYMultiplier() { return 1; }
+    // TODO add motor direction configuration
+    // TODO add hardware configuration (motors + odometry)
+
     default double rpmToVelocity(double rpm) {
         return rpm * getGearRatio() * 2 * Math.PI * getWheelRadius() / 60.0;
     }

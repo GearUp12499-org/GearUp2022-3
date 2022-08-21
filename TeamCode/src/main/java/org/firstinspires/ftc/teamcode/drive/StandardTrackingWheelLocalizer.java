@@ -34,39 +34,7 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
     public static double LATERAL_DISTANCE = 13.688697112094044; // in; distance between the left and right wheels
     public static double FORWARD_OFFSET = 3.75; // in; offset of the lateral wheel
 
-    // OLD TUNING DATA v1 | TUNING
-    // OLD TUNING DATA v1 | BATCH 1 = 98.31229344142051
-    // OLD TUNING DATA v1 | BATCH 2 = 98.73244343478059
-    // OLD TUNING DATA v1 | BATCH 3 = 98.26362355716793
-    // OLD TUNING DATA v1 | JJ SAYS = 98.46178077614168
-    // OLD TUNING DATA v1 |
-    // OLD TUNING DATA v1 | BATCH 1 = 99.17099944933457
-    // OLD TUNING DATA v1 | BATCH 2 = 99.12105217287485
-    // OLD TUNING DATA v1 |
-    // OLD TUNING DATA v1 | BATCH 3 = 89.39152717340066 @90in
-    // OLD TUNING DATA v1 | BATCH 4 = 89.55914563846005 @90in
-    // OLD TUNING DATA v1 | BatcH 5 = 89.33550121378164
-
-    // OLD TUNING DATA v1 | STRAFE
-    // OLD TUNING DATA v1 | 37.5597354218156 @60
-    // OLD TUNING DATA v1 | 49.63018773359754, 1.597455342 @60
-
-    // New tuning data v2 | Localization test
-    // batch 1 : 87.9596325542518
-    // batch 2 : 88.4284241044561
-    // batch 3 : 88.06987535613582
-    // batch 4 : 88.52328934277412
-    //
-    // Strafing
-    // batch 1 : 88.97377843017097 (left)
-    // batch 2 : 89.17401168653471 (right)
-    // batch 3 : 88.44773176771093 (left)
-    // batch 4 : 89.10083779274552 (right)
-
-    // lat dist 13.688697112094044
-//    public static double X_MULTIPLIER = 1.015887256; // Multiplier in the X direction
     public static double X_MULTIPLIER = 1.019884283; // Multiplier in the X direction
-//    public static double Y_MULTIPLIER = 1.006388052; // Multiplier in the Y direction
     public static double Y_MULTIPLIER = 1.012099197; // Multiplier in the Y direction
 
     public Encoder leftEncoder, rightEncoder, frontEncoder;

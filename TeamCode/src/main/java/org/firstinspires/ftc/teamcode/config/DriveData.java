@@ -128,12 +128,40 @@ public class DriveData {
             return Math.toRadians(184.02607784577722);
         }
 
+        @Override
+        public double getEncoderTicksPerRev() {
+            return 8192;
+        }
+
+        @Override
+        public double getEncoderWheelRadius() {
+            return 0.69;
+        }
+
+        @Override
+        public double getEncoderGearRatio() {
+            return 1;
+        }
+
+        @Override
+        public double getEncoderLateralDistance() {
+            return 0;
+        }
+
+        @Override
+        public double getEncoderForwardOffset() {
+            return 0;
+        }
+
         private GoBuildaStraferV5Base() {
 
         }
     }
-    public static class GoBuildaStraferV5Mods extends GoBuildaStraferV5Base {
-
+    public static class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
+        @Override
+        public double getMaxRPM() {
+            return super.getMaxRPM() + 1;
+        }
     }
 
     public static class OldBuild implements RobotConfig {
@@ -261,9 +289,44 @@ public class DriveData {
             return Math.toRadians(247.7142857142857);
         }
 
+        @Override
+        public double getEncoderTicksPerRev() {
+            return 8192;
+        }
+
+        @Override
+        public double getEncoderWheelRadius() {
+            return 0.69;
+        }
+
+        @Override
+        public double getEncoderGearRatio() {
+            return 1;
+        }
+
+        @Override
+        public double getEncoderLateralDistance() {
+            return 13.688697112094044;
+        }
+
+        @Override
+        public double getEncoderForwardOffset() {
+            return 3.75;
+        }
+
+        @Override
+        public double getXMultiplier() {
+            return 1.019884283;
+        }
+
+        @Override
+        public double getYMultiplier() {
+            return 1.012099197;
+        }
+
         private OldBuild() {
 
         }
     }
-    public static RobotConfig currentInstance = new GoBuildaStraferV5Mods();
+    public static RobotConfig currentInstance = new GoBuildaStraferV5Tuned();
 }
