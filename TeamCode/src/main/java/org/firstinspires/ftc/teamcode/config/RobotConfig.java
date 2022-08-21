@@ -12,7 +12,11 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 /**
  * Robot configuration template base.
  * Use the I↓ or O↓ action icons (in the gutter) to go to a configuration class and change values.
+ *   (it's easier to do this than scroll through the 500+ lines in DriveData.java)
  * COMMENTS are the file that the values below are used in.
+ *
+ * hint to future Miles:
+ *   there's a "Implement Interface" intention in the Context Actions on the interface name :P
  */
 public interface RobotConfig {
     // DriveConstants
