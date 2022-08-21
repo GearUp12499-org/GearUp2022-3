@@ -145,12 +145,12 @@ public class DriveData {
 
         @Override
         public double getEncoderLateralDistance() {
-            return 0;
+            return 16.14173f;
         }
 
         @Override
         public double getEncoderForwardOffset() {
-            return 1f + (3f/8f);
+            return 1.375f;
         }
 
         private GoBuildaStraferV5Base() {
@@ -159,8 +159,13 @@ public class DriveData {
     }
     public static class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
         @Override
-        public double getMaxRPM() {
-            return super.getMaxRPM() + 1;
+        public double getXMultiplier() {
+            return super.getXMultiplier();
+        }
+
+        @Override
+        public double getYMultiplier() {
+            return super.getYMultiplier();
         }
     }
 
