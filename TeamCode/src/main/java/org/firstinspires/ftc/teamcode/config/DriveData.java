@@ -159,6 +159,11 @@ public class DriveData {
     }
     public static class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
         @Override
+        public double getTrackWidth() {
+            return 14.34;
+        }
+
+        @Override
         public double getXMultiplier() {
             // 89.25
             // 89.19
@@ -172,6 +177,21 @@ public class DriveData {
             // 89.63
             // 88.72
             return 1.011292769;
+        }
+
+        @Override
+        public double getKV() {
+            return 0.0191960882997653;
+        }
+
+        @Override
+        public double getKA() {
+            return 0.0022;
+        }
+
+        @Override
+        public double getMaxAngVel() {
+            return 8.021820929253712;
         }
     }
 
