@@ -19,10 +19,10 @@ public interface RobotConfig {
     double getMaxAngAccel();
 
     double getEncoderTicksPerRev();
-    double getEncoderWheelRadius();
-    double getEncoderGearRatio();
-    double getEncoderLateralDistance();
-    double getEncoderForwardOffset();
+    double getEncoderWheelRadius(); // in
+    double getEncoderGearRatio(); // output (wheel) speed / input (encoder) speed
+    double getEncoderLateralDistance(); // in; distance between the left and right wheels
+    double getEncoderForwardOffset(); // in; offset of the lateral wheel
 
     default double getXMultiplier() { return 1; }
     default double getYMultiplier() { return 1; }

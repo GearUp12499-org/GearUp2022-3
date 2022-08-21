@@ -7,6 +7,8 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.ThreeTrackingWheelLocalizer;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.config.DriveData;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.Arrays;
@@ -27,15 +29,15 @@ import java.util.List;
  */
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
-    public static double TICKS_PER_REV = 8192;
-    public static double WHEEL_RADIUS = 0.69; // in
-    public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
+    public static double TICKS_PER_REV = DriveData.currentInstance.getEncoderTicksPerRev();
+    public static double WHEEL_RADIUS = DriveData.currentInstance.getEncoderWheelRadius(); // in
+    public static double GEAR_RATIO = DriveData.currentInstance.getEncoderGearRatio(); // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 13.688697112094044; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = 3.75; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = DriveData.currentInstance.getEncoderLateralDistance(); // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = DriveData.currentInstance.getEncoderForwardOffset(); // in; offset of the lateral wheel
 
-    public static double X_MULTIPLIER = 1.019884283; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = 1.012099197; // Multiplier in the Y direction
+    public static double X_MULTIPLIER = DriveData.currentInstance.getXMultiplier();
+    public static double Y_MULTIPLIER = DriveData.currentInstance.getYMultiplier();
 
     public Encoder leftEncoder, rightEncoder, frontEncoder;
 
