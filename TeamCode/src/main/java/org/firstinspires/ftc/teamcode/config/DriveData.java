@@ -59,6 +59,7 @@ public class DriveData {
             return encoder;
         }
     }
+    public static RobotConfig.MotorConfiguration currentMotorConfiguration = new GoBuildaV5MotorConf();
 
     public static class GoBuildaStraferV5Base implements RobotConfig {
         /*
@@ -212,11 +213,7 @@ public class DriveData {
 
         @Override
         public MotorConfiguration getMotorConfiguration() {
-            return null;
-        }
-
-        private GoBuildaStraferV5Base() {
-
+            return currentMotorConfiguration;
         }
     }
     public static class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
@@ -420,10 +417,6 @@ public class DriveData {
         @Override
         public MotorConfiguration getMotorConfiguration() {
             return null;
-        }
-
-        private OldBuild() {
-
         }
     }
     public static RobotConfig currentInstance = new GoBuildaStraferV5Tuned();
