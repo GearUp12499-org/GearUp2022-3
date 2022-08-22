@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.drive;
 
 import androidx.annotation.NonNull;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.drive.DriveSignal;
@@ -27,6 +28,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.config.DriveData;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
@@ -154,6 +156,13 @@ public class SampleMecanumDrive extends MecanumDrive {
         // if desired, use setLocalizer() to change the localization method
         // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+
+        Telemetry telemetry = FtcDashboard.getInstance().getTelemetry();
+        telemetry.addData("leftFront dir", leftFront.getDirection());
+        telemetry.addData("leftRear dir", leftRear.getDirection());
+        telemetry.addData("rightFront dir", rightFront.getDirection());
+        telemetry.addData("rightRear dir", rightRear.getDirection());
+        telemetry.update();
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);
     }

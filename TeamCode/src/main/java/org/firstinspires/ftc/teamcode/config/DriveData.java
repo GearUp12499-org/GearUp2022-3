@@ -38,10 +38,8 @@ public class DriveData {
 
         @Override
         public DcMotorEx getLeftFrontMotor(HardwareMap hardwareMap) {
-            if (leftFront == null) {
-                leftFront = hardwareMap.get(DcMotorEx.class, LEFT_FRONT_MOTOR_NAME);
-                leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            }
+            leftFront = hardwareMap.get(DcMotorEx.class, LEFT_FRONT_MOTOR_NAME);
+            leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
             return leftFront;
         }
 
@@ -53,10 +51,8 @@ public class DriveData {
 
         @Override
         public DcMotorEx getLeftRearMotor(HardwareMap hardwareMap) {
-            if (leftRear == null) {
-                leftRear = hardwareMap.get(DcMotorEx.class, LEFT_REAR_MOTOR_NAME);
-                leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
-            }
+            leftRear = hardwareMap.get(DcMotorEx.class, LEFT_REAR_MOTOR_NAME);
+            leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
             return leftRear;
         }
 
@@ -68,10 +64,8 @@ public class DriveData {
 
         @Override
         public DcMotorEx getRightFrontMotor(HardwareMap hardwareMap) {
-            if (rightFront == null) {
-                rightFront = hardwareMap.get(DcMotorEx.class, RIGHT_FRONT_MOTOR_NAME);
-                rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-            }
+            rightFront = hardwareMap.get(DcMotorEx.class, RIGHT_FRONT_MOTOR_NAME);
+            rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
             return rightFront;
         }
 
@@ -83,10 +77,8 @@ public class DriveData {
 
         @Override
         public DcMotorEx getRightRearMotor(HardwareMap hardwareMap) {
-            if (rightRear == null) {
-                rightRear = hardwareMap.get(DcMotorEx.class, RIGHT_REAR_MOTOR_NAME);
-                rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
-            }
+            rightRear = hardwareMap.get(DcMotorEx.class, RIGHT_REAR_MOTOR_NAME);
+            rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
             return rightRear;
         }
 
@@ -98,10 +90,8 @@ public class DriveData {
 
         @Override
         public Encoder getLeftEncoder(HardwareMap hardwareMap) {
-            if (leftEncoder == null) {
-                leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, LEFT_ENCODER_NAME));
-                leftEncoder.setDirection(Encoder.Direction.REVERSE);
-            }
+            leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, LEFT_ENCODER_NAME));
+            leftEncoder.setDirection(Encoder.Direction.REVERSE);
             return leftEncoder;
         }
 
@@ -113,10 +103,8 @@ public class DriveData {
 
         @Override
         public Encoder getRightEncoder(HardwareMap hardwareMap) {
-            if (rightEncoder == null) {
-                rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, RIGHT_ENCODER_NAME));
-                rightEncoder.setDirection(Encoder.Direction.REVERSE);
-            }
+            rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, RIGHT_ENCODER_NAME));
+            rightEncoder.setDirection(Encoder.Direction.REVERSE);
             return rightEncoder;
         }
 
@@ -128,10 +116,8 @@ public class DriveData {
 
         @Override
         public Encoder getFrontEncoder(HardwareMap hardwareMap) {
-            if (frontEncoder == null) {
-                frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, FRONT_ENCODER_NAME));
-                frontEncoder.setDirection(Encoder.Direction.REVERSE);
-            }
+            frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, FRONT_ENCODER_NAME));
+            frontEncoder.setDirection(Encoder.Direction.REVERSE);
             return frontEncoder;
         }
     }
@@ -284,7 +270,7 @@ public class DriveData {
 
         @Override
         public double getEncoderForwardOffset() {
-            return 1.375f;
+            return 4f + (5f/8f);
         }
 
         @Override
