@@ -289,9 +289,21 @@ public class DriveData {
         }
     }
     public static class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
+        public static double SLOWNESS = 2;
+
+        @Override
+        public double getMaxVel() {
+            return super.getMaxVel()/SLOWNESS;
+        }
+
+        @Override
+        public double getMaxAccel() {
+            return super.getMaxAccel()/SLOWNESS;
+        }
+
         @Override
         public double getTrackWidth() {
-            return 14.34;
+            return 18.5;
         }
 
         @Override
@@ -332,12 +344,17 @@ public class DriveData {
 
         @Override
         public PIDCoefficients getHeadingPID() {
-            return new PIDCoefficients(8, 0, 0);
+            return new PIDCoefficients(2.5, 0, 0);
         }
 
         @Override
         public PIDCoefficients getTranslationalPID() {
-            return new PIDCoefficients(8, 0, 0);
+            return new PIDCoefficients(2, 0, 0);
+        }
+
+        @Override
+        public double getEncoderLateralDistance() {
+            return 16.24;
         }
     }
 

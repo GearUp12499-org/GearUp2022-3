@@ -30,32 +30,17 @@ public class Dance extends LinearOpMode {
                 .forward(DIST_FIRST*12,
                         SampleMecanumDrive.getVelocityConstraint(SPEEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build());
-        trags.add(drive.trajectoryBuilder(trags.get(trags.size()-1).end())
-                .back(DIST_FIRST*12,
+                .splineTo(new Vector2d(DIST_SECOND, DIST_SECOND), 90,
+                        SampleMecanumDrive.getVelocityConstraint(SPEEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .splineTo(new Vector2d(DIST_THIRD, DIST_THIRD), 180,
+                        SampleMecanumDrive.getVelocityConstraint(SPEEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .splineTo(new Vector2d(0, 0), 0,
                         SampleMecanumDrive.getVelocityConstraint(SPEEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build());
-        trags.add(drive.trajectoryBuilder(trags.get(trags.size()-1).end())
-                .forward(DIST_SECOND*12,
-                        SampleMecanumDrive.getVelocityConstraint(SPEEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build());
-        trags.add(drive.trajectoryBuilder(trags.get(trags.size()-1).end())
-                .back(DIST_SECOND*12,
-                        SampleMecanumDrive.getVelocityConstraint(SPEEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build());
-        trags.add(drive.trajectoryBuilder(trags.get(trags.size()-1).end())
-                .forward(DIST_THIRD*12,
-                        SampleMecanumDrive.getVelocityConstraint(SPEEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build());
-        trags.add(drive.trajectoryBuilder(trags.get(trags.size()-1).end())
-                .back(DIST_THIRD*12,
-                        SampleMecanumDrive.getVelocityConstraint(SPEEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build());
+
 
         for (Trajectory t : trags) {
             drive.followTrajectory(t);
