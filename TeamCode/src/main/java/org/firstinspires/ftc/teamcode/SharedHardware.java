@@ -30,12 +30,12 @@ public class SharedHardware {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rearLeft = hardwareMap.get(DcMotor.class, "rear_left");
-        rearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         rearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rearRight = hardwareMap.get(DcMotor.class, "rear_right");
+        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

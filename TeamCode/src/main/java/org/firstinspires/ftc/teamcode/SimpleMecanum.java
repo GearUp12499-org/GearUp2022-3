@@ -10,12 +10,25 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="MecanumDrive_v1")
 public class SimpleMecanum extends LinearOpMode {
+
+    public void onAPressed() {
+        telemetry.speak("You pressed the ayy button");
+        gamepad1.rumble(200);
+    }
+
+    private boolean la = false;
+    private void processA() {
+        if (gamepad1.a && !la) onAPressed();
+        la = gamepad1.a;
+    }
+
     @Override
     public void runOpMode() {
         prepareHardware(hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
-            // Literally stolen from gm0
+            processA();
+
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
