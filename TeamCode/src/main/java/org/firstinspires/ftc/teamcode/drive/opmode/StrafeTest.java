@@ -46,7 +46,6 @@ public class StrafeTest extends LinearOpMode {
             telemetry.addData("left", stwl.leftEncoder.getCurrentPosition());
             telemetry.addData("right", stwl.rightEncoder.getCurrentPosition());
             telemetry.addData("front", stwl.frontEncoder.getCurrentPosition());
-
         }
         telemetry.update();
         while (!isStopRequested() && opModeIsActive()) ;
