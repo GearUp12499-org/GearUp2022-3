@@ -356,6 +356,11 @@ public class DriveData {
         public double getEncoderLateralDistance() {
             return 16.24;
         }
+
+        @Override
+        public double getEncoderForwardOffset() {
+            return 4d + (5d/8d);
+        }
     }
 
     public static class OldBuild implements RobotConfig {
