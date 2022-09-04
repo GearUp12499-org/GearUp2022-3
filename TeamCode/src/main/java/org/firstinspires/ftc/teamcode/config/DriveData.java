@@ -289,16 +289,14 @@ public class DriveData {
         }
     }
     public static class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
-        public static double SLOWNESS = 1;
-
         @Override
         public double getMaxVel() {
-            return super.getMaxVel()/SLOWNESS;
+            return super.getMaxVel();
         }
 
         @Override
         public double getMaxAccel() {
-            return super.getMaxAccel()/SLOWNESS;
+            return super.getMaxAccel();
         }
 
         @Override
