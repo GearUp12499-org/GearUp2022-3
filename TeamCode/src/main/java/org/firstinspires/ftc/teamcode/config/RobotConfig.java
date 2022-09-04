@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
  *
  * hint to future Miles:
  *   there's a "Implement Interface" intention in the Context Actions on the interface name :P
+ *   ^^ ALT+ENTER (win/nix) or OPT+ENTER (mac) to show intentions
  */
 public interface RobotConfig {
     // DriveConstants
