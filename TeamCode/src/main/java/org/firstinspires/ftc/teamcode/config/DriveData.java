@@ -289,7 +289,7 @@ public class DriveData {
         }
     }
     public static class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
-        public static double SLOWNESS = 2;
+        public static double SLOWNESS = 1;
 
         @Override
         public double getMaxVel() {
@@ -303,14 +303,19 @@ public class DriveData {
 
         @Override
         public double getTrackWidth() {
-            return 18.5;
-        }
+            return 17;
+        }  // overspin -> decrease; underspin -> increase
 
         @Override
         public double getXMultiplier() {
             // 89.25
             // 89.19
             // 89
+
+            // 89.39808513986394
+            // 90.21996471906252
+            // 89.46690453621633
+            // 89.8655677997538
             return 1.009572241;
         }
 
@@ -359,7 +364,7 @@ public class DriveData {
 
         @Override
         public double getEncoderForwardOffset() {
-            return 4d + (5d/8d);
+            return -(4d + (5d/8d));
         }
     }
 
