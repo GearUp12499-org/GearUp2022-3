@@ -24,7 +24,7 @@ public interface RobotConfig {
     double getTicksPerRev();
     double getMaxRPM();
     boolean getRunUsingEncoder();
-    PIDFCoefficients getMotorVeloPID();
+    PIDFCoefficients getMotorVeloPID();  // NOT WITH FEEDFORWARD!
     double getWheelRadius();
     double getGearRatio();
     double getTrackWidth();
