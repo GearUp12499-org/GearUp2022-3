@@ -152,7 +152,7 @@ public class GoBuildaStraferV5Base implements RobotConfig {
 
     @Override
     public double getEncoderForwardOffset() {
-        return 4f + (5f/8f);
+        return -(4f + (5f/8f));
     }
 
     @Override
