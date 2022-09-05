@@ -158,10 +158,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
 
         Telemetry telemetry = FtcDashboard.getInstance().getTelemetry();
-        telemetry.addData("leftFront dir", leftFront.getDirection());
-        telemetry.addData("leftRear dir", leftRear.getDirection());
-        telemetry.addData("rightFront dir", rightFront.getDirection());
-        telemetry.addData("rightRear dir", rightRear.getDirection());
+        telemetry.addData("what's the TRACK_WIDTH?", TRACK_WIDTH);
         telemetry.update();
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(follower, HEADING_PID);

@@ -16,12 +16,12 @@ public class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
 
     @Override
     public double getTrackWidth() {
-        return 16.48;
+        return 14.9;
     }
 
     @Override
     public double getXMultiplier() {
-        // 89.25
+        // 89.2z
         // 89.19
         // 89
         return 1.009572241;
@@ -52,7 +52,7 @@ public class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
 
     @Override
     public double getLateralMultiplier() {
-        return 4; // FIXME! today
+        return 4;
     }
 
     @Override
