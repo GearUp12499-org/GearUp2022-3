@@ -33,23 +33,31 @@ while middle sensor is not the closest??? / only one seeing pole
 @TeleOp(name = "Detect Pole Three Sensors", group = "!!!!!!!!")
 public class DetectPoleThreeSensors extends LinearOpMode {
 
-    final boolean rotationDirectionIsRight = false;
+    public enum ScanState {
+        INITIAL,
+        COMPENSATE_T,  // transition state
+        COMPENSATE,
+        LOCKED
+    }
+    public ScanState scanState;
+    public static final double COMPENSATE_SPEED = 0.1;
+    public static boolean initialScanDirection = true;  // INITIAL scan direction. true = right, false = left
+    boolean currentScanDirection;
 
     double prevDistL = 0;
     double prevDistM = 0;
     double prevDistR = 0;
 
-    public static final double LIMIT = 1000;  // mm
+    // FL, FR, BL, BR
+    double[] motorPowers = {0, 0, 0, 0};
+    public static final double[] toTurnLeft = { /* TODO input motor powers, 1/0 only */ };
+    public static final double[] toTurnRight = { /* TODO input motor powers, 1/0 only */ };
 
-    boolean storeHitL = false;
-    boolean storeHitM = false;
-    boolean storeHitR = false;
-
-    int fixDirection = 0;
-
+    public static final double DECREASE_LIMIT = -1000;  // mm
 
     @Override
     public void runOpMode() throws InterruptedException {
+        currentScanDirection = initialScanDirection;
         IOControl ioControl = new IOControl(hardwareMap);  // connect to the hardware
         Telemetry mergedTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         waitForStart();
@@ -65,10 +73,29 @@ public class DetectPoleThreeSensors extends LinearOpMode {
             double deltaM = currDistM - prevDistM;
             double deltaR = currDistR - prevDistR;
 
-            if (Math.abs(deltaL) >= LIMIT && deltaL < 0) storeHitL = true;
-            if (Math.abs(deltaM) >= LIMIT && deltaM < 0) storeHitM = true;
-            if (Math.abs(deltaR) >= LIMIT && deltaR < 0) storeHitR = true;
+            boolean hitL = deltaL <= DECREASE_LIMIT;
+            boolean hitM = deltaM <= DECREASE_LIMIT;
+            boolean hitR = deltaR <= DECREASE_LIMIT;
 
+            switch (scanState) {
+                case INITIAL:
+                    if (hitL || hitM || hitR) {
+                        scanState = ScanState.COMPENSATE_T;
+                        // TODO stop motors
+                    }
+                case COMPENSATE_T:
+                    currentScanDirection = !hitL;
+                    scanState = ScanState.COMPENSATE;
+                    // fall through
+                case COMPENSATE:
+                    if (hitM) {
+                        scanState = ScanState.LOCKED;
+                        // TODO stop motors
+                    }
+                    break;
+                case LOCKED:
+                    break;
+            }
             if (storeHitL || storeHitM || storeHitR) {
                 // stop turret
                 if(rotationDirectionIsRight){
