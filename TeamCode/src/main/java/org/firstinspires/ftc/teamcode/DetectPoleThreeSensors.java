@@ -37,7 +37,8 @@ public class DetectPoleThreeSensors extends LinearOpMode {
         INITIAL_SCAN,
         COMPENSATE_T,  // transition state
         COMPENSATE,
-        START, LOCKED
+        START,  // transition state
+        LOCKED
     }
     public ScanState scanState;
     public static final double COMPENSATE_SPEED = 0.2;
