@@ -20,7 +20,7 @@ public class ReadSensor extends LinearOpMode {
         Telemetry mergedTelemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         waitForStart();
         while (opModeIsActive()) {
-            double currentDistance = ioControl.distSensor.getDistance(DistanceUnit.MM);
+            double currentDistance = ioControl.distSensorM.getDistance(DistanceUnit.MM);
 //            if (now >= POP_AFTER) now = POP_AFTER;
             double d = currentDistance - lastDistance;
             if (Math.abs(d) >= LIMIT && d < 0) {

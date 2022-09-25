@@ -31,7 +31,7 @@ public class DistancePollSpeed extends LinearOpMode {
         int count = 0;
         while (opModeIsActive() && e.milliseconds() < testTime) {
             count++;
-            ioControl.distSensor.getDistance(DistanceUnit.MM);
+            ioControl.distSensorM.getDistance(DistanceUnit.MM);
         }
         double duration = e.milliseconds();
         merged.addLine("Counts: " + count + " total");
