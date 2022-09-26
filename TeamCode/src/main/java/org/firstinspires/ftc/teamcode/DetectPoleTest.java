@@ -10,7 +10,7 @@ public class DetectPoleTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         SharedHardware.prepareHardware(hardwareMap);
         IOControl io = new IOControl(hardwareMap);
-        DetectPoleOneSensor dpos = new DetectPoleOneSensor(SharedHardware.turret, io.distSensorM);
+        DetectPoleOneSensor dpos = new DetectPoleOneSensor(SharedHardware.turret, io.distSensorM, 300);
         waitForStart();
         while (opModeIsActive()) {
             telemetry.addData("State", dpos.state);

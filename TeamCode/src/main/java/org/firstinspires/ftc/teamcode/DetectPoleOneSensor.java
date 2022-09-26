@@ -40,20 +40,20 @@ public class DetectPoleOneSensor {
         FAILED
     }
 
-    public static double SCAN_SPEED = 1;
-    public static double COMPENSATE_SPEED = 0.8;
+    public static double SCAN_SPEED = 0.5;
+    public static double COMPENSATE_SPEED = 0.5;
 
     public static double COMP_WAIT_TIME = 0.5;
     private ElapsedTime timer = null;
 
     public static double EDGE_THRESHOLD = -1000;  // mm
-    public static double GLOBAL_HOLD_THRESHOLD = 1000;
-    public double holdThreshold = GLOBAL_HOLD_THRESHOLD;
+    public double expectedDistance;
 
     public double lastDist = 0;
 
     public static int SCAN_ENCODER_LIMIT = 375; // encoder counts; =45deg
     public static int ENCODER_NEARNESS = 50;
+    public static int COMP_ENCODER_NEARNESS = 25;
 
     public static boolean INITIAL_DIRECTION = true; // true => cw, false => ccw
 
@@ -64,13 +64,10 @@ public class DetectPoleOneSensor {
     public DcMotor turret;
     public DistanceSensor sensor;
 
-    public DetectPoleOneSensor(DcMotor turret, DistanceSensor sensor) {
+    public DetectPoleOneSensor(DcMotor turret, DistanceSensor sensor, double expectedDistance) {
         this.turret = turret;
         this.sensor = sensor;
-    }
-    public DetectPoleOneSensor(DcMotor turret, DistanceSensor sensor, double expectedDistanceAway) {
-        this(turret, sensor);
-        this.holdThreshold = expectedDistanceAway;
+        this.expectedDistance = expectedDistance;
     }
 
     /**
@@ -89,8 +86,7 @@ public class DetectPoleOneSensor {
     public void update() {
         int turretEncoderCounts = turret.getCurrentPosition();
         double readDist = sensor.getDistance(DistanceUnit.MM);
-        boolean hit = readDist - lastDist <= EDGE_THRESHOLD;
-        boolean holdHit = readDist <= holdThreshold;
+        boolean hit = readDist - lastDist <= EDGE_THRESHOLD && readDist <= expectedDistance;
 
         // Garbage state machine that Dad won't be proud of
         switch (state) {
@@ -108,7 +104,7 @@ public class DetectPoleOneSensor {
                     state = State.SCAN_TRANSITION;
                 } else if (hit) {
                     halt();
-                    state = State.COMPENSATE_WAIT;
+                    state = State.COMPENSATE_TRANSITION;
                 }
                 break;
             case SCAN_TRANSITION:
@@ -122,31 +118,25 @@ public class DetectPoleOneSensor {
                     state = State.FAILED;
                 } else if (hit) {
                     halt();
-                    state = State.COMPENSATE_WAIT;
+                    state = State.COMPENSATE_TRANSITION;
                 }
+                break;
+            case COMPENSATE_TRANSITION:
+                turret.setTargetPosition(turret.getCurrentPosition());
+                turret.setPower(COMPENSATE_SPEED);
+                state = State.COMPENSATE_WAIT;
                 break;
             case COMPENSATE_WAIT:
                 if (timer == null) {
                     timer = new ElapsedTime();
                 }
                 if (timer.seconds() > COMP_WAIT_TIME) {
-                    state = State.COMPENSATE_TRANSITION;
+                    state = State.COMPENSATE;
                     timer = null;
                 }
                 break;
-            case COMPENSATE_TRANSITION:
-                if (holdHit) {
-                    state = State.FINISH;
-                    break;
-                }
-                currentDirection = !currentDirection;
-                double sf = (currentDirection?1:-1)*COMPENSATE_SPEED;
-                turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                turret.setPower(sf);
-                state = State.COMPENSATE;
-                break;
             case COMPENSATE:
-                if (holdHit) {
+                if (Math.abs(turretEncoderCounts - turret.getTargetPosition()) < COMP_ENCODER_NEARNESS) {
                     halt();
                     state = State.FINISH;
                 }
