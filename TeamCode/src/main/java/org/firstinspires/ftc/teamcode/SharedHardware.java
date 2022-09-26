@@ -12,6 +12,8 @@ public class SharedHardware {
     public static DcMotor rearLeft;
     public static DcMotor rearRight;
 
+    public static DcMotor turret;
+
     public static DcMotor encoderLeft;
     public static DcMotor encoderRight;
     public static DcMotor encoderRear;
@@ -30,19 +32,26 @@ public class SharedHardware {
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rearLeft = hardwareMap.get(DcMotor.class, "rear_left");
-        rearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         rearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rearRight = hardwareMap.get(DcMotor.class, "rear_right");
+        rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
         rearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        turret = hardwareMap.get(DcMotor.class, "turret");
+        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //copy motors over to encoders
         encoderRight = frontRight;   // 0
         encoderLeft = frontLeft;   // 1
         encoderRear = rearRight;    // 2
+
+
     }
 }

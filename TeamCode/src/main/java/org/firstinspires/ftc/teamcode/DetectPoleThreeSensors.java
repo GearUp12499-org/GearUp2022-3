@@ -50,12 +50,10 @@ public class DetectPoleThreeSensors extends LinearOpMode {
     double prevDistM = 0;
     double prevDistR = 0;
 
-    // FL, FR, BL, BR
-    public static final double[] STOP = { 0, 0, 0, 0 };
-    public static final double[] TURN_LEFT = { -1, 1, -1, 1 };
-    public static final double[] TURN_RIGHT = { 1, -1, 1, -1 };
+    public static final double TURN_LEFT = -1;
+    public static final double TURN_RIGHT = 1;
 
-    double[] motorPowers = STOP;
+    double motorPower = 0;
 
     public static final double DECREASE_LIMIT = -1000;  // mm
 
@@ -92,24 +90,24 @@ public class DetectPoleThreeSensors extends LinearOpMode {
             switch (scanState) {
                 case START:
                     currentScanDirection = initialScanDirection;
-                    motorPowers = scaleVector(currentScanDirection ? TURN_RIGHT : TURN_LEFT, SCAN_SPEED);
+                    motorPower = (currentScanDirection ? TURN_RIGHT : TURN_LEFT) * SCAN_SPEED;
                     scanState = ScanState.INITIAL_SCAN;
                     // fall through
                 case INITIAL_SCAN:
                     if (hitL || hitM || hitR) {
                         scanState = ScanState.COMPENSATE_T;
-                        motorPowers = STOP;
+                        motorPower = 0;
                     }
                     break;
                 case COMPENSATE_T:
                     currentScanDirection = !hitL;
                     scanState = ScanState.COMPENSATE;
-                    motorPowers = scaleVector(currentScanDirection ? TURN_RIGHT : TURN_LEFT, COMPENSATE_SPEED);
+                    motorPower = (currentScanDirection ? TURN_RIGHT : TURN_LEFT) * COMPENSATE_SPEED;
                     // fall through
                 case COMPENSATE:
                     if (hitM) {
                         scanState = ScanState.LOCKED;
-                        motorPowers = STOP;
+                        motorPower = 0;
                     }
                     break;
                 case LOCKED:
