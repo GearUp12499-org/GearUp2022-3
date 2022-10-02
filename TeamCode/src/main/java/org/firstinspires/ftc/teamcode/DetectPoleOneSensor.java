@@ -1,30 +1,60 @@
 package org.firstinspires.ftc.teamcode;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+import java.util.Locale;
+
 // 750 counts / 90deg
 //
 public class DetectPoleOneSensor {
     public static final class Result {
-        public final boolean ok;
+        public enum State {
+            SUCCESS("Success"),
+            FAILURE("Failure"),
+            NO_RESULT_YET("Running");
+            final String name;
+            State(String name) {
+                this.name = name;
+            }
+
+            @NonNull
+            @Override
+            public String toString() {
+                return name;
+            }
+        }
+        public final State state;
         public final int encoderValue;
         public final double estimatedDistance;
-        private Result(boolean ok, int encoderValue, double estimatedDistance) {
-            this.ok = ok;
+        private Result(State state, int encoderValue, double estimatedDistance) {
+            this.state = state;
             this.encoderValue = encoderValue;
             this.estimatedDistance = estimatedDistance;
         }
 
         public static Result success(int encoderValue, double estimatedDistance) {
-            return new Result(true, encoderValue, estimatedDistance);
+            return new Result(State.SUCCESS, encoderValue, estimatedDistance);
         }
 
         public static Result failure() {
-            return new Result(false, 0, 0);
+            return new Result(State.FAILURE, 0, 0);
+        }
+
+        public static Result na() {
+            return new Result(State.NO_RESULT_YET, 0, 0);
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            if (state != State.SUCCESS) return String.format(Locale.ENGLISH, "[%s]", state.name());
+            else return String.format(Locale.ENGLISH, "[%s] %dc %fmm", state.name(), encoderValue, estimatedDistance);
         }
     }
 
@@ -41,7 +71,7 @@ public class DetectPoleOneSensor {
     }
 
     public static double SCAN_SPEED = 0.5;
-    public static double COMPENSATE_SPEED = 0.5;
+    public static double COMPENSATE_SPEED = 0.3;
 
     public static double COMP_WAIT_TIME = 0.5;
     private ElapsedTime timer = null;
@@ -61,6 +91,8 @@ public class DetectPoleOneSensor {
 
     private boolean currentDirection = INITIAL_DIRECTION;
 
+    private Result result;
+
     public DcMotor turret;
     public DistanceSensor sensor;
 
@@ -77,6 +109,7 @@ public class DetectPoleOneSensor {
      **/
     public void beginScan() {
         state = State.START;
+        result = Result.na();
     }
 
     private void halt() {
@@ -116,6 +149,7 @@ public class DetectPoleOneSensor {
             case SCAN_PASS2:
                 if (Math.abs(turretEncoderCounts - turret.getTargetPosition()) < ENCODER_NEARNESS) {
                     state = State.FAILED;
+                    result = Result.failure();
                 } else if (hit) {
                     halt();
                     state = State.COMPENSATE_TRANSITION;
@@ -139,6 +173,7 @@ public class DetectPoleOneSensor {
                 if (Math.abs(turretEncoderCounts - turret.getTargetPosition()) < COMP_ENCODER_NEARNESS) {
                     halt();
                     state = State.FINISH;
+                    result = Result.success(turretEncoderCounts, readDist);
                 }
                 break;
             default:
@@ -146,5 +181,16 @@ public class DetectPoleOneSensor {
         }
 
         lastDist = readDist;
+    }
+
+    public Result getResult() {
+        return result;
+    }
+
+    public Result holdForResultSync() {
+        while (result.state == Result.State.NO_RESULT_YET) {
+            update();
+        }
+        return getResult();
     }
 }

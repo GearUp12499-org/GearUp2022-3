@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import java.util.Locale;
+
 @TeleOp(name = "DetectPoleTest", group = "!!!!!!!!")
 public class DetectPoleTest extends LinearOpMode {
     @Override
@@ -15,6 +17,8 @@ public class DetectPoleTest extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("State", dpos.state);
             telemetry.addData("Last Distance", dpos.lastDist);
+            DetectPoleOneSensor.Result result = dpos.getResult();
+            telemetry.addData("Result State", result.toString());
             telemetry.update();
             if ((dpos.state == DetectPoleOneSensor.State.FINISH
                     || dpos.state == DetectPoleOneSensor.State.FAILED)) {
