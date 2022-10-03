@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -20,7 +21,9 @@ import org.openftc.easyopencv.*;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @TeleOp(name = "CameraLoadTest", group = "!!!!!!!!")
 public class CameraLoadTest extends LinearOpMode {
@@ -44,10 +47,20 @@ public class CameraLoadTest extends LinearOpMode {
 
         @Override
         public Mat processFrame(Mat input) {
-            Mat gray = new Mat(input.rows(), input.cols(), CV_32FC1);
-            Mat sobel_x = new Mat(input.rows(), input.cols(), input.type());
-            Imgproc.cvtColor(input, gray, COLOR_BGR2GRAY);
-            Imgproc.filter2D(input, sobel_x, -1, xFilter);
+            Mat sobelXB = new Mat(input.rows(), input.cols(), CV_32FC1);
+            Mat sobelXG = new Mat(input.rows(), input.cols(), CV_32FC1);
+            Mat sobelXR = new Mat(input.rows(), input.cols(), CV_32FC1);
+            List<Mat> channels = new ArrayList<>();
+            channels.add(new Mat(input.rows(), input.cols(), CV_32FC1));
+            channels.add(new Mat(input.rows(), input.cols(), CV_32FC1));
+            channels.add(new Mat(input.rows(), input.cols(), CV_32FC1));
+            Core.split(input, channels);
+            Mat b = channels.get(0);
+            Mat g = channels.get(1);
+            Mat r = channels.get(2);
+            Imgproc.filter2D(b, sobelXB, -1, xFilter);
+            Imgproc.filter2D(g, sobelXG, -1, xFilter);
+            Imgproc.filter2D(r, sobelXR, -1, xFilter);
             if (!takePicture) return input;
 //            Mat replica = new Mat(input.rows(), input.cols(), input.type());
 //            Imgproc.filter2D(input, replica, -1, horizontal);
@@ -55,9 +68,10 @@ public class CameraLoadTest extends LinearOpMode {
             c += 1;
             takePicture = false;
             imwrite(new File(saveItHerePls, "snapshot"+c+".png").toString(), input);
-            imwrite(new File(saveItHerePls, "snapshot"+c+"_gs.png").toString(), gray);
-            imwrite(new File(saveItHerePls, "snapshot"+c+"_sx.png").toString(), sobel_x);
-            return gray;
+            imwrite(new File(saveItHerePls, "snapshot"+c+"_sxb.png").toString(), sobelXB);
+            imwrite(new File(saveItHerePls, "snapshot"+c+"_sxg.png").toString(), sobelXG);
+            imwrite(new File(saveItHerePls, "snapshot"+c+"_sxr.png").toString(), sobelXR);
+            return input;
         }
 
         public double[] getLatest() {
