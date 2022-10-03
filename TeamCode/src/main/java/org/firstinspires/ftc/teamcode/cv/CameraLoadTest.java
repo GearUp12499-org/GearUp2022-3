@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.cv;
 
+import static org.opencv.core.CvType.*;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.*;
 
 @TeleOp(name = "CameraLoadTest", group = "!!!!!!!!")
@@ -15,8 +18,10 @@ public class CameraLoadTest extends LinearOpMode {
 
         @Override
         public Mat processFrame(Mat input) {
-            Size size = input.size();
-            results = input.get((int) (size.width / 2), (int) (size.height / 2));
+            Mat replica = new Mat(input.rows(), input.cols(), CV_8S);
+            Imgproc.Canny(input, replica, 100, 200);
+            Mat kern = new Mat(3, 3, CV_32F);
+            Imgproc.filter2D(input, replica, -1, kern);
             return input;
         }
 
