@@ -101,7 +101,7 @@ public class WebServerVer1 {
             for (File file : files) {
                 zip.putNextEntry(new ZipEntry(file.getName()));
                 String fd = readFile(file, StandardCharsets.UTF_8);
-                LOGGER.info("fdata read " + fd.length() + " char snippet " + fd.substring(0, 32));
+                LOGGER.info("fdata read " + fd.length());
                 zip.write(fd.getBytes(StandardCharsets.UTF_8));
 
                 zip.closeEntry();
