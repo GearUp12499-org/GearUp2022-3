@@ -22,5 +22,6 @@ dependencies {
     implementation 'org.firstinspires.ftc:gameAssets-PowerPlay:1.0.0'
     implementation 'com.acmerobotics.dashboard:dashboard:0.4.5'
     implementation 'com.github.NoahBres:MeepMeep:2.0.0'
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
 }
 

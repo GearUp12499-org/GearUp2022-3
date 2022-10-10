@@ -18,7 +18,7 @@ public class DetectPoleTest extends LinearOpMode {
             telemetry.addData("State", dpos.state);
             telemetry.addData("Last Distance", dpos.lastDist);
             DetectPoleOneSensor.Result result = dpos.getResult();
-            telemetry.addData("Result State", result.toString());
+            telemetry.addData("Result State", result == null ? "<null>" : result.toString());
             telemetry.update();
             if ((dpos.state == DetectPoleOneSensor.State.FINISH
                     || dpos.state == DetectPoleOneSensor.State.FAILED)) {

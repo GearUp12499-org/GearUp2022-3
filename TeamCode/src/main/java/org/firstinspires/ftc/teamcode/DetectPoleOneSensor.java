@@ -91,7 +91,7 @@ public class DetectPoleOneSensor {
 
     private boolean currentDirection = INITIAL_DIRECTION;
 
-    private Result result;
+    private Result result = Result.na();
 
     public DcMotor turret;
     public DistanceSensor sensor;
