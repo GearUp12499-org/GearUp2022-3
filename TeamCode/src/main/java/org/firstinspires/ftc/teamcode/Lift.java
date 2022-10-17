@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Lift {
-    private static final int UPPER_LIMIT = 1700;
+    private static final int UPPER_LIMIT = 3500;
     private static final int LOWER_LIMIT = 20;
     private final DcMotor l1;
     private final DcMotor l2;
 
-    public static final double upSpeed = 1;
+    public static final double upSpeed = 0.5;
     public static final double downSpeed = -0.8;
 
     public Lift(HardwareMap hardwareMap) {
