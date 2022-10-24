@@ -19,14 +19,14 @@ public class GoBuildaV5MotorConf implements RobotConfig.MotorConfiguration {
     public Encoder rightEncoder = null;
     public Encoder frontEncoder = null;
 
-    public static final String LEFT_FRONT_MOTOR_NAME = "front_left";
-    public static final String LEFT_REAR_MOTOR_NAME = "rear_left";
-    public static final String RIGHT_FRONT_MOTOR_NAME = "front_right";
-    public static final String RIGHT_REAR_MOTOR_NAME = "rear_right";
+    public static final String LEFT_FRONT_MOTOR_NAME = "leftFront";
+    public static final String LEFT_REAR_MOTOR_NAME = "leftBack";
+    public static final String RIGHT_FRONT_MOTOR_NAME = "rightFront";
+    public static final String RIGHT_REAR_MOTOR_NAME = "rightBack";
 
-    public static final String LEFT_ENCODER_NAME = "front_left";
-    public static final String RIGHT_ENCODER_NAME = "front_right";
-    public static final String FRONT_ENCODER_NAME = "rear_right";
+    public static final String LEFT_ENCODER_NAME = "leftFront";
+    public static final String RIGHT_ENCODER_NAME = "rightFront";
+    public static final String FRONT_ENCODER_NAME = "rightBack";
 
     @Nullable
     @Override

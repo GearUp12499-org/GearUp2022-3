@@ -21,7 +21,7 @@ public class SharedHardware {
     public static void prepareHardware(HardwareMap hardwareMap) {
         // Correct names as of July 9 2022
         try {
-            frontLeft = hardwareMap.get(DcMotor.class, "front_left");
+            frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
             frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -29,7 +29,7 @@ public class SharedHardware {
         }
 
         try {
-            frontRight = hardwareMap.get(DcMotor.class, "front_right");
+            frontRight = hardwareMap.get(DcMotor.class, "rightFront");
             frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
             frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -38,7 +38,7 @@ public class SharedHardware {
         }
 
         try {
-            rearLeft = hardwareMap.get(DcMotor.class, "rear_left");
+            rearLeft = hardwareMap.get(DcMotor.class, "leftBack");
             rearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -46,7 +46,7 @@ public class SharedHardware {
         } catch (IllegalArgumentException ignore) {
         }
         try {
-            rearRight = hardwareMap.get(DcMotor.class, "rear_right");
+            rearRight = hardwareMap.get(DcMotor.class, "rightBack");
             rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
             rearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
