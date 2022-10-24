@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.cv.pipes.MSobelPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -62,9 +63,6 @@ public class CameraLoadTest extends LinearOpMode {
             Imgproc.filter2D(g, sobelXG, -1, xFilter);
             Imgproc.filter2D(r, sobelXR, -1, xFilter);
             if (!takePicture) return input;
-//            Mat replica = new Mat(input.rows(), input.cols(), input.type());
-//            Imgproc.filter2D(input, replica, -1, horizontal);
-//            imread()
             c += 1;
             takePicture = false;
             imwrite(new File(saveItHerePls, "snapshot"+c+".png").toString(), input);
@@ -98,7 +96,7 @@ public class CameraLoadTest extends LinearOpMode {
         WebcamName name = hardwareMap.get(WebcamName.class, "Webcam 1");
         camera = OpenCvCameraFactory.getInstance().createWebcam(name);
         cameraState = CameraState.STARTING;
-        PixelCounter pipeline = new PixelCounter();
+        MSobelPipeline pipeline = new MSobelPipeline();
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {

@@ -19,7 +19,7 @@ public class SharedHardware {
     public static DcMotor encoderRear;
 
     public static void prepareHardware(HardwareMap hardwareMap) {
-        // Correct names as of July 9 2022
+        // Correct names as of Oct 23 2022
         try {
             frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
             frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
