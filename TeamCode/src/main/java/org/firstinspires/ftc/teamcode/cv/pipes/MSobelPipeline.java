@@ -32,6 +32,8 @@ public class MSobelPipeline extends OpenCvPipeline {
         Core.divide(255, r, r);
         Core.divide(255, g, g);
         Core.divide(255, b, b);
+        Core.multiply(r, g, r);
+
 
         return tgt;
     }

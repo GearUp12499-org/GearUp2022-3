@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class VroomToEncoder extends LinearOpMode {
     boolean lastUp = false;
     boolean lastDown = false;
+    int c = 0;
     @Override
     public void runOpMode() throws InterruptedException {
         Lift lift = new Lift(hardwareMap);
@@ -16,9 +17,15 @@ public class VroomToEncoder extends LinearOpMode {
         while (opModeIsActive()) {
             boolean up = (-gamepad1.left_stick_y) > 0.5;
             boolean down = (-gamepad1.left_stick_y) < -0.5;
+            telemetry.addData("stick", -gamepad1.left_stick_y);
+            telemetry.addData("current encoder", lift.l1.getCurrentPosition());
+            telemetry.addData("target  encoder", lift.l1.getTargetPosition());
+            telemetry.addData("up counter", c);
+            telemetry.update();
             lift.update();
             if (up && !lastUp) {
                 lift.up();
+                c++;
             }
             if (down && !lastDown) {
                 lift.down();
