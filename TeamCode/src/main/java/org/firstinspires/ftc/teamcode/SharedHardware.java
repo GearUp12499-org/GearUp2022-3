@@ -22,6 +22,7 @@ public class SharedHardware {
         // Correct names as of Oct 23 2022
         try {
             frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
+            frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -30,7 +31,7 @@ public class SharedHardware {
 
         try {
             frontRight = hardwareMap.get(DcMotor.class, "rightFront");
-            frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+            frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
             frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -39,6 +40,7 @@ public class SharedHardware {
 
         try {
             rearLeft = hardwareMap.get(DcMotor.class, "leftBack");
+            rearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             rearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -47,7 +49,7 @@ public class SharedHardware {
         }
         try {
             rearRight = hardwareMap.get(DcMotor.class, "rightBack");
-            rearRight.setDirection(DcMotorSimple.Direction.REVERSE);
+            rearRight.setDirection(DcMotorSimple.Direction.FORWARD);
             rearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

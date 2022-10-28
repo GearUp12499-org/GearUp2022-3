@@ -5,8 +5,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Lift {
-    public static final int[] TARGETS = {20, 1000, 2250, 3500};
-    public int currentTarget = 0;
+    public static final int[] TARGETS = {20, 1450, 2200, 3100};
+    public static final int LOWER_BOUND = 20, UPPER_BOUND = 3500;
+    public int currentTarget = 0, targetCount = TARGETS[0];
     public final DcMotor l1;
     public final DcMotor l2;
 
@@ -27,20 +28,40 @@ public class Lift {
     }
 
     public void update() {
-        l2.setPower(l1.getPower());
+        if (l1.getCurrentPosition() > targetCount + 20)
+            l2.setPower(-1);
+        else if (l1.getCurrentPosition() < targetCount - 20)
+            l2.setPower(1);
+        else
+            l2.setPower(0);
     }
 
     public void updTarget() {
-        l1.setTargetPosition(TARGETS[currentTarget]);
+        targetCount = Math.max(targetCount, LOWER_BOUND);
+        targetCount = Math.min(targetCount, UPPER_BOUND);
+        l1.setTargetPosition(targetCount);
     }
 
-    public void up() {
+    public void upTarget() {
         currentTarget = currentTarget == TARGETS.length - 1 ? currentTarget : currentTarget + 1;
+        targetCount = TARGETS[currentTarget];
         updTarget();
     }
 
-    public void down() {
+    public void downTarget() {
         currentTarget = currentTarget == 0 ? currentTarget : currentTarget - 1;
+        targetCount = TARGETS[currentTarget];
+        updTarget();
+    }
+
+    public void setTarget(int index) {
+        currentTarget = index;
+        targetCount = TARGETS[currentTarget];
+        updTarget();
+    }
+
+    public void move(int delta) {
+        targetCount += delta;
         updTarget();
     }
 }

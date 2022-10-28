@@ -24,11 +24,11 @@ public class VroomToEncoder extends LinearOpMode {
             telemetry.update();
             lift.update();
             if (up && !lastUp) {
-                lift.up();
+                lift.upTarget();
                 c++;
             }
             if (down && !lastDown) {
-                lift.down();
+                lift.downTarget();
             }
             if (gamepad1.x) servo.setPosition(0);
             else if (gamepad1.y) servo.setPosition(0.4);
