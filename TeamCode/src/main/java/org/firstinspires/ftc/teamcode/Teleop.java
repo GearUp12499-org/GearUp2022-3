@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.SharedHardware.*;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="TeleOp")
 public class Teleop extends LinearOpMode {
@@ -34,15 +36,27 @@ public class Teleop extends LinearOpMode {
 
     public void drive() {
         double speed = (0.25 + gamepad1.left_trigger * 0.75);
-        if (gamepad1.dpad_up)
-            driveMotor(speed, speed, speed, speed);
-        else if (gamepad1.dpad_down)
-            driveMotor(-speed, -speed, -speed, -speed);
-        else if (gamepad1.dpad_left)
-            driveMotor(-speed, speed, speed, -speed);
-        else if (gamepad1.dpad_right)
-            driveMotor(speed, -speed, -speed, speed);
-        else {
+        double vX = 0; // forward/back
+        double vY = 0; // left/right
+        boolean useDPad = true;
+        if (gamepad1.dpad_up) {
+            vX += 1;
+        } else if (gamepad1.dpad_down) {
+            vX -= 1;
+        } else if (gamepad1.dpad_left) {
+            vY += 1;
+        } else if (gamepad1.dpad_right) {
+            vY -= 1;
+        } else {
+            useDPad = false;
+        }
+        if (useDPad) {
+            double m1 = vX + vY;
+            double m2 = vX - vY;
+            double m3 = vX - vY;
+            double m4 = vX + vY;
+            driveMotor(speed * m1, speed * m2, speed * m3, speed * m4);
+        } else {
             double left = -gamepad1.left_stick_y,
                     right = -gamepad1.right_stick_y;
             driveMotor(left, left, right, right);
