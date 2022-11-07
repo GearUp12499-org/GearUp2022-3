@@ -19,7 +19,7 @@ public class EncoderNavigation {
         }
 
         public enum Type {
-            FORWARD
+            FORWARD, STRAFE
         }
         public final Type type;
         public final double value;
@@ -100,6 +100,41 @@ public class EncoderNavigation {
         moveForward(inches, false);
     }
 
+    /**
+     * Add a task to make the robot strafe right.
+     * @param inches inches to strafe right
+     * @param override if true, will override any existing tasks
+     */
+    public void strafeRight(double inches, boolean override) {
+        if (override) actionQueue.clear();
+        actionQueue.add(new Action(Action.Type.STRAFE, inches));
+    }
+
+    /**
+     * Add a task to make the robot strafe right.
+     * @param inches inches to strafe right
+     */
+    public void strafeRight(double inches) {
+        strafeRight(inches, false);
+    }
+
+    /**
+     * Add a task to make the robot strafe left.
+     * @param inches inches to strafe left
+     * @param override if true, will override any existing tasks
+     */
+    public void strafeLeft(double inches, boolean override) {
+        strafeRight(-inches, override);
+    }
+
+    /**
+     * Add a task to make the robot strafe left.
+     * @param inches inches to strafe left
+     */
+    public void strafeLeft(double inches) {
+        strafeLeft(inches, false);
+    }
+
     public void setGroup(double power, DcMotor ... motors) {
         for (DcMotor motor : motors) {
             motor.setPower(power);
@@ -115,6 +150,9 @@ public class EncoderNavigation {
                         startEncoderValue = forwardValue();
                         targetEncoderValue = startEncoderValue + (int) (currentAction.value * TICKS_PER_INCH);
                         break;
+                    case STRAFE:
+                        startEncoderValue = frontOdom.getCurrentPosition();
+                        targetEncoderValue = startEncoderValue + (int) (currentAction.value * TICKS_PER_INCH);
                     default:
                         throw NotImplemented.i;
                 }
@@ -125,17 +163,37 @@ public class EncoderNavigation {
             int left = leftOdom.getCurrentPosition();
             int right = rightOdom.getCurrentPosition();
             int fwd = forwardValue();
+            int distToTarget;
+            double sign;
+            double fixed;
+            double speed;
 
             switch (currentAction.type) {
                 case FORWARD:
-                    int distToTarget = targetEncoderValue - fwd;
+                    distToTarget = targetEncoderValue - fwd;
                     lastKnownProgress = fwd;
-                    double sign = Math.signum(distToTarget);
+                    sign = Math.signum(distToTarget);
                     distToTarget = abs(distToTarget);
-                    double fixed = topSpeed * sign;
-                    double speed = toInches(distToTarget) > rampDownDistance ? fixed : fixed * (toInches(distToTarget) / rampDownDistance);
+                    fixed = topSpeed * sign;
+                    speed = toInches(distToTarget) > rampDownDistance ? fixed : fixed * (toInches(distToTarget) / rampDownDistance);
 
                     setGroup(speed, leftFront, rightFront, leftRear, rightRear);
+
+                    if (Math.abs(distToTarget) < toTicks(fudge)) {
+                        currentAction = null;
+                        setGroup(0, leftFront, rightFront, leftRear, rightRear);
+                    }
+                    break;
+                case STRAFE:
+                    distToTarget = targetEncoderValue - front;
+                    lastKnownProgress = front;
+                    sign = Math.signum(distToTarget);
+                    distToTarget = abs(distToTarget);
+                    fixed = topSpeed * sign;
+                    speed = toInches(distToTarget) > rampDownDistance ? fixed : fixed * (toInches(distToTarget) / rampDownDistance);
+
+                    setGroup(speed, leftFront, rightRear);
+                    setGroup(-speed, rightFront, leftRear);
 
                     if (Math.abs(distToTarget) < toTicks(fudge)) {
                         currentAction = null;
