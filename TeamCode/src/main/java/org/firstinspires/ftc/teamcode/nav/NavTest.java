@@ -15,7 +15,10 @@ public class NavTest extends LinearOpMode {
                 encoderLeft, encoderRight, encoderRear
         );
         waitForStart();
-        nav.moveForward(10);
+        nav.moveForward(5);
+        nav.strafeLeft(5);
+        nav.moveForward(-5);
+        nav.strafeRight(5);
         while (opModeIsActive()) {
             nav.asyncLoop();
             telemetry.addData("left", nav.leftOdom.getCurrentPosition());
