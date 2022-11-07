@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.widget.EdgeEffect;
-
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 

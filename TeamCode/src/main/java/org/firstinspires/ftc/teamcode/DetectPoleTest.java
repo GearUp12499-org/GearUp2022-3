@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import java.util.Locale;
-
 @TeleOp(name = "DetectPoleTest", group = "!!!!!!!!")
 public class DetectPoleTest extends LinearOpMode {
     @Override

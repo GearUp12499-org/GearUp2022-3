@@ -4,9 +4,6 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.*;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="MecanumDrive_v1")
 public class SimpleMecanum extends LinearOpMode {

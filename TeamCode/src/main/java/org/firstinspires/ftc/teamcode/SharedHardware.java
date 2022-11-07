@@ -1,27 +1,30 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.util.Encoder;
+
 public class SharedHardware {
     public static ElapsedTime runtime = new ElapsedTime();
-    public static DcMotor frontLeft;
-    public static DcMotor frontRight;
-    public static DcMotor rearLeft;
-    public static DcMotor rearRight;
+    public static DcMotorEx frontLeft;
+    public static DcMotorEx frontRight;
+    public static DcMotorEx rearLeft;
+    public static DcMotorEx rearRight;
 
     public static DcMotor turret;
 
-    public static DcMotor encoderLeft;
-    public static DcMotor encoderRight;
-    public static DcMotor encoderRear;
+    public static Encoder encoderLeft;
+    public static Encoder encoderRight;
+    public static Encoder encoderRear;
 
     public static void prepareHardware(HardwareMap hardwareMap) {
         // Correct names as of Oct 23 2022
         try {
-            frontLeft = hardwareMap.get(DcMotor.class, "leftFront");
+            frontLeft = hardwareMap.get(DcMotorEx.class, "leftFront");
             frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -30,7 +33,7 @@ public class SharedHardware {
         }
 
         try {
-            frontRight = hardwareMap.get(DcMotor.class, "rightFront");
+            frontRight = hardwareMap.get(DcMotorEx.class, "rightFront");
             frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
             frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -39,7 +42,7 @@ public class SharedHardware {
         }
 
         try {
-            rearLeft = hardwareMap.get(DcMotor.class, "leftBack");
+            rearLeft = hardwareMap.get(DcMotorEx.class, "leftBack");
             rearLeft.setDirection(DcMotorSimple.Direction.REVERSE);
             rearLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rearLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -48,7 +51,7 @@ public class SharedHardware {
         } catch (IllegalArgumentException ignore) {
         }
         try {
-            rearRight = hardwareMap.get(DcMotor.class, "rightBack");
+            rearRight = hardwareMap.get(DcMotorEx.class, "rightBack");
             rearRight.setDirection(DcMotorSimple.Direction.FORWARD);
             rearRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -65,9 +68,9 @@ public class SharedHardware {
         }
 
         //copy motors over to encoders
-        encoderRight = frontRight;   // 0
-        encoderLeft = frontLeft;   // 1
-        encoderRear = rearRight;    // 2
+        encoderRight = new Encoder(frontRight);   // 0
+        encoderLeft = new Encoder(frontLeft);   // 1
+        encoderRear = new Encoder(rearRight);    // 2
 
 
     }
