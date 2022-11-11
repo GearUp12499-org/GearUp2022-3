@@ -1,0 +1,29 @@
+@startuml
+hide empty description
+[*] --> Start
+state Start as "Start"
+Start -> Identify
+state Identify : identify which zone to move to
+Identify --> Parking : Done; Other team is scoring
+Identify --> ScoreCones : Done
+ScoreCones --> Parking
+
+state ScoreCones as "Score Cones" {
+    [*] --> Move
+    Move --> LocateTerminal : Arrived
+    state Move : Travel to substation
+    LocateTerminal --> Score
+    state LocateTerminal : Find terminal
+    Score -> Score: Score cones
+    Score --> [*] : Done scoring
+}
+
+state Parking {
+    [*] --> Position1
+    [*] --> Position2
+    [*] --> Position3
+    state Position1 as "Signal Zone 1" : Left
+    state Position2 as "Signal Zone 2" : Center
+    state Position3 as "Signal Zone 3" : Right
+}
+@enduml
