@@ -70,14 +70,37 @@ public class Lift {
         updTargets();
     }
 
+    public void extend() {
+        currentHorizontalTarget = currentHorizontalTarget == HORIZONTAL_TARGETS.length - 1 ? currentHorizontalTarget : currentHorizontalTarget + 1;
+        targetHorizontalCount = HORIZONTAL_TARGETS[currentHorizontalTarget];
+        updTargets();
+    }
+
+    public void retract() {
+        currentHorizontalTarget = currentHorizontalTarget == 0 ? currentHorizontalTarget : currentHorizontalTarget - 1;
+        targetHorizontalCount = HORIZONTAL_TARGETS[currentHorizontalTarget];
+        updTargets();
+    }
+
     public void setVerticalTarget(int index) {
         currentVerticalTarget = index;
         targetVerticalCount = VERTICAL_TARGETS[currentVerticalTarget];
         updTargets();
     }
 
+    public void setHorizontalTarget(int index) {
+        currentHorizontalTarget = index;
+        targetHorizontalCount = HORIZONTAL_TARGETS[currentHorizontalTarget];
+        updTargets();
+    }
+
     public void moveVertical(int delta) {
         targetVerticalCount += delta;
+        updTargets();
+    }
+
+    public void moveHorizontal(int delta) {
+        targetHorizontalCount += delta;
         updTargets();
     }
 }
