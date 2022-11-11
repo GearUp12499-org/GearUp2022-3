@@ -37,7 +37,7 @@ public class Teleop extends LinearOpMode {
     //////////////////////////////////////////////////////////////////
 
     public void drive() {
-        double speed = (0.25 + gamepad1.left_trigger * 0.75);
+        double speed = (0.25 + gamepad1.right_trigger * 0.75);
         double vX = 0; // forward/back
         double vY = 0; // left/right
         boolean useDPad = true;
