@@ -9,6 +9,7 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="TeleOp")
 public class Teleop extends LinearOpMode {
@@ -29,6 +30,7 @@ public class Teleop extends LinearOpMode {
             drive();
             lift();
             turret();
+            telemetry.update();
         }
     }
 
@@ -72,7 +74,11 @@ public class Teleop extends LinearOpMode {
 
     /////////////////////////////////////////////////////
 
+    private boolean lastLeftBumper = false;
+    private boolean lastRightBumper = false;
+
     public void lift() {
+        // TODO make dpad not go BRRRRRRRRRRRRRRRRRRRRRR
         if (gamepad2.y)
             l.setVerticalTarget(3);
         else if (gamepad2.b)
@@ -86,13 +92,17 @@ public class Teleop extends LinearOpMode {
         else if (gamepad2.dpad_down)
             l.moveVertical(-10);
 
-        /*
-        telemetry.addData("targetCount", l.targetCount);
-        telemetry.addData("current count:", l.l1.getCurrentPosition());
-        // telemetry.addData("l1 power:", l.l1.getPower());
-        telemetry.update();
-        */
+        if (gamepad2.right_bumper && !lastRightBumper) l.retract();
+        else if (gamepad2.left_bumper && !lastLeftBumper) l.extend();
+        else if (gamepad2.dpad_right) l.moveHorizontal(-10);
+        else if (gamepad2.dpad_left) l.moveHorizontal(10);
 
+        lastLeftBumper = gamepad2.left_bumper;
+        lastRightBumper = gamepad2.right_bumper;
+
+        // CLAW
+        if (gamepad1.left_bumper) l.closeClaw();
+        else if (gamepad1.right_bumper) l.openClaw();
         l.update();
     }
 
@@ -112,6 +122,5 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("turret center:", turret_center);
         telemetry.addData("turret position:", now);
         telemetry.addData("turret speed:", speed);
-        telemetry.update();
     }
 }
