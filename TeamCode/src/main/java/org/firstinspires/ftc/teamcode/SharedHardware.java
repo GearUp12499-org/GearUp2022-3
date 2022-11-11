@@ -71,7 +71,5 @@ public class SharedHardware {
         encoderRight = new Encoder(frontRight);   // 0
         encoderLeft = new Encoder(frontLeft);   // 1
         encoderRear = new Encoder(rearRight);    // 2
-
-
     }
 }

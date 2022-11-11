@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift {
     public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3100};
@@ -14,6 +15,8 @@ public class Lift {
     public final DcMotor liftVertical1;
     public final DcMotor liftVertical2;
     public final DcMotor liftHorizontal;
+
+    public final Servo servo;
     
     private static int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
@@ -40,6 +43,9 @@ public class Lift {
         liftHorizontal.setTargetPosition(HORIZONTAL_TARGETS[currentHorizontalTarget]);
         liftHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftHorizontal.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        servo = hardwareMap.get(Servo.class, "servo");
+        servo.setPosition(0);
     }
 
     public void update() {
@@ -102,5 +108,13 @@ public class Lift {
     public void moveHorizontal(int delta) {
         targetHorizontalCount += delta;
         updTargets();
+    }
+
+    public void closeClaw() {
+        servo.setPosition(0.4);
+    }
+
+    public void openClaw() {
+        servo.setPosition(0);
     }
 }
