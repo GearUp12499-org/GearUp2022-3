@@ -18,17 +18,17 @@ public class VroomToEncoder extends LinearOpMode {
             boolean up = (-gamepad1.left_stick_y) > 0.5;
             boolean down = (-gamepad1.left_stick_y) < -0.5;
             telemetry.addData("stick", -gamepad1.left_stick_y);
-            telemetry.addData("current encoder", lift.l1.getCurrentPosition());
-            telemetry.addData("target  encoder", lift.l1.getTargetPosition());
+            telemetry.addData("current encoder", lift.liftVertical1.getCurrentPosition());
+            telemetry.addData("target  encoder", lift.liftVertical1.getTargetPosition());
             telemetry.addData("up counter", c);
             telemetry.update();
             lift.update();
             if (up && !lastUp) {
-                lift.upTarget();
+                lift.goUp();
                 c++;
             }
             if (down && !lastDown) {
-                lift.downTarget();
+                lift.goDown();
             }
             if (gamepad1.x) servo.setPosition(0);
             else if (gamepad1.y) servo.setPosition(0.4);

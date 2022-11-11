@@ -74,17 +74,17 @@ public class Teleop extends LinearOpMode {
 
     public void lift() {
         if (gamepad2.y)
-            l.setTarget(3);
+            l.setVerticalTarget(3);
         else if (gamepad2.b)
-            l.setTarget(0);
+            l.setVerticalTarget(0);
         else if (gamepad2.a)
-            l.setTarget(1);
+            l.setVerticalTarget(1);
         else if (gamepad2.x)
-            l.setTarget(2);
+            l.setVerticalTarget(2);
         else if (gamepad2.dpad_up)
-            l.move(10);
+            l.moveVertical(10);
         else if (gamepad2.dpad_down)
-            l.move(-10);
+            l.moveVertical(-10);
 
         /*
         telemetry.addData("targetCount", l.targetCount);
@@ -99,7 +99,7 @@ public class Teleop extends LinearOpMode {
     ////////////////////////////////////////////////////////////////////
 
     public void turret() {
-        if (l.l1.getCurrentPosition() < TURRET_THRESHOLD)
+        if (l.liftVertical1.getCurrentPosition() < TURRET_THRESHOLD)
             return;
 
         double speed = gamepad2.left_stick_x * 0.25;
