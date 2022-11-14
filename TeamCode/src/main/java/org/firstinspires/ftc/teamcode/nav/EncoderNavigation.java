@@ -5,11 +5,13 @@ import static java.lang.Math.abs;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 import org.firstinspires.ftc.teamcode.util.NotImplemented;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class EncoderNavigation {
     public static class Action {
@@ -41,12 +43,31 @@ public class EncoderNavigation {
     public final Encoder rightOdom;
     public final Encoder frontOdom;
 
-    public double topSpeed = 0.5;
+    public double topSpeed = 0.3;
 
     /**
      * inches, distance to start ramping down speed
      */
-    public double rampDownDistance = 3;
+    public double rampDownDistance = 1;
+
+    /**
+     * Seconds, delay after "reaching" the goal to continue to check & move
+     */
+    public double holdForCompletion = 1; // TODO pull down to 0.5 once done testing
+
+    private double completedFor = 0;
+
+    private double lastTickTime = System.currentTimeMillis() / 1000.0;
+
+    public double getWaitPercent() {
+        return completedFor / holdForCompletion;
+    }
+
+    public double strafeFrontFudge = 1;
+    public double strafeRearFudge = 0.9;
+
+    public double forwardLeftFudge = 1;
+    public double forwardRightFudge = 0.9;
 
     /**
      * inches, distance to consider being "done"
@@ -142,6 +163,7 @@ public class EncoderNavigation {
     }
 
     public void asyncLoop() {
+        double thisTickTime = System.currentTimeMillis() / 1000.0;
         if (currentAction == null) {
             if (actionQueue.size() > 0) {
                 currentAction = actionQueue.remove(0);
@@ -153,6 +175,7 @@ public class EncoderNavigation {
                     case STRAFE:
                         startEncoderValue = frontOdom.getCurrentPosition();
                         targetEncoderValue = startEncoderValue + (int) (currentAction.value * TICKS_PER_INCH);
+                        break;
                     default:
                         throw NotImplemented.i;
                 }
@@ -168,6 +191,13 @@ public class EncoderNavigation {
             double fixed;
             double speed;
 
+            if (completedFor >= holdForCompletion) {
+                currentAction = null;
+                completedFor = 0;
+                setGroup(0, leftFront, rightFront, leftRear, rightRear);
+                return;
+            }
+
             switch (currentAction.type) {
                 case FORWARD:
                     distToTarget = targetEncoderValue - fwd;
@@ -177,11 +207,13 @@ public class EncoderNavigation {
                     fixed = topSpeed * sign;
                     speed = toInches(distToTarget) > rampDownDistance ? fixed : fixed * (toInches(distToTarget) / rampDownDistance);
 
-                    setGroup(speed, leftFront, rightFront, leftRear, rightRear);
+                    setGroup(speed * forwardLeftFudge, leftFront, leftRear);
+                    setGroup(speed * forwardRightFudge, rightFront, rightRear);
 
                     if (Math.abs(distToTarget) < toTicks(fudge)) {
-                        currentAction = null;
-                        setGroup(0, leftFront, rightFront, leftRear, rightRear);
+                        completedFor += thisTickTime - lastTickTime;
+                    } else {
+                        completedFor = 0;
                     }
                     break;
                 case STRAFE:
@@ -192,17 +224,36 @@ public class EncoderNavigation {
                     fixed = topSpeed * sign;
                     speed = toInches(distToTarget) > rampDownDistance ? fixed : fixed * (toInches(distToTarget) / rampDownDistance);
 
-                    setGroup(speed, leftFront, rightRear);
-                    setGroup(-speed, rightFront, leftRear);
+                    setGroup(speed * strafeFrontFudge, leftFront);
+                    setGroup(speed * strafeRearFudge, rightRear);
+                    setGroup(-speed * strafeFrontFudge, rightFront);
+                    setGroup(-speed * strafeRearFudge, leftRear);
 
                     if (Math.abs(distToTarget) < toTicks(fudge)) {
-                        currentAction = null;
-                        setGroup(0, leftFront, rightFront, leftRear, rightRear);
+                        completedFor += thisTickTime - lastTickTime;
+                    } else {
+                        completedFor = 0;
                     }
                     break;
                 default:
                     throw NotImplemented.i;
             }
         }
+        lastTickTime = thisTickTime;
+    }
+
+    public void dumpTelemetry(Telemetry telemetry) {
+        telemetry.addLine("== Navigation ==");
+        telemetry.addData("left", leftOdom.getCurrentPosition());
+        telemetry.addData("right", rightOdom.getCurrentPosition());
+        telemetry.addData("center", frontOdom.getCurrentPosition());
+        telemetry.addLine();
+        telemetry.addData("completion %", Math.round(lastKnownProgress / (double) targetEncoderValue * 10000)/100);
+        if (getWaitPercent() > 0) {
+            telemetry.addData("delay %", Math.round(getWaitPercent()*10000)/100);
+        }
+        telemetry.addLine();
+        telemetry.addData("queue count", actionQueue.size());
+        telemetry.addLine("== End Navigation ==");
     }
 }

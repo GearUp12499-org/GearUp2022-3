@@ -104,10 +104,6 @@ public class Teleop extends LinearOpMode {
         if (gamepad1.left_bumper) l.closeClaw();
         else if (gamepad1.right_bumper) l.openClaw();
         l.update();
-
-        telemetry.addData("hor target:", l.targetHorizontalCount);
-        telemetry.addData("hor current:", l.liftHorizontal.getCurrentPosition());
-        telemetry.update();
     }
 
     ////////////////////////////////////////////////////////////////////
