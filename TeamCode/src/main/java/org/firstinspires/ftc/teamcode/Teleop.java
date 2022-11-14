@@ -46,9 +46,9 @@ public class Teleop extends LinearOpMode {
         } else if (gamepad1.dpad_down) {
             vX -= 1;
         } else if (gamepad1.dpad_left) {
-            vY += 1;
-        } else if (gamepad1.dpad_right) {
             vY -= 1;
+        } else if (gamepad1.dpad_right) {
+            vY += 1;
         } else {
             useDPad = false;
         }
