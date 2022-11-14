@@ -37,7 +37,7 @@ public class GoBuildaV5MotorConf implements RobotConfig.MotorConfiguration {
     @Override
     public DcMotorEx getLeftFrontMotor(HardwareMap hardwareMap) {
         leftFront = hardwareMap.get(DcMotorEx.class, LEFT_FRONT_MOTOR_NAME);
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         return leftFront;
     }
 
@@ -50,7 +50,7 @@ public class GoBuildaV5MotorConf implements RobotConfig.MotorConfiguration {
     @Override
     public DcMotorEx getLeftRearMotor(HardwareMap hardwareMap) {
         leftRear = hardwareMap.get(DcMotorEx.class, LEFT_REAR_MOTOR_NAME);
-        leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         return leftRear;
     }
 
@@ -63,7 +63,7 @@ public class GoBuildaV5MotorConf implements RobotConfig.MotorConfiguration {
     @Override
     public DcMotorEx getRightFrontMotor(HardwareMap hardwareMap) {
         rightFront = hardwareMap.get(DcMotorEx.class, RIGHT_FRONT_MOTOR_NAME);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         return rightFront;
     }
 
@@ -76,7 +76,7 @@ public class GoBuildaV5MotorConf implements RobotConfig.MotorConfiguration {
     @Override
     public DcMotorEx getRightRearMotor(HardwareMap hardwareMap) {
         rightRear = hardwareMap.get(DcMotorEx.class, RIGHT_REAR_MOTOR_NAME);
-        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
         return rightRear;
     }
 
@@ -89,7 +89,7 @@ public class GoBuildaV5MotorConf implements RobotConfig.MotorConfiguration {
     @Override
     public Encoder getLeftEncoder(HardwareMap hardwareMap) {
         leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, LEFT_ENCODER_NAME));
-        leftEncoder.setDirection(Encoder.Direction.REVERSE);
+        leftEncoder.setDirection(Encoder.Direction.FORWARD);
         return leftEncoder;
     }
 
@@ -102,7 +102,7 @@ public class GoBuildaV5MotorConf implements RobotConfig.MotorConfiguration {
     @Override
     public Encoder getRightEncoder(HardwareMap hardwareMap) {
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, RIGHT_ENCODER_NAME));
-        rightEncoder.setDirection(Encoder.Direction.REVERSE);
+        rightEncoder.setDirection(Encoder.Direction.FORWARD);
         return rightEncoder;
     }
 

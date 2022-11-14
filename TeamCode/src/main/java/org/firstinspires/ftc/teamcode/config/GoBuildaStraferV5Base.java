@@ -11,11 +11,13 @@ public class GoBuildaStraferV5Base implements RobotConfig {
      */
     @Override
     public double getTicksPerRev() {
+        // https://www.gobilda.com/5203-series-yellow-jacket-planetary-gear-motor-19-2-1-ratio-24mm-length-8mm-rex-shaft-312-rpm-3-3-5v-encoder/
         return 537.6;
     }
 
     @Override
     public double getMaxRPM() {
+        // https://www.gobilda.com/5203-series-yellow-jacket-planetary-gear-motor-19-2-1-ratio-24mm-length-8mm-rex-shaft-312-rpm-3-3-5v-encoder/
         return 312;
     }
 
@@ -48,6 +50,7 @@ public class GoBuildaStraferV5Base implements RobotConfig {
      */
     @Override
     public double getWheelRadius() {
+        // https://www.gobilda.com/96mm-mecanum-wheel-set-70a-durometer-bearing-supported-rollers/
         return 1.88976;
     }
 
@@ -58,7 +61,7 @@ public class GoBuildaStraferV5Base implements RobotConfig {
 
     @Override
     public double getTrackWidth() {
-        return 16.34;
+        return 13.5;
     }
 
     /*
@@ -147,12 +150,12 @@ public class GoBuildaStraferV5Base implements RobotConfig {
 
     @Override
     public double getEncoderLateralDistance() {
-        return 16.14173f;
+        return 13.25f;
     }
 
     @Override
     public double getEncoderForwardOffset() {
-        return -(4f + (5f/8f));
+        return -(6.0f);
     }
 
     @Override
