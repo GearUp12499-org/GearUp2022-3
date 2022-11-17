@@ -13,14 +13,14 @@ public class Paths {
      */
     public void zone1() {
         nav.strafeLeft(TILE);
-        nav.moveForward(1.5 * TILE);
+        nav.moveForward(0.75 * TILE);
     }
 
     /**
      * move from Start to Signal Zone 2
      */
     public void zone2() {
-        nav.moveForward(1.5 * TILE);
+        nav.moveForward(0.75 * TILE);
     }
 
     /**
@@ -28,6 +28,6 @@ public class Paths {
      */
     public void zone3() {
         nav.strafeRight(TILE);
-        nav.moveForward(1.5 * TILE);
+        nav.moveForward(0.75 * TILE);
     }
 }

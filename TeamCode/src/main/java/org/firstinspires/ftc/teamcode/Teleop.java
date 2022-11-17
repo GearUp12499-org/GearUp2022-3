@@ -37,7 +37,7 @@ public class Teleop extends LinearOpMode {
     //////////////////////////////////////////////////////////////////
 
     public void drive() {
-        double speed = (0.25 + gamepad1.right_trigger * 0.75);
+        double speed = (0.5 + gamepad1.right_trigger * 0.5);
         double vX = 0; // forward/back
         double vY = 0; // left/right
         boolean useDPad = true;
@@ -46,9 +46,9 @@ public class Teleop extends LinearOpMode {
         } else if (gamepad1.dpad_down) {
             vX -= 1;
         } else if (gamepad1.dpad_left) {
-            vY += 1;
-        } else if (gamepad1.dpad_right) {
             vY -= 1;
+        } else if (gamepad1.dpad_right) {
+            vY += 1;
         } else {
             useDPad = false;
         }
@@ -94,8 +94,8 @@ public class Teleop extends LinearOpMode {
 
         if (gamepad2.right_bumper && !lastRightBumper) l.retract();
         else if (gamepad2.left_bumper && !lastLeftBumper) l.extend();
-        else if (gamepad2.dpad_right) l.moveHorizontal(-10);
-        else if (gamepad2.dpad_left) l.moveHorizontal(10);
+        else if (gamepad2.dpad_right) l.moveHorizontal(-5);
+        else if (gamepad2.dpad_left) l.moveHorizontal(5);
 
         lastLeftBumper = gamepad2.left_bumper;
         lastRightBumper = gamepad2.right_bumper;
