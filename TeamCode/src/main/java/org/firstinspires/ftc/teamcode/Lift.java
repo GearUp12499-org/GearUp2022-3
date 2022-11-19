@@ -44,7 +44,7 @@ public class Lift {
         liftHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftHorizontal.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        servo = hardwareMap.get(Servo.class, "gripper");
+        servo = hardwareMap.get(Servo.class, "servo");
         servo.setPosition(0.1);
     }
 
