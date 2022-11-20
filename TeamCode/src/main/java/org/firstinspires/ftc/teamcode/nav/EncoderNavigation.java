@@ -103,6 +103,10 @@ public class EncoderNavigation {
         return inches * TICKS_PER_INCH;
     }
 
+    public boolean isDone() {
+        return actionQueue.isEmpty();
+    }
+
     /**
      * Add a task to make the robot move forward.
      * @param inches inches to travel forward

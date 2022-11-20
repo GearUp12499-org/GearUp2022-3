@@ -164,6 +164,9 @@ public class ConeDetectAuto extends LinearOpMode {
                 telemetry.addData("  " + integer, hist.get(integer));
             }
             telemetry.update();
+            if (nav.isDone()) {
+                l.setVerticalTarget(0);
+            }
         }
     }
 
@@ -191,6 +194,7 @@ public class ConeDetectAuto extends LinearOpMode {
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 300;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        FtcDashboard.getInstance().startCameraStream(vuforia, 0);
 
         // Use loadModelFromAsset() if the TF Model is built in as an asset by Android Studio
         // Use loadModelFromFile() if you have downloaded a custom team model to the Robot Controller's FLASH.

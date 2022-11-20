@@ -26,7 +26,6 @@ import java.util.Map;
 
 
 @Autonomous(name = "Auto (+Cone) (+RR)", group="!!!!!!!!")
-@Disabled
 public class ConeDetectAutoRR extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     // private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/CustomTeamModel.tflite";
@@ -57,7 +56,6 @@ public class ConeDetectAutoRR extends LinearOpMode {
 
     Lift l;
 
-    @SuppressWarnings("ConstantConditions")
     public void runOpMode() {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
