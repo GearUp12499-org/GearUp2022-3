@@ -134,7 +134,6 @@ public class coneDetectAuto extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-         */
             nav.asyncLoop();
             nav.dumpTelemetry(telemetry);
             telemetry.update();
