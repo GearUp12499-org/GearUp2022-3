@@ -94,9 +94,9 @@ public class ConeDetectAutoRR extends LinearOpMode {
 
         Map<Integer, Integer> hist = new HashMap<Integer, Integer>() {
             {
-                put(0, 0);
                 put(1, 0);
                 put(2, 0);
+                put(3, 0);
             }
         };
 
