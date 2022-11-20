@@ -165,12 +165,13 @@ public class ConeDetectAuto extends LinearOpMode {
             }
             telemetry.update();
             if (nav.isDone()) {
-                l.setVerticalTarget(0);
+                l.moveVertical(-500);
             }
         }
     }
 
     private void initVuforia() {
+
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
          */

@@ -104,7 +104,7 @@ public class EncoderNavigation {
     }
 
     public boolean isDone() {
-        return actionQueue.isEmpty();
+        return actionQueue.isEmpty() && currentAction == null;
     }
 
     /**
