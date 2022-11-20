@@ -12,8 +12,8 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -21,7 +21,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.nav.EncoderNavigation;
-import org.firstinspires.ftc.teamcode.nav.Paths;
+import org.firstinspires.ftc.teamcode.nav.Paths; // encoder navigation paths
 import org.firstinspires.ftc.teamcode.util.NotImplemented;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -82,18 +82,22 @@ public class coneDetectAuto extends LinearOpMode {
             tfod.setZoom(1.0, 16.0 / 9.0);
         }
 
-        l.closeClaw();
+        l.openClaw();
 
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
+
         waitForStart();
-        for (int t = 0; t < 5000 && target == 0; t++) {
+        l.closeClaw();
+        sleep(500);
+        l.moveVertical(300); // lift claw so cone does not drag ground
+
+        for (int time = 0; time < 5000 && target == 0; time++) {
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
                     telemetry.addData("# Object Detected", updatedRecognitions.size());
-                    int i = 0;
                     for (Recognition recognition : updatedRecognitions) {
                         double col = (recognition.getLeft() + recognition.getRight()) / 2;
                         double row = (recognition.getTop() + recognition.getBottom()) / 2;
@@ -111,32 +115,32 @@ public class coneDetectAuto extends LinearOpMode {
                             target = 2;
                         else if (recognition.getLabel().equals("3 Panel"))
                             target = 3;
+                        telemetry.addData("Target: %i", target);
                     }
                     telemetry.update();
                 }
             }
         }
-        nav.moveForward(2);
-        switch (target) {
-            case 1:
-                path.zone1();
-                break;
-            case 2:
-                path.zone2();
-                break;
-            case 3:
-                path.zone3();
-                break;
-            default:
-                throw NotImplemented.i;
+
+        nav.moveForward(1);
+
+
+        if (target == 1) {
+            path.zone1();
+        } else if (target == 3) {
+            path.zone3();
+        } else {
+            path.zone2();
         }
+
         while (opModeIsActive()) {
+         */
             nav.asyncLoop();
             nav.dumpTelemetry(telemetry);
             telemetry.update();
         }
-
     }
+
     private void initVuforia() {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.

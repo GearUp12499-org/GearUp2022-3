@@ -37,7 +37,7 @@ public class Teleop extends LinearOpMode {
     //////////////////////////////////////////////////////////////////
 
     public void drive() {
-        double speed = (0.5 + gamepad1.right_trigger * 0.5);
+        double speed = (0.25 + gamepad1.left_trigger * 0.75);
         double vX = 0; // forward/back
         double vY = 0; // left/right
         boolean useDPad = true;
@@ -74,15 +74,18 @@ public class Teleop extends LinearOpMode {
 
     /////////////////////////////////////////////////////
 
-    private boolean lastLeftBumper = false;
-    private boolean lastRightBumper = false;
+    private boolean lastLeftBumper1 = false;
+    private boolean lastLeftBumper2 = false;
+    private boolean lastRightBumper2 = false;
 
     public void lift() {
         // TODO make dpad not go BRRRRRRRRRRRRRRRRRRRRRR
         if (gamepad2.y)
             l.setVerticalTarget(3);
-        else if (gamepad2.b)
+        else if (gamepad2.b) {
+            l.retract();
             l.setVerticalTarget(0);
+        }
         else if (gamepad2.a)
             l.setVerticalTarget(1);
         else if (gamepad2.x)
@@ -92,17 +95,23 @@ public class Teleop extends LinearOpMode {
         else if (gamepad2.dpad_down)
             l.moveVertical(-10);
 
-        if (gamepad2.right_bumper && !lastRightBumper) l.retract();
-        else if (gamepad2.left_bumper && !lastLeftBumper) l.extend();
+        if (gamepad2.right_bumper && !lastRightBumper2) l.retract();
+        else if (gamepad2.left_bumper && !lastLeftBumper2) l.extend();
         else if (gamepad2.dpad_right) l.moveHorizontal(-5);
         else if (gamepad2.dpad_left) l.moveHorizontal(5);
 
-        lastLeftBumper = gamepad2.left_bumper;
-        lastRightBumper = gamepad2.right_bumper;
 
         // CLAW
-        if (gamepad1.left_bumper) l.closeClaw();
+        if (gamepad1.left_bumper && !lastLeftBumper1) {
+            l.closeClaw();
+            sleep(1000);
+            l.moveVertical(300);
+        }
         else if (gamepad1.right_bumper) l.openClaw();
+
+        lastLeftBumper1 = gamepad1.left_bumper;
+        lastLeftBumper2 = gamepad2.left_bumper;
+        lastRightBumper2 = gamepad2.right_bumper;
         l.update();
     }
 
