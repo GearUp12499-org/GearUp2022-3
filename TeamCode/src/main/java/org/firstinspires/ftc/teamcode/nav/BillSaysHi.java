@@ -46,6 +46,9 @@ public class BillSaysHi extends LinearOpMode {
             nav.asyncLoop();
             nav.dumpTelemetry(telemetry);
             telemetry.update();
+            if (nav.isDone()) {
+                lift.setVerticalTarget(0);
+            }
         }
     }
 }
