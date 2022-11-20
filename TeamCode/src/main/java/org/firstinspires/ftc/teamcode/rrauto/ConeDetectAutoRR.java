@@ -52,7 +52,7 @@ public class ConeDetectAutoRR extends LinearOpMode {
     private TFObjectDetector tfod;
 
     //@Override
-    int latestMatch = 0;
+    int bestMatch = 0;
 
     Lift l;
 
@@ -92,6 +92,7 @@ public class ConeDetectAutoRR extends LinearOpMode {
         sleep(500);
         l.moveVertical(300); // lift claw so cone does not drag ground
 
+        /*
         Map<Integer, Integer> hist = new HashMap<Integer, Integer>() {
             {
                 put(1, 0);
@@ -99,6 +100,9 @@ public class ConeDetectAutoRR extends LinearOpMode {
                 put(3, 0);
             }
         };
+        */
+
+        float max_obs_conf = 0;
 
         ElapsedTime timer = new ElapsedTime();
         timer.reset();
@@ -108,6 +112,7 @@ public class ConeDetectAutoRR extends LinearOpMode {
                 if (updatedRecognitions != null) {
                     telemetry.addData("# Object Detected", updatedRecognitions.size());
                     for (Recognition recognition : updatedRecognitions) {
+                        /*
                         double col = (recognition.getLeft() + recognition.getRight()) / 2;
                         double row = (recognition.getTop() + recognition.getBottom()) / 2;
                         double width = Math.abs(recognition.getRight() - recognition.getLeft());
@@ -117,32 +122,23 @@ public class ConeDetectAutoRR extends LinearOpMode {
                         telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
                         telemetry.addData("- Position (Row/Col)", "%.0f / %.0f", row, col);
                         telemetry.addData("- Size (Width/Height)", "%.0f / %.0f", width, height);
-                        if (recognition.getLabel().equals("1 Bolt")) {
-                            latestMatch = 1;
-                            hist.put(1, hist.get(1) + 1);
-                        } else if (recognition.getLabel().equals("2 Bulb")) {
-                            latestMatch = 2;
-                            hist.put(2, hist.get(2) + 1);
-                        } else if (recognition.getLabel().equals("3 Panel")) {
-                            latestMatch = 3;
-                            hist.put(3, hist.get(3) + 1);
+                        */
+                        if (recognition.getConfidence() > max_obs_conf){
+                            if (recognition.getLabel().equals("1 Bolt")) {
+                                bestMatch = 1;
+                            } else if (recognition.getLabel().equals("2 Bulb")) {
+                                bestMatch = 2;
+                            } else if (recognition.getLabel().equals("3 Panel")) {
+                                bestMatch = 3;
+                            }
+                            max_obs_conf = recognition.getConfidence();
                         }
-                        for (Integer integer : hist.keySet()) {
-                            telemetry.addData("  " + integer, hist.get(integer));
-                        }
-                        telemetry.addData("Target: %i", latestMatch);
+
+
+                        telemetry.addData("Target: %i", bestMatch);
                     }
                     telemetry.update();
                 }
-            }
-        }
-
-        int max = 0;
-        int target = 0;
-        for (Map.Entry<Integer, Integer> entry : hist.entrySet()) {
-            if (entry.getValue() > max) {
-                max = entry.getValue();
-                target = entry.getKey();
             }
         }
 
@@ -150,7 +146,7 @@ public class ConeDetectAutoRR extends LinearOpMode {
 
         TrajectorySequence seq;
 
-        switch (target) {
+        switch (bestMatch) {
             case 1:
                 seq = RRPaths.zone1(drive);
                 break;
@@ -166,10 +162,8 @@ public class ConeDetectAutoRR extends LinearOpMode {
 
         while (opModeIsActive()) {
             drive.update();  // run run run run run
-            telemetry.addData("target detected", target);
-            for (Integer integer : hist.keySet()) {
-                telemetry.addData("  " + integer, hist.get(integer));
-            }
+            telemetry.addData("target detected", bestMatch);
+
             telemetry.update();
         }
     }
