@@ -1,13 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
-import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
-import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
-import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
-import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
-import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
-import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
-import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.*;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -22,7 +15,9 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.nav.EncoderNavigation;
 import org.firstinspires.ftc.teamcode.nav.Paths; // encoder nav paths
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Autonomous(name = "auto detect cone")
@@ -53,7 +48,7 @@ public class coneDetectAuto extends LinearOpMode {
     private TFObjectDetector tfod;
 
     //@Override
-    int target = 0;
+    int latestMatch = 0;
 
     Lift l;
 
@@ -91,7 +86,15 @@ public class coneDetectAuto extends LinearOpMode {
         sleep(500);
         l.moveVertical(300); // lift claw so cone does not drag ground
 
-        for (int time = 0; time < 5000 && target == 0; time++) {
+        Map<Integer, Integer> hist = new HashMap<Integer, Integer>() {
+            {
+                put(0, 0);
+                put(1, 0);
+                put(2, 0);
+            }
+        };
+
+        for (int time = 0; time < 5000; time++) {
             if (tfod != null) {
                 List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
                 if (updatedRecognitions != null) {
@@ -106,22 +109,35 @@ public class coneDetectAuto extends LinearOpMode {
                         telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
                         telemetry.addData("- Position (Row/Col)", "%.0f / %.0f", row, col);
                         telemetry.addData("- Size (Width/Height)", "%.0f / %.0f", width, height);
-
-                        if (recognition.getLabel().equals("1 Bolt"))
-                            target = 1;
-                        else if (recognition.getLabel().equals("2 Bulb"))
-                            target = 2;
-                        else if (recognition.getLabel().equals("3 Panel"))
-                            target = 3;
-                        telemetry.addData("Target: %i", target);
+                        if (recognition.getLabel().equals("1 Bolt")) {
+                            latestMatch = 1;
+                            hist.put(1, hist.get(1) + 1);
+                        } else if (recognition.getLabel().equals("2 Bulb")) {
+                            latestMatch = 2;
+                            hist.put(2, hist.get(2) + 1);
+                        } else if (recognition.getLabel().equals("3 Panel")) {
+                            latestMatch = 3;
+                            hist.put(3, hist.get(3) + 1);
+                        }
+                        for (Integer integer : hist.keySet()) {
+                            telemetry.addData("  " + integer, hist.get(integer));
+                        }
+                        telemetry.addData("Target: %i", latestMatch);
                     }
                     telemetry.update();
                 }
             }
         }
 
+        int max = 0;
+        int target = 0;
+        for (Map.Entry<Integer, Integer> entry : hist.entrySet()) {
+            if (entry.getValue() > max) {
+                max = entry.getValue();
+                target = entry.getKey();
+            }
+        }
         nav.moveForward(1);
-
 
         switch (target) {
             case 1:
@@ -139,6 +155,10 @@ public class coneDetectAuto extends LinearOpMode {
         while (opModeIsActive()) {
             nav.asyncLoop();
             nav.dumpTelemetry(telemetry);
+            telemetry.addData("target detected", target);
+            for (Integer integer : hist.keySet()) {
+                telemetry.addData("  " + integer, hist.get(integer));
+            }
             telemetry.update();
         }
     }
