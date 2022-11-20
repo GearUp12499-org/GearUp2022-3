@@ -12,19 +12,17 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.nav.EncoderNavigation;
-import org.firstinspires.ftc.teamcode.nav.Paths; // encoder navigation paths
-import org.firstinspires.ftc.teamcode.util.NotImplemented;
+import org.firstinspires.ftc.teamcode.nav.Paths; // encoder nav paths
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import java.util.List;
 
 
 @Autonomous(name = "auto detect cone")
@@ -73,10 +71,10 @@ public class coneDetectAuto extends LinearOpMode {
                 frontLeft, frontRight, rearLeft, rearRight, encoderLeft, encoderRight, encoderRear
         );
         Paths path = new Paths(nav);
-        /**
-         * Activate TensorFlow Object Detection before we wait for the start command.
-         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         **/
+        /*
+          Activate TensorFlow Object Detection before we wait for the start command.
+          Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
+         */
         if (tfod != null) {
             tfod.activate();
             tfod.setZoom(1.0, 16.0 / 9.0);
@@ -84,7 +82,7 @@ public class coneDetectAuto extends LinearOpMode {
 
         l.openClaw();
 
-        /** Wait for the game to begin */
+        /* Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
 
@@ -125,12 +123,17 @@ public class coneDetectAuto extends LinearOpMode {
         nav.moveForward(1);
 
 
-        if (target == 1) {
-            path.zone1();
-        } else if (target == 3) {
-            path.zone3();
-        } else {
-            path.zone2();
+        switch (target) {
+            case 1:
+                path.zone1();
+                break;
+            case 3:
+                path.zone3();
+                break;
+            case 2:
+            default:
+                path.zone2();
+                break;
         }
 
         while (opModeIsActive()) {
