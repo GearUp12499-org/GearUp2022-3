@@ -33,7 +33,6 @@ public class BillSaysHi extends LinearOpMode {
         EncoderNavigation nav = new EncoderNavigation(
                 frontLeft, frontRight, rearLeft, rearRight, encoderLeft, encoderRight, encoderRear
         );
-        Paths path = new Paths(nav);
         Lift lift = new Lift(hardwareMap);
         nav.dumpTelemetry(telemetry);
         telemetry.update();
