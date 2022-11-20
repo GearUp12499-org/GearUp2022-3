@@ -64,10 +64,10 @@ public class EncoderNavigation {
     }
 
     public double strafeFrontFudge = 1;
-    public double strafeRearFudge = 0.9;
+    public double strafeRearFudge = 1;
 
     public double forwardLeftFudge = 1;
-    public double forwardRightFudge = 0.9;
+    public double forwardRightFudge = 1;
 
     /**
      * inches, distance to consider being "done"
