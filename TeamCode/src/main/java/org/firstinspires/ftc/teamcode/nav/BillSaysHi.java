@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.util.NotImplemented;
 
 import java.util.List;
 
-@Autonomous(name = "bill", group = "!!!!!!!!")
+@Autonomous(name = "go straight", group = "!!!!!!!!")
 public class BillSaysHi extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

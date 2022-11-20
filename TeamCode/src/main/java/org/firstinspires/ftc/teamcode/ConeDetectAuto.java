@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 
-@Autonomous(name = "Auto (CONE USE THIS PLZ)", group="!!!!!!!!")
+@Autonomous(name = "Auto (detect)", group="!!!!!!!!")
 
 public class ConeDetectAuto extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";

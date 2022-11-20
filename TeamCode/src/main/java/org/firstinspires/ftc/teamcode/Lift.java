@@ -38,10 +38,10 @@ public class Lift {
         liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         liftHorizontal = hardwareMap.get(DcMotor.class, "liftHorizontal");
-        liftHorizontal.setPower(1);
-        liftHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftHorizontal.setTargetPosition(0);
-        liftHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        liftHorizontal.setPower(1);
+//        liftHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        liftHorizontal.setTargetPosition(0);
+//        liftHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftHorizontal.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         servo = hardwareMap.get(Servo.class, "servo");
