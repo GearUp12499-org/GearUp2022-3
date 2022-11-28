@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.cv.pipes.MSobelPipeline;
+import org.firstinspires.ftc.teamcode.cv.pipes.SharpEdgesPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
@@ -88,7 +88,7 @@ public class CameraLoadTest extends LinearOpMode {
         WebcamName name = hardwareMap.get(WebcamName.class, "Webcam 1");
         camera = OpenCvCameraFactory.getInstance().createWebcam(name);
         cameraState = CameraState.STARTING;
-        MSobelPipeline pipeline = new MSobelPipeline();
+        SharpEdgesPipeline pipeline = new SharpEdgesPipeline();
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -108,7 +108,6 @@ public class CameraLoadTest extends LinearOpMode {
         while (opModeIsActive()) {
             telemetry.addData("Camera State", cameraState.toString());
             if (cameraState == CameraState.READY) {
-                telemetry.addData("Taken pictures", pipeline.c);
             }
             telemetry.update();
             if (cameraState == CameraState.FAILED) {
@@ -116,10 +115,6 @@ public class CameraLoadTest extends LinearOpMode {
                 telemetry.update();
                 sleep(3000);
                 break;
-            }
-
-            if (gamepad1.a && !lA) {
-                pipeline.takePicture = true;
             }
             lA = gamepad1.a;
         }

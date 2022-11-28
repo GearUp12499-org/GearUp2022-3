@@ -62,7 +62,7 @@ public class ConeDetectAuto extends LinearOpMode {
 
         l = new Lift(hardwareMap);
 
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         prepareHardware(hardwareMap);
         EncoderNavigation nav = new EncoderNavigation(
                 frontLeft, frontRight, rearLeft, rearRight, encoderLeft, encoderRight, encoderRear

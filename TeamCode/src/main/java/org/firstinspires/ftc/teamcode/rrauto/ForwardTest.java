@@ -18,7 +18,7 @@ public class ForwardTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        telemetry = FtcDashboard.getInstance().getTelemetry();
+//        telemetry = FtcDashboard.getInstance().getTelemetry();
         waitForStart();
         drive.followTrajectorySequence(drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
                         .forward(DIST)

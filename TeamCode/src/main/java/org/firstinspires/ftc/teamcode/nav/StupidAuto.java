@@ -40,7 +40,7 @@ public class StupidAuto extends LinearOpMode {
             tfod.setZoom(1.0, 16.0 / 9.0);
         }
 
-        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         prepareHardware(hardwareMap);
         EncoderNavigation nav = new EncoderNavigation(
                 frontLeft, frontRight, rearLeft, rearRight, encoderLeft, encoderRight, encoderRear

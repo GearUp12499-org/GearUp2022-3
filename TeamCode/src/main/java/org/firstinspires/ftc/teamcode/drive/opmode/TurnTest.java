@@ -20,7 +20,7 @@ public class TurnTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        telemetry = FtcDashboard.getInstance().getTelemetry();
+//        telemetry = FtcDashboard.getInstance().getTelemetry();
 
         waitForStart();
 
