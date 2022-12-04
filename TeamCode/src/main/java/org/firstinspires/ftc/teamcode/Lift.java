@@ -117,4 +117,8 @@ public class Lift {
     public void openClaw() {
         servo.setPosition(0.2);
     }
+
+    public boolean isExtended() {
+        return (currentVerticalTarget != LOWER_VERTICAL_BOUND || liftVertical1.getPower() == 0);
+    }
 }

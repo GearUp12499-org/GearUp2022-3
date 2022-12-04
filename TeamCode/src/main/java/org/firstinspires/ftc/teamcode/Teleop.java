@@ -7,6 +7,8 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 
+import static java.util.Collections.swap;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -18,6 +20,7 @@ public class Teleop extends LinearOpMode {
     public final int TURRET_THRESHOLD = 800;
     public final int TURRET_DELTA = 1500; // STILL HAVE TO TEST
     public int turret_center;
+    public boolean forward = true;
 
     @Override
     public void runOpMode() {
@@ -61,11 +64,30 @@ public class Teleop extends LinearOpMode {
         } else {
             double left = -gamepad1.left_stick_y,
                     right = -gamepad1.right_stick_y;
+            updateDirection();
             driveMotor(left, left, right, right);
         }
     }
 
+    public void updateDirection() {
+        if(gamepad1.right_trigger > 0.5) {
+            if(gamepad1.x)
+                forward = true;
+            else if(gamepad1.y)
+                forward = false;
+        }
+    }
+
     public void driveMotor(double lf, double lb, double rf, double rb) {
+        if(!l.isExtended())
+            lf = lb = rf = rb = 0;
+        if(!forward) {
+            lf = -lf;
+            lb = -lb;
+            rf = -rf;
+            rb = -rb;
+        }
+
         frontLeft.setPower(lf);
         frontRight.setPower(rf);
         rearLeft.setPower(lb);
