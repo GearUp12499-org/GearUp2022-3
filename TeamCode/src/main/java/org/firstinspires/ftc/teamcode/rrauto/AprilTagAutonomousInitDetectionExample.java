@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
+import static org.firstinspires.ftc.teamcode.SharedHardware.*;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.nav.EncoderNavigation;
+import org.firstinspires.ftc.teamcode.nav.Paths;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -73,6 +77,11 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        prepareHardware(hardwareMap);
+        EncoderNavigation nav = new EncoderNavigation(
+                frontLeft, frontRight, rearLeft, rearRight, encoderLeft, encoderRight, encoderRear
+        );
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
@@ -154,17 +163,22 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             telemetry.update();
         }
 
+        Paths paths = new Paths(nav);
         if (tagOfInterest == null || tagOfInterest.id == CENTER) {
-            telemetry.speak("center");
+            paths.zone2();
         } else if (tagOfInterest.id == LEFT) {
-            telemetry.speak("left");
+            paths.zone1();
         } else {
-            telemetry.speak("right");
+            paths.zone3();
         }
 
 
         /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
-        while (opModeIsActive()) {sleep(20);}
+        while (opModeIsActive()) {
+            nav.asyncLoop();
+            nav.dumpTelemetry(telemetry);
+            telemetry.update();
+        }
     }
 
     void tagToTelemetry(AprilTagDetection detection) {
