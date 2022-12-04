@@ -27,6 +27,40 @@ public class EncoderNavigation {
         public final double value;
     }
 
+    public static class Skew {
+        private final double b;
+        private final double a;
+
+        public Skew(double a, double b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        public static Skew fromReadings(int left, int right) {
+            return new Skew(right / (double) left, left / (double) right);
+        }
+
+        public double getB() {
+            return b;
+        }
+
+        public double getA() {
+            return a;
+        }
+
+        public void apply(DcMotor leftFront, DcMotor rightFront, DcMotor leftBack, DcMotor rightBack, double power) {
+            double left = power * a;
+            double right = power * b;
+            double scaleDown = 1/Math.max(abs(left), abs(right));
+            left *= scaleDown;
+            right *= scaleDown;
+            leftFront.setPower(left);
+            rightFront.setPower(right);
+            leftBack.setPower(left);
+            rightBack.setPower(right);
+        }
+    }
+
     public List<Action> actionQueue = new ArrayList<>();
 
     public Action currentAction;
@@ -210,9 +244,8 @@ public class EncoderNavigation {
                     distToTarget = abs(distToTarget);
                     fixed = topSpeed * sign;
                     speed = toInches(distToTarget) > rampDownDistance ? fixed : fixed * (toInches(distToTarget) / rampDownDistance);
-
-                    setGroup(speed * forwardLeftFudge, leftFront, leftRear);
-                    setGroup(speed * forwardRightFudge, rightFront, rightRear);
+                    Skew skew = Skew.fromReadings(left, right);
+                    skew.apply(leftFront, rightFront, leftRear, rightRear, speed);
 
                     if (Math.abs(distToTarget) < toTicks(fudge)) {
                         completedFor += thisTickTime - lastTickTime;
