@@ -36,8 +36,17 @@ public class EncoderNavigation {
             this.b = b;
         }
 
+        public static final double SKEW_MULT = 5;
+
         public static Skew fromReadings(int left, int right) {
-            return new Skew(right / (double) left, left / (double) right);
+            double diffL = right / (double) left - 1;
+            double diffR = left / (double) right - 1;
+            diffL *= SKEW_MULT;
+            diffR *= SKEW_MULT;
+
+            diffL += 1;
+            diffR += 1;
+            return new Skew(diffL, diffR);
         }
 
         public double getB() {
