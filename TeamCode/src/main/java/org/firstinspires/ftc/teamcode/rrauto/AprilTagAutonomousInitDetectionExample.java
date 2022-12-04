@@ -12,7 +12,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.ArrayList;
 
-/* TODO
+/*
  * Because EasyOpenCv depends on OpenCV-Repackaged, you will also need to copy libOpenCvAndroid453.so
  * from the /doc/native_libs folder of that repo into the FIRST(sdcard/FIRST in Android Studio File Transfer) folder
  * on the USB storage of the Robot Controller (i.e. connect the Robot Controller to your computer
