@@ -13,7 +13,7 @@ public class Paths {
      */
     public void zone1() {
         nav.strafeLeft(TILE);
-        nav.moveForward(0.75 * TILE);
+        nav.moveForward(0.5 * TILE);
     }
 
     /**

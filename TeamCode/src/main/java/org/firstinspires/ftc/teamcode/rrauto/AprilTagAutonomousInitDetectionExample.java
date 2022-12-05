@@ -163,6 +163,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             telemetry.update();
         }
 
+        nav.moveForward(2);
+
         Paths paths = new Paths(nav);
         if (tagOfInterest == null || tagOfInterest.id == CENTER) {
             paths.zone2();

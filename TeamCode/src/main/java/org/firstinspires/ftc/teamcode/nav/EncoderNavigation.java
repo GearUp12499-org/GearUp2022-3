@@ -138,11 +138,11 @@ public class EncoderNavigation {
         return (leftOdom.getCurrentPosition() + rightOdom.getCurrentPosition()) / 2;
     }
 
-    public double toInches(int ticks) {
+    public static double toInches(int ticks) {
         return ticks / TICKS_PER_INCH;
     }
 
-    public double toTicks(double inches) {
+    public static double toTicks(double inches) {
         return inches * TICKS_PER_INCH;
     }
 
@@ -295,11 +295,17 @@ public class EncoderNavigation {
         telemetry.addData("center", frontOdom.getCurrentPosition());
         telemetry.addLine();
         telemetry.addData("completion %", Math.round(lastKnownProgress / (double) targetEncoderValue * 10000)/100);
+        telemetry.addData("last progress", lastKnownProgress);
+        telemetry.addData("target value", targetEncoderValue);
         if (getWaitPercent() > 0) {
             telemetry.addData("delay %", Math.round(getWaitPercent()*10000)/100);
         }
         telemetry.addLine();
         telemetry.addData("queue count", actionQueue.size());
+        telemetry.addLine();
+        telemetry.addData("action rn?", currentAction != null);
+        telemetry.addData("action type", currentAction != null ? currentAction.type : "none");
+        telemetry.addData("action value", currentAction != null ? currentAction.value : "none");
         telemetry.addLine("== End Navigation ==");
     }
 }
