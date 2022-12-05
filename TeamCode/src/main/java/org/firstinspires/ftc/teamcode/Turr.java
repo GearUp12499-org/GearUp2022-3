@@ -28,36 +28,39 @@ public class Turr extends LinearOpMode {
         frontRight.setPower(0);
     }
 
-    public void doTheStrafeRightThing(double fuckOff) {
+    public void doTheStrafeRightThing(double timing) {
 //        for  bak
 //        bak  for
-        double time = Math.abs(fuckOff);
-        int sig = (int) Math.signum(fuckOff);
+        double time = Math.abs(timing);
+        int sig = (int) Math.signum(timing);
         frontLeft.setPower(0.5 * sig);
         rearLeft.setPower(-0.5 * sig);
         rearRight.setPower(0.5 * sig);
         frontRight.setPower(-0.5 * sig);
-        sleep((long) (fuckOff * 1000));
+        sleep((long) (timing * 1000));
         frontLeft.setPower(0);
         rearLeft.setPower(0);
         rearRight.setPower(0);
         frontRight.setPower(0);
     }
 
+    public void zone1() {
+        doTheMoveForwardThing(2);
+        doTheStrafeRightThing(-1.75);
+        doTheMoveForwardThing(34);
+    }
+    public void zone2() {
+        doTheMoveForwardThing(36);
+    }
+    public void zone3() {
+        doTheMoveForwardThing(2);
+        doTheStrafeRightThing(1.75);
+        doTheMoveForwardThing(34);
+    }
+
     @Override
     public void runOpMode() throws InterruptedException {
         prepareHardware(hardwareMap);
         waitForStart();
-//        EncoderNavigation nav = new EncoderNavigation(frontLeft, frontRight, rearLeft, rearRight, encoderLeft, encoderRight, encoderRear);
-//        Paths paths = new Paths(nav);
-//        nav.moveForward(2);
-//        paths.zone2();
-//        while (opModeIsActive()) {
-//            nav.asyncLoop();
-//            nav.dumpTelemetry(telemetry);
-//            telemetry.update();
-//        }
-//        doTheMoveForwardThing(24*1.5);
-        doTheStrafeRightThing(1.75);
     }
 }

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Lift;
 import org.firstinspires.ftc.teamcode.nav.EncoderNavigation;
 import org.firstinspires.ftc.teamcode.nav.Paths;
 import org.openftc.apriltag.AprilTagDetection;
@@ -51,6 +52,53 @@ import java.util.ArrayList;
 
 @TeleOp
 public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
+
+    public static final double SEC_PER_IN = (double)1/25;
+
+    public void doTheMoveForwardThing(double inc) {  // i hate this so much
+        double time = Math.abs(inc);
+        int sig = (int) Math.signum(inc);
+        frontLeft.setPower(0.5 * sig);
+        rearLeft.setPower(0.5 * sig);
+        rearRight.setPower(0.5 * sig);
+        frontRight.setPower(0.5 * sig);
+        sleep((long) (SEC_PER_IN * time * 1000));
+        frontLeft.setPower(0);
+        rearLeft.setPower(0);
+        rearRight.setPower(0);
+        frontRight.setPower(0);
+    }
+
+    public void doTheStrafeRightThing(double timing) {
+//        for  bak
+//        bak  for
+        double time = Math.abs(timing);
+        int sig = (int) Math.signum(timing);
+        frontLeft.setPower(0.5 * sig);
+        rearLeft.setPower(-0.5 * sig);
+        rearRight.setPower(0.5 * sig);
+        frontRight.setPower(-0.5 * sig);
+        sleep((long) (time * 1000));
+        frontLeft.setPower(0);
+        rearLeft.setPower(0);
+        rearRight.setPower(0);
+        frontRight.setPower(0);
+    }
+
+    public void zone1() {
+        doTheMoveForwardThing(2);
+        doTheStrafeRightThing(-1.75);
+        doTheMoveForwardThing(34);
+    }
+    public void zone2() {
+        doTheMoveForwardThing(36);
+    }
+    public void zone3() {
+        doTheMoveForwardThing(2);
+        doTheStrafeRightThing(1.75);
+        doTheMoveForwardThing(34);
+    }
+
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -78,9 +126,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
     @Override
     public void runOpMode() {
         prepareHardware(hardwareMap);
-        EncoderNavigation nav = new EncoderNavigation(
-                frontLeft, frontRight, rearLeft, rearRight, encoderLeft, encoderRight, encoderRear
-        );
+        Lift lift = new Lift(hardwareMap);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -99,6 +145,7 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
         });
 
         telemetry.setMsTransmissionInterval(50);
+        lift.openClaw();
 
         /*
          * The INIT-loop:
@@ -148,6 +195,8 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             sleep(20);
         }
 
+        lift.closeClaw();
+
         /*
          * The START command just came in: now work off the latest snapshot acquired
          * during the init loop.
@@ -163,22 +212,18 @@ public class AprilTagAutonomousInitDetectionExample extends LinearOpMode {
             telemetry.update();
         }
 
-        nav.moveForward(2);
+        telemetry.update();
 
-        Paths paths = new Paths(nav);
         if (tagOfInterest == null || tagOfInterest.id == CENTER) {
-            paths.zone2();
+            zone2();
         } else if (tagOfInterest.id == LEFT) {
-            paths.zone1();
+            zone1();
         } else {
-            paths.zone3();
+            zone3();
         }
 
-
-        /* You wouldn't have this in your autonomous, this is just to prevent the sample from ending */
         while (opModeIsActive()) {
-            nav.asyncLoop();
-            nav.dumpTelemetry(telemetry);
+            telemetry.addLine("done");
             telemetry.update();
         }
     }
