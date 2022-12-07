@@ -43,7 +43,8 @@ public class StupidAuto extends LinearOpMode {
 //        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
         prepareHardware(hardwareMap);
         EncoderNavigation nav = new EncoderNavigation(
-                frontLeft, frontRight, rearLeft, rearRight, encoderLeft, encoderRight, encoderRear
+                frontLeft, frontRight, rearLeft, rearRight,
+                encoderLeft, encoderRight, encoderRear
         );
         Paths path = new Paths(nav);
         while (opModeInInit()) {
@@ -93,7 +94,7 @@ public class StupidAuto extends LinearOpMode {
         //if (target != 0)
             //break;
         nav.moveForward(2);
-        switch (target) {
+      /*  switch (target) {
             case 0:
                 path.zone1();
                 break;
@@ -106,6 +107,8 @@ public class StupidAuto extends LinearOpMode {
             default:
                 throw NotImplemented.i;
         }
+
+       */
         /*while (opModeIsActive()) {
             nav.asyncLoop();
             nav.dumpTelemetry(telemetry);
