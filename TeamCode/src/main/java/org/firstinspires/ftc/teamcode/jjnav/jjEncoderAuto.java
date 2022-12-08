@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.jjnav;
 
 import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderLeft;
+import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderRear;
 import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderRight;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -99,19 +100,72 @@ public abstract class jjEncoderAuto extends LinearOpMode {
         if (position.equals("encoderDriveTest")){
             robot.servo.setPosition(1);
             sleep(2000);
-            robot.vLiftLeft.setTargetPosition(8000);
+            robot.vLiftLeft.setTargetPosition(800);
             robot.vLiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.vLiftLeft.setPower(0.5);
-            robot.vLiftRight.setTargetPosition(8000);
+            robot.vLiftLeft.setPower(-1);
+            robot.vLiftRight.setTargetPosition(800);
             robot.vLiftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.vLiftRight.setPower(0.5);
-            sleep(4000);
-            //driveMotor(0.3,0.3,0.3,0.3, 90000);
-
+            robot.vLiftRight.setPower(-1);
+            sleep(2000);
+            //driveStraight(0.3,0.3,0.3,0.3, 90000); //commented out to test lift/gripper, but this is right distance from wall to center of second tile.
+            //driveStrafe(0.3,'l',4000);
         }
     }
+    public void driveStrafe(double speed, char d, double distance) { //speed always a pos num, char d is the direction either l or r
+        // sets power for all drive motors
+        double posR = 0;
+        double posL = 0;
+        double posS = 0; //position of the lateral encoder
+        double mult = 1.0025;
+        double mult2 = 1.0008;
+        double lf = 0;
+        double rf =0;
+        double lb =0;
+        double rb = 0;
 
-    public void driveMotor(double lf, double lb,
+        if(d == 'l'){
+            lf = -speed;
+            lb = speed;
+            rf = speed;
+            rb = -speed;
+        }
+        if(d == 'r'){
+            lf = speed;
+            lb = -speed;
+            rf = -speed;
+            rb = speed;
+        }
+        while((posS)<distance ){
+            posS = encoderRear.getCurrentPosition();
+            posR = encoderRight.getCurrentPosition();
+            posL = encoderLeft.getCurrentPosition();
+            robot.leftFront.setPower(lf);
+            robot.leftBack.setPower(lb);
+            robot.rightFront.setPower(rf);
+            robot.rightBack.setPower(rb);
+            telemetry.addData("EncoderRight:", posR);
+            telemetry.addData("Encoder Left:", posL);
+            if(posR < posL){
+                rf = rf*mult2;
+                rb = rb*mult;
+                lf = lf*mult;
+                lb = lb*mult2;
+            }
+            else{
+                lf = lf*mult;
+                lb = lb*mult2;
+                rf = rf*mult2; //mult2 is so that the robot doesn't become too tilted,
+                rb = rb*mult;
+            }
+            telemetry.update();
+        }
+        robot.leftFront.setPower(0);
+        robot.leftBack.setPower(0);
+        robot.rightFront.setPower(0);
+        robot.rightBack.setPower(0);
+    }
+
+    public void driveStraight(double lf, double lb,
                            double rf, double rb, double distance) { //leftFront leftBack etc
         // sets power for all drive motors
         double posR = 0;

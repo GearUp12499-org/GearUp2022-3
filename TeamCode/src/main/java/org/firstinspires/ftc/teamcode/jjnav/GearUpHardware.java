@@ -69,7 +69,7 @@ public class GearUpHardware {
         } catch (IllegalArgumentException ignore) {
         }
         vLiftLeft= hwMap.get(DcMotorEx.class, "lift1");
-        vLiftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        vLiftLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         vLiftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         vLiftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         vLiftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
