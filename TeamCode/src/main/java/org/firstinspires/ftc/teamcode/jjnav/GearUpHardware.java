@@ -20,9 +20,13 @@ public class GearUpHardware {
     public DcMotor leftBack;
     public DcMotor rightFront;
     public DcMotor rightBack;
+    public DcMotor vLiftLeft;
+    public DcMotor vLiftRight;
     public static Encoder encoderLeft;
     public static Encoder encoderRight;
     public static Encoder encoderRear;
+    public Servo servo = null;
+
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
@@ -64,6 +68,18 @@ public class GearUpHardware {
             rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (IllegalArgumentException ignore) {
         }
+        vLiftLeft= hwMap.get(DcMotorEx.class, "lift1");
+        vLiftLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        vLiftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        vLiftLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        vLiftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        vLiftRight= hwMap.get(DcMotorEx.class, "lift2");
+        vLiftRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        vLiftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        vLiftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        vLiftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        servo = hwMap.get(Servo.class, "servo");
+        servo.setPosition(0.1);
 
 
         encoderRight = new Encoder((DcMotorEx) rightFront);   // 0

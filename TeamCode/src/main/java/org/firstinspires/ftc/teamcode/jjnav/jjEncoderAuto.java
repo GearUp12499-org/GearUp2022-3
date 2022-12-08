@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -65,13 +67,13 @@ public abstract class jjEncoderAuto extends LinearOpMode {
     String alliance = "";
     String position = "";
     int startPosition = 0 ;
-
     // Positions
     int liftZero = 0;
     int liftBot = 220;
     int liftMid = 311;
     int liftTop = 500;
 
+    //l = new Lift(hardwareMap);
     // IMU
     BNO055IMU imu;
     Orientation angles;
@@ -95,29 +97,54 @@ public abstract class jjEncoderAuto extends LinearOpMode {
 
 //----------------------------------------------------------------------------------------------------------------
         if (position.equals("encoderDriveTest")){
-            driveMotor(0.5,0.5,0.5,0.5, 100);
+            robot.servo.setPosition(1);
+            sleep(2000);
+            robot.vLiftLeft.setTargetPosition(8000);
+            robot.vLiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.vLiftLeft.setPower(0.5);
+            robot.vLiftRight.setTargetPosition(8000);
+            robot.vLiftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.vLiftRight.setPower(0.5);
+            sleep(4000);
+            //driveMotor(0.3,0.3,0.3,0.3, 90000);
 
         }
     }
 
-    public void driveMotor(double leftFront, double leftBack,
-                           double rightFront, double rightBack, double distance) {
+    public void driveMotor(double lf, double lb,
+                           double rf, double rb, double distance) { //leftFront leftBack etc
         // sets power for all drive motors
-        double posR = encoderRight.getCurrentPosition();
-        double posL = encoderLeft.getCurrentPosition();
-        double avg = (posR+posL)/2;
-        runtime.reset();
-        while(avg<distance ){
-            robot.leftFront.setPower(leftFront);
-            robot.leftBack.setPower(leftBack);
-            robot.rightFront.setPower(rightFront);
-            robot.rightBack.setPower(rightBack);}
-
+        double posR = 0;
+        double posL = 0;
+        double mult = 1.0025;
+        double mult2 = 1.0008;
+        while((posR+posL)/2<distance ){
+            posR = encoderRight.getCurrentPosition();
+            posL = encoderLeft.getCurrentPosition();
+            robot.leftFront.setPower(lf);
+            robot.leftBack.setPower(lb);
+            robot.rightFront.setPower(rf);
+            robot.rightBack.setPower(rb);
+            telemetry.addData("EncoderRight:", posR);
+            telemetry.addData("Encoder Left:", posL);
+            if(posR < posL){
+                rf = rf*mult;
+                rb = rb*mult;
+                lf = lf*mult2;
+                lb = lb*mult2;
+            }
+            else{
+                lf = lf*mult;
+                lb = lb*mult;
+                rf = rf*mult2; //mult2 is so that the robot doesn't become too tilted,
+                rb = rb*mult2;
+            }
+            telemetry.update();
+        }
         robot.leftFront.setPower(0);
         robot.leftBack.setPower(0);
         robot.rightFront.setPower(0);
         robot.rightBack.setPower(0);
-
     }
 }
 
