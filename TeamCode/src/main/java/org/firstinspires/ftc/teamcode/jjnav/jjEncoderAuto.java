@@ -285,7 +285,7 @@ public abstract class jjEncoderAuto extends LinearOpMode {
 
     }
     public void driveStrafe(double speed, int d, double distance) { //speed always a pos num, char d is the direction either l or r
-        // sets power for all drive motors
+        // NOTE IMPORTANT: for some reason this method would not work unless i ran it at the very beginning of auto. otherwise, the motors would spin in incorrect directions. i have no clue why.
 
         double posS = 0; //position of the lateral encoder
 
