@@ -8,10 +8,18 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
 import com.qualcomm.robotcore.hardware.Servo;
-
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Lift;
+import org.firstinspires.ftc.teamcode.nav.EncoderNavigation;
+import org.firstinspires.ftc.teamcode.nav.Paths;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
@@ -40,12 +48,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
         import org.firstinspires.ftc.robotcore.external.navigation.Position;
         import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
-        import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
         import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
         import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.Lift;
+import org.firstinspires.ftc.teamcode.rrauto.AprilTagDetectionPipeline;
+import org.openftc.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
-        import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
+import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
         import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderLeft;
         import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderRight;
 
@@ -74,6 +89,29 @@ public abstract class jjEncoderAuto extends LinearOpMode {
     int liftMid = 311;
     int liftTop = 500;
 
+    OpenCvCamera camera;
+    AprilTagDetectionPipeline aprilTagDetectionPipeline;
+
+    static final double FEET_PER_METER = 3.28084;
+
+    // Lens intrinsics
+    // UNITS ARE PIXELS
+    // NOTE: this calibration is for the C920 webcam at 800x448.
+    // You will need to do your own calibration for other configurations!
+    double fx = 578.272;
+    double fy = 578.272;
+    double cx = 402.145;
+    double cy = 221.506;
+
+    // UNITS ARE METERS
+    double tagsize = 0.166;
+
+    int ID_TAG_OF_INTEREST = 18; // Tag ID 18 from the 36h11 family
+    int LEFT = 1;
+    int CENTER = 2;
+    int RIGHT = 3;
+
+    AprilTagDetection tagOfInterest = null;
     //l = new Lift(hardwareMap);
     // IMU
     BNO055IMU imu;
@@ -90,14 +128,92 @@ public abstract class jjEncoderAuto extends LinearOpMode {
         // set up dc motors
 
         // Send telemetry message to indicate successful Encoder reset
-        telemetry.addData("Path0",  "Starting at %7d :%7d",
-                robot.leftFront.getCurrentPosition(),
-                robot.rightFront.getCurrentPosition());
-        telemetry.update();
+        prepareHardware(hardwareMap);
+        Lift lift = new Lift(hardwareMap);
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
+
+        camera.setPipeline(aprilTagDetectionPipeline);
+        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+            }
+        });
+
+        telemetry.setMsTransmissionInterval(50);
+        lift.openClaw();
+
+        /*
+         * The INIT-loop:
+         * This REPLACES waitForStart!
+         */
+
         waitForStart();
 
 //----------------------------------------------------------------------------------------------------------------
         if (position.equals("encoderDriveTest")){
+          int a = 2; //counter for where to go
+            runtime.reset();
+           while (runtime.seconds()<3) {
+                ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+
+                if (currentDetections.size() != 0) {
+                    boolean tagFound = false;
+
+                    for (AprilTagDetection tag : currentDetections) {
+
+                        if (tag.id == LEFT || tag.id == CENTER || tag.id == RIGHT) {
+                            if(tag.id == LEFT){
+                                a =1;
+                            }
+                            if(tag.id == CENTER)
+                                a =2;
+                            if(tag.id == RIGHT)
+                                a =3;
+
+                            tagOfInterest = tag;
+                            tagFound = true;
+                            break;
+                        }
+                    }
+
+                    if (tagFound) {
+                        telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
+                        tagToTelemetry(tagOfInterest);
+                    } else {
+                        telemetry.addLine("Don't see tag of interest :(");
+
+                        if (tagOfInterest == null) {
+                            telemetry.addLine("(The tag has never been seen)");
+                        } else {
+                            telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                            tagToTelemetry(tagOfInterest);
+                        }
+                    }
+
+                } else {
+                    telemetry.addLine("Don't see tag of interest :(");
+
+                    if (tagOfInterest == null) {
+                        telemetry.addLine("(The tag has never been seen)");
+                    } else {
+                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
+                        tagToTelemetry(tagOfInterest);
+                    }
+
+               }
+
+                telemetry.update();
+                sleep(20);
+            }
+
             robot.servo.setPosition(1);
             sleep(2000);
             robot.vLiftLeft.setTargetPosition(800);
@@ -107,45 +223,103 @@ public abstract class jjEncoderAuto extends LinearOpMode {
             robot.vLiftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.vLiftRight.setPower(-1);
             sleep(2000);
-            //driveStraight(0.3,0.3,0.3,0.3, 90000); //commented out to test lift/gripper, but this is right distance from wall to center of second tile.
-            //driveStrafe(0.3,'l',4000);
+
+            driveStraight(0.3,0.3,0.3,0.3, 95000); //commented out to test lift/gripper, but this is right distance from wall to center of second tile.
+            robot.leftFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            robot.rightFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            sleep(200);
+            driveStraight(-0.5,-0.5,-0.5,-0.5, -3000);
+
+            runtime.reset();
+            if(a==1){
+                while(runtime.seconds()<1.75) {
+                    robot.leftFront.setPower(-0.3);
+                    robot.leftBack.setPower(0.3);
+                    robot.rightFront.setPower(0.3);
+                    robot.rightBack.setPower(-0.3);
+                }
+            }
+            if(a==3){
+                while(runtime.seconds()<1.75) {
+                    robot.leftFront.setPower(0.3);
+                    robot.leftBack.setPower(-0.3);
+                    robot.rightFront.setPower(-0.3);
+                    robot.rightBack.setPower(0.3);
+                }
+            }
+            robot.leftFront.setPower(0);
+            robot.leftBack.setPower(0);
+            robot.rightFront.setPower(0);
+            robot.rightBack.setPower(0);
+           /* while(runtime.seconds()<2.5);
+                driveStraight(-0.5,-0.5,-0.5,-0.5, -3000);*/
+            //if ( a == 1)
+                //robot.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                //driveStrafe(0.3,1,40000);
+
+          //  else if(a==3)
+               // driveStrafe(0.3,-1,40000);
+            telemetry.addData("a:" , a);
+            telemetry.update();
+            //driveStrafe(0.3,'l',50000);
+
+            sleep(2000);
+            /* this code raises the lift to the right height, and turns turret, it is ready to score if we want to do it,
+             robot.vLiftLeft.setTargetPosition(3100);
+            robot.vLiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.vLiftLeft.setPower(-1);
+            robot.vLiftRight.setTargetPosition(3100);
+            robot.vLiftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.vLiftRight.setPower(-1);
+            sleep(2000);
+            robot.turret.setTargetPosition(-450);
+            robot.turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.turret.setPower(0.5);
+            sleep(2000);
+            robot.hLift.setTargetPosition(225);
+            robot.hLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.hLift.setPower(0.3);
+            sleep(1500);
+             */
         }
+
     }
-    public void driveStrafe(double speed, char d, double distance) { //speed always a pos num, char d is the direction either l or r
+    public void driveStrafe(double speed, int d, double distance) { //speed always a pos num, char d is the direction either l or r
         // sets power for all drive motors
-        double posR = 0;
-        double posL = 0;
+
         double posS = 0; //position of the lateral encoder
-        double mult = 1.0025;
-        double mult2 = 1.0008;
+
         double lf = 0;
-        double rf =0;
-        double lb =0;
+        double rf = 0;
+        double lb = 0;
         double rb = 0;
 
-        if(d == 'l'){
+
+
+        if(d == 1){
             lf = -speed;
             lb = speed;
             rf = speed;
             rb = -speed;
         }
-        if(d == 'r'){
+        if(d == -1){
             lf = speed;
             lb = -speed;
             rf = -speed;
             rb = speed;
         }
-        while((posS)<distance ){
+        runtime.reset();
+        while(Math.abs(posS)<distance){//Math.abs(posS)<distance
             posS = encoderRear.getCurrentPosition();
-            posR = encoderRight.getCurrentPosition();
-            posL = encoderLeft.getCurrentPosition();
+            //posR = encoderRight.getCurrentPosition();
+            //posL = encoderLeft.getCurrentPosition();
             robot.leftFront.setPower(lf);
             robot.leftBack.setPower(lb);
             robot.rightFront.setPower(rf);
             robot.rightBack.setPower(rb);
-            telemetry.addData("EncoderRight:", posR);
-            telemetry.addData("Encoder Left:", posL);
-            if(posR < posL){
+            telemetry.addData("EncoderRear:", posS);
+            //telemetry.addData("Encoder Left:", posL);
+            /*if(posR < posL){
                 rf = rf*mult2;
                 rb = rb*mult;
                 lf = lf*mult;
@@ -156,7 +330,7 @@ public abstract class jjEncoderAuto extends LinearOpMode {
                 lb = lb*mult2;
                 rf = rf*mult2; //mult2 is so that the robot doesn't become too tilted,
                 rb = rb*mult;
-            }
+            }*/
             telemetry.update();
         }
         robot.leftFront.setPower(0);
@@ -172,7 +346,14 @@ public abstract class jjEncoderAuto extends LinearOpMode {
         double posL = 0;
         double mult = 1.0025;
         double mult2 = 1.0008;
-        while((posR+posL)/2<distance ){
+        //encoderRight.setCurrentPosition() = 0;
+        if(Math.abs(distance)<8000){
+            mult = 1;
+            mult2 = 1;
+        }
+        //robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        while(Math.abs((posR+posL)/2)<Math.abs(distance)){
             posR = encoderRight.getCurrentPosition();
             posL = encoderLeft.getCurrentPosition();
             robot.leftFront.setPower(lf);
@@ -182,6 +363,7 @@ public abstract class jjEncoderAuto extends LinearOpMode {
             telemetry.addData("EncoderRight:", posR);
             telemetry.addData("Encoder Left:", posL);
             if(posR < posL){
+
                 rf = rf*mult;
                 rb = rb*mult;
                 lf = lf*mult2;
@@ -199,6 +381,15 @@ public abstract class jjEncoderAuto extends LinearOpMode {
         robot.leftBack.setPower(0);
         robot.rightFront.setPower(0);
         robot.rightBack.setPower(0);
+    }
+    void tagToTelemetry(AprilTagDetection detection) {
+        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+        telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Y: %.2f feet", detection.pose.y * FEET_PER_METER));
+        telemetry.addLine(String.format("Translation Z: %.2f feet", detection.pose.z * FEET_PER_METER));
+        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
+        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
+        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 }
 

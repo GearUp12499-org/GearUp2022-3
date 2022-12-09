@@ -22,6 +22,8 @@ public class GearUpHardware {
     public DcMotor rightBack;
     public DcMotor vLiftLeft;
     public DcMotor vLiftRight;
+    public DcMotor turret;
+    public DcMotor hLift;
     public static Encoder encoderLeft;
     public static Encoder encoderRight;
     public static Encoder encoderRear;
@@ -78,6 +80,18 @@ public class GearUpHardware {
         vLiftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         vLiftRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         vLiftRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        turret= hwMap.get(DcMotorEx.class, "turret");
+        turret.setDirection(DcMotorSimple.Direction.FORWARD);
+        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        hLift= hwMap.get(DcMotorEx.class, "liftHorizontal");
+        hLift.setDirection(DcMotorSimple.Direction.FORWARD);
+        hLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        hLift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        hLift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         servo = hwMap.get(Servo.class, "servo");
         servo.setPosition(0.1);
 
