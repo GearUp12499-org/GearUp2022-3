@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.lib;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class InstanceEdgeHack {
     private static final Map<StackTraceElement, Boolean> lastState = new HashMap<>();
@@ -37,7 +38,7 @@ public class InstanceEdgeHack {
         StackTraceElement el = getCallSource();
         boolean result = false;
         if (lastState.containsKey(el)) {
-            result = !value && Boolean.TRUE.equals(lastState.get(el));
+            result = !Objects.equals(lastState.get(el), value);
         }
         lastState.put(el, value);
         return result;
