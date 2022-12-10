@@ -45,7 +45,7 @@ public class Lift {
         liftHorizontal.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         servo = hardwareMap.get(Servo.class, "servo");
-        servo.setPosition(0.1);
+        servo.setPosition(0.25);
     }
 
     public void update() {
@@ -111,11 +111,11 @@ public class Lift {
     }
 
     public void closeClaw() {
-        servo.setPosition(0.65);
+        servo.setPosition(0.52);
     }
 
     public void openClaw() {
-        servo.setPosition(0.2);
+        servo.setPosition(0.25);
     }
 
     public boolean isExtended() {

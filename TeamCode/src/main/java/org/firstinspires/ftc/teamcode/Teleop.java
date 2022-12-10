@@ -11,6 +11,7 @@ import static java.util.Collections.swap;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="TeleOp")
@@ -126,7 +127,7 @@ public class Teleop extends LinearOpMode {
         // CLAW
         if (gamepad1.left_bumper && !lastLeftBumper1) {
             l.closeClaw();
-            sleep(1000);
+            sleep(600);
             l.moveVertical(300);
         }
         else if (gamepad1.right_bumper) l.openClaw();
@@ -140,16 +141,32 @@ public class Teleop extends LinearOpMode {
     ////////////////////////////////////////////////////////////////////
 
     public void turret() {
+        int b = 0;
         if (l.liftVertical1.getCurrentPosition() < TURRET_THRESHOLD)
             return;
 
-        double speed = gamepad2.left_stick_x * 0.25;
+        double speed = gamepad2.left_stick_x * 0.5; //Math.pow(gamepad2.left_stick_x, 2);
         int now = turret.getCurrentPosition() - turret_center;
-        if ((speed < 0 && now > -TURRET_DELTA) || (speed > 0 && now < TURRET_DELTA))
-            turret.setPower(speed);
-        else
-            turret.setPower(0);
-
+        //if ((speed < 0 && now > -TURRET_DELTA) || (speed > 0 && now < TURRET_DELTA))
+        turret.setPower(speed);
+        //else
+        //turret.setPower(0);
+        // if(turret.getCurrentPosition() == 0)
+        //   turret.setPower(0);
+        /*if(gamepad2.b){
+            //runtime.reset();
+            b =1;
+            if(turret.getCurrentPosition() > 0){
+                turret.setTargetPosition(turret_center);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(-0.5);
+            }
+            else if(turret.getCurrentPosition() < 0){
+                turret.setTargetPosition(0);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(0.5);
+            }
+        }*/
         telemetry.addData("turret center:", turret_center);
         telemetry.addData("turret position:", now);
         telemetry.addData("turret speed:", speed);

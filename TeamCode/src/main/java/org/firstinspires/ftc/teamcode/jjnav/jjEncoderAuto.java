@@ -214,43 +214,47 @@ public abstract class jjEncoderAuto extends LinearOpMode {
                 sleep(20);
             }
 
-            robot.servo.setPosition(1);
-            sleep(2000);
-            robot.vLiftLeft.setTargetPosition(800);
-            robot.vLiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.vLiftLeft.setPower(-1);
-            robot.vLiftRight.setTargetPosition(800);
-            robot.vLiftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.vLiftRight.setPower(-1);
+
+
+            robot.servo.setPosition(.52);
             sleep(2000);
 
-            driveStraight(0.3,0.3,0.3,0.3, 95000); //commented out to test lift/gripper, but this is right distance from wall to center of second tile.
+            robot.vLiftLeft.setTargetPosition(800);
+            robot.vLiftLeft.setPower(-1);
+            robot.vLiftRight.setPower(-1);
+            sleep(2000);
+            robot.vLiftRight.setPower(0);
+
+            //robot.rightBack.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            if(a ==1)
+                driveStrafe(0.3, 1, 40000);
+            if(a == 3)
+                driveStrafe(0.3,-1, 42000);
+            driveStraight(0.3,0.3,0.3,0.3, 49000); //commented out to test lift/gripper, but this is right distance from wall to center of second tile.
             robot.leftFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             robot.rightFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             sleep(200);
-            driveStraight(-0.5,-0.5,-0.5,-0.5, -3000);
-
             runtime.reset();
-            if(a==1){
-                while(runtime.seconds()<1.75) {
-                    robot.leftFront.setPower(-0.3);
-                    robot.leftBack.setPower(0.3);
-                    robot.rightFront.setPower(0.3);
-                    robot.rightBack.setPower(-0.3);
-                }
+            if (a ==2) {
+                while (runtime.seconds() < 1)
+                    driveStraight(-0.5, -0.5, -0.5, -0.5, -3000);
             }
-            if(a==3){
-                while(runtime.seconds()<1.75) {
-                    robot.leftFront.setPower(0.3);
-                    robot.leftBack.setPower(-0.3);
-                    robot.rightFront.setPower(-0.3);
-                    robot.rightBack.setPower(0.3);
-                }
-            }
+            /*robot.leftFront.setPower(0);
+            robot.leftBack.setPower(0);
+            robot.rightFront.setPower(0);
+            robot.rightBack.setPower(0);*/
+            runtime.reset();
             robot.leftFront.setPower(0);
+
             robot.leftBack.setPower(0);
             robot.rightFront.setPower(0);
             robot.rightBack.setPower(0);
+            robot.vLiftLeft.setTargetPosition(0);
+            robot.vLiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.vLiftLeft.setPower(1);
+            robot.vLiftRight.setPower(1);
+            sleep(2000);
+            robot.vLiftRight.setPower(0);
            /* while(runtime.seconds()<2.5);
                 driveStraight(-0.5,-0.5,-0.5,-0.5, -3000);*/
             //if ( a == 1)
@@ -261,8 +265,9 @@ public abstract class jjEncoderAuto extends LinearOpMode {
                // driveStrafe(0.3,-1,40000);
             telemetry.addData("a:" , a);
             telemetry.update();
-            //driveStrafe(0.3,'l',50000);
 
+            //driveStrafe(0.3,'l',50000);
+            robot.servo.setPosition(.25);
             sleep(2000);
             /* this code raises the lift to the right height, and turns turret, it is ready to score if we want to do it,
              robot.vLiftLeft.setTargetPosition(3100);
@@ -288,49 +293,44 @@ public abstract class jjEncoderAuto extends LinearOpMode {
         // sets power for all drive motors
 
         double posS = 0; //position of the lateral encoder
-
+        double posR = 0;
+        double posL = 0;
         double lf = 0;
         double rf = 0;
         double lb = 0;
         double rb = 0;
+        double mult = 1.0018;
+        double mult2 = 1.000;
 
+        lf = -speed * d;
+        lb = speed * d;
+        rf = speed * d;
+        rb = -speed * d;
 
-
-        if(d == 1){
-            lf = -speed;
-            lb = speed;
-            rf = speed;
-            rb = -speed;
-        }
-        if(d == -1){
-            lf = speed;
-            lb = -speed;
-            rf = -speed;
-            rb = speed;
-        }
         runtime.reset();
         while(Math.abs(posS)<distance){//Math.abs(posS)<distance
             posS = encoderRear.getCurrentPosition();
-            //posR = encoderRight.getCurrentPosition();
-            //posL = encoderLeft.getCurrentPosition();
+            posR = encoderRight.getCurrentPosition();
+            posL = encoderLeft.getCurrentPosition();
             robot.leftFront.setPower(lf);
             robot.leftBack.setPower(lb);
             robot.rightFront.setPower(rf);
             robot.rightBack.setPower(rb);
             telemetry.addData("EncoderRear:", posS);
             //telemetry.addData("Encoder Left:", posL);
-            /*if(posR < posL){
-                rf = rf*mult2;
-                rb = rb*mult;
-                lf = lf*mult;
-                lb = lb*mult2;
+            if(d == -1) {
+                if (posR < posL) {
+                   // rf = rf * mult2;
+                    rb = rb * mult;
+                    //lf = lf * mult;
+                    lb = lb * mult;
+                } else {
+                    lf = lf * mult;
+                    //lb = lb * mult2;
+                    rf = rf * mult2; //mult2 is so that the robot doesn't become too tilted,
+                    //rb = rb * mult;
+                }
             }
-            else{
-                lf = lf*mult;
-                lb = lb*mult2;
-                rf = rf*mult2; //mult2 is so that the robot doesn't become too tilted,
-                rb = rb*mult;
-            }*/
             telemetry.update();
         }
         robot.leftFront.setPower(0);
