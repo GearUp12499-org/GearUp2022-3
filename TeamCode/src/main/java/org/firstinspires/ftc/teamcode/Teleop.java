@@ -108,12 +108,12 @@ public class Teleop extends LinearOpMode {
         if (InstanceEdgeHack.isRisingEdge(gamepad2.back)) {
             l.liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             l.liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            l.liftVertical1.setPower(-0.25);
-            l.liftVertical2.setPower(-0.25); // slowly move down
+            l.liftVertical1.setPower(Lift.POWER_DOWN / 2.0);
+            l.liftVertical2.setPower(Lift.POWER_DOWN / 2.0); // slowly move down
         }
         if (InstanceEdgeHack.isFallingEdge(gamepad2.back)) {
             l.liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            l.liftVertical1.setPower(1);
+            l.liftVertical1.setPower(Lift.POWER_UP);
             l.liftVertical1.setTargetPosition(0);
             l.liftVertical1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             l.liftVertical2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
