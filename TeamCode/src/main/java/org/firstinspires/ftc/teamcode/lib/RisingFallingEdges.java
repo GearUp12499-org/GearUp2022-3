@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class InstanceEdgeHack {
+public class RisingFallingEdges {
     private static final Map<StackTraceElement, Boolean> lastState = new HashMap<>();
 
     private static StackTraceElement getCallSource() {
         Thread thread = Thread.currentThread();
         // Get first stack frame that is *not* in this class
         for (StackTraceElement stackElement : thread.getStackTrace()) {
-            if (stackElement.getClassName().equals(InstanceEdgeHack.class.getName())) continue;
+            if (stackElement.getClassName().equals(RisingFallingEdges.class.getName())) continue;
             return stackElement;
         }
         throw new RuntimeException("cannot find call context");

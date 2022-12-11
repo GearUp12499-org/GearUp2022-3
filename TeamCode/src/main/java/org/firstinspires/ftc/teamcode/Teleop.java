@@ -7,14 +7,11 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 
-import static java.util.Collections.swap;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.lib.InstanceEdgeHack;
+import org.firstinspires.ftc.teamcode.lib.RisingFallingEdges;
 
 @TeleOp(name="TeleOp")
 public class Teleop extends LinearOpMode {
@@ -105,13 +102,13 @@ public class Teleop extends LinearOpMode {
 
     public void lift() {
         // TODO make dpad not go BRRRRRRRRRRRRRRRRRRRRRR
-        if (InstanceEdgeHack.isRisingEdge(gamepad2.back)) {
+        if (RisingFallingEdges.isRisingEdge(gamepad2.back)) {
             l.liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             l.liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             l.liftVertical1.setPower(Lift.POWER_DOWN / 2.0);
             l.liftVertical2.setPower(Lift.POWER_DOWN / 2.0); // slowly move down
         }
-        if (InstanceEdgeHack.isFallingEdge(gamepad2.back)) {
+        if (RisingFallingEdges.isFallingEdge(gamepad2.back)) {
             l.liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             l.liftVertical1.setPower(Lift.POWER_UP);
             l.liftVertical1.setTargetPosition(0);
