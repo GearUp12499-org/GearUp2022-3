@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
@@ -42,6 +43,7 @@ public class GearUpHardware {
             leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         } catch (IllegalArgumentException ignore) {
+            RobotLog.w("Failed to connect leftFront DcMotor");
         }
 
         try {
@@ -51,6 +53,7 @@ public class GearUpHardware {
             rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (IllegalArgumentException ignore) {
+            RobotLog.w("Failed to connect rightFront DcMotor");
         }
 
         try {
@@ -61,6 +64,7 @@ public class GearUpHardware {
             leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         } catch (IllegalArgumentException ignore) {
+            RobotLog.w("Failed to connect leftBack DcMotor");
         }
         try {
             rightBack = hwMap.get(DcMotorEx.class, "rightBack");
@@ -69,6 +73,7 @@ public class GearUpHardware {
             rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (IllegalArgumentException ignore) {
+            RobotLog.w("Failed to connect rightBack DcMotor");
         }
         vLiftLeft= hwMap.get(DcMotorEx.class, "lift1");
         vLiftLeft.setDirection(DcMotorSimple.Direction.REVERSE);

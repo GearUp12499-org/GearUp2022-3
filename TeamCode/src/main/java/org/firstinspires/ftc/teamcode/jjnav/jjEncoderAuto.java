@@ -159,7 +159,15 @@ public abstract class jjEncoderAuto extends LinearOpMode {
 
 //----------------------------------------------------------------------------------------------------------------
         if (position.equals("encoderDriveTest")){
-          int a = 2; //counter for where to go
+           /* runtime.reset();
+            while(runtime.seconds()< 2.5) {
+                robot.vLiftLeft.setTargetPosition(800);
+                robot.vLiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.vLiftLeft.setPower(-1);
+                //robot.vLiftRight.setPower(-1);
+            }*/
+
+            int a = 2; //counter for where to go
             runtime.reset();
            while (runtime.seconds()<3) {
                 ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -218,31 +226,44 @@ public abstract class jjEncoderAuto extends LinearOpMode {
 
             robot.servo.setPosition(.52);
             sleep(2000);
-
-            robot.vLiftLeft.setTargetPosition(800);
-            robot.vLiftLeft.setPower(-1);
-            robot.vLiftRight.setPower(-1);
-            sleep(2000);
+            runtime.reset();
+            while(runtime.seconds()< 2.5) {
+                robot.vLiftLeft.setTargetPosition(800);
+                robot.vLiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.vLiftLeft.setPower(-1);
+                //robot.vLiftRight.setPower(-1);
+            }
+            sleep(3000);
             robot.vLiftRight.setPower(0);
-
+            driveStraight(0.3,0.3,0.3,0.3, 5000);
             //robot.rightBack.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            if(a ==1)
-                driveStrafe(0.3, 1, 40000);
-            if(a == 3)
-                driveStrafe(0.3,-1, 42000);
-            driveStraight(0.3,0.3,0.3,0.3, 49000); //commented out to test lift/gripper, but this is right distance from wall to center of second tile.
+            if(a ==1) {
+                driveStrafe(0.3, 1, 44000);
+                driveStraight(0.3, 0.3, 0.3, 0.3, 49000);
+            }
+            else if(a == 3) {
+                runtime.reset();
+                //while(runtime.seconds()<3)
+                    driveStrafe(0.3, -1, 45500);
+                driveStraight(0.3, 0.3, 0.3, 0.3, 49000); //commented out to test lift/gripper, but this is right distance from wall to center of second tile.
+            }
+            else{
+                driveStraight(0.3, 0.3, 0.3, 0.3, 53000); //commented out to test lift/gripper, but this is right distance from wall to center of second tile.
+
+            }
             robot.leftFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             robot.rightFront.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+           // robot.rightFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+            //robot.leftFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+
             sleep(200);
             runtime.reset();
             if (a ==2) {
-                while (runtime.seconds() < 1)
-                    driveStraight(-0.5, -0.5, -0.5, -0.5, -3000);
+                while (runtime.seconds() < 2.25)
+                    driveStraight(-0.5, -0.5, -0.5, -0.5, -7000);
             }
-            /*robot.leftFront.setPower(0);
-            robot.leftBack.setPower(0);
-            robot.rightFront.setPower(0);
-            robot.rightBack.setPower(0);*/
+
             runtime.reset();
             robot.leftFront.setPower(0);
 
@@ -252,17 +273,9 @@ public abstract class jjEncoderAuto extends LinearOpMode {
             robot.vLiftLeft.setTargetPosition(0);
             robot.vLiftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.vLiftLeft.setPower(1);
-            robot.vLiftRight.setPower(1);
+            //robot.vLiftRight.setPower(1);
             sleep(2000);
             robot.vLiftRight.setPower(0);
-           /* while(runtime.seconds()<2.5);
-                driveStraight(-0.5,-0.5,-0.5,-0.5, -3000);*/
-            //if ( a == 1)
-                //robot.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                //driveStrafe(0.3,1,40000);
-
-          //  else if(a==3)
-               // driveStrafe(0.3,-1,40000);
             telemetry.addData("a:" , a);
             telemetry.update();
 
@@ -299,7 +312,7 @@ public abstract class jjEncoderAuto extends LinearOpMode {
         double rf = 0;
         double lb = 0;
         double rb = 0;
-        double mult = 1.0018;
+        double mult = 1.0012;
         double mult2 = 1.000;
 
         lf = -speed * d;
