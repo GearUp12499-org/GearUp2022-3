@@ -25,7 +25,7 @@ public class Lift {
     public Lift(HardwareMap hardwareMap) {
         liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
         liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftVertical1.setPower(1);
+        liftVertical1.setPower(0.5);
         liftVertical1.setTargetPosition(0);
         liftVertical1.setDirection(DcMotorSimple.Direction.REVERSE);
         liftVertical1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
