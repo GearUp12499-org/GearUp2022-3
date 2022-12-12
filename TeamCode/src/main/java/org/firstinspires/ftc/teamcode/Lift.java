@@ -16,6 +16,9 @@ public class Lift {
     public final DcMotor liftVertical2;
     public final DcMotor liftHorizontal;
 
+    public static final double POWER_UP = 0.8;
+    public static final double POWER_DOWN = -0.5;
+
     public final Servo servo;
     
     private static int clamp(int value, int min, int max) {
@@ -25,7 +28,7 @@ public class Lift {
     public Lift(HardwareMap hardwareMap) {
         liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
         liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftVertical1.setPower(0.5);
+        liftVertical1.setPower(POWER_UP);
         liftVertical1.setTargetPosition(0);
         liftVertical1.setDirection(DcMotorSimple.Direction.REVERSE);
         liftVertical1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -50,11 +53,15 @@ public class Lift {
 
     public void update() {
         if (liftVertical1.getCurrentPosition() > targetVerticalCount + 20)
-            liftVertical2.setPower(-1);
+            liftVertical2.setPower(POWER_DOWN);
         else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 20)
-            liftVertical2.setPower(1);
+            liftVertical2.setPower(POWER_UP);
         else
             liftVertical2.setPower(0);
+        if (liftVertical1.getCurrentPosition() > targetVerticalCount)
+            liftVertical1.setPower(POWER_DOWN);
+        else if (liftVertical1.getCurrentPosition() < targetVerticalCount)
+            liftVertical1.setPower(POWER_UP);
     }
 
     public void updTargets() {
