@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
-public class GoBuildaV5MotorConf implements RobotConfig.MotorConfiguration {
+public class MotorConfiguration implements RobotConfig.MotorConfiguration {
     private DcMotorEx leftFront = null;
     private DcMotorEx leftRear = null;
     private DcMotorEx rightFront = null;
