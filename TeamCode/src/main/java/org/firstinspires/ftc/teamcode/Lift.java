@@ -128,4 +128,9 @@ public class Lift {
     public boolean isExtended() {
         return (currentVerticalTarget != LOWER_VERTICAL_BOUND || liftVertical1.getPower() == 0);
     }
+
+    public boolean isSatisfiedVertically() {
+        final int MAX_FUDGERY = 100;
+        return Math.abs(targetVerticalCount - liftVertical1.getCurrentPosition()) < MAX_FUDGERY;
+    }
 }

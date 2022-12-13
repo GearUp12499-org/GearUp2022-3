@@ -11,8 +11,17 @@ public class DetectPoleTest extends LinearOpMode {
         SharedHardware.prepareHardware(hardwareMap);
         IOControl io = new IOControl(hardwareMap);
         DetectPoleOneSensor dpos = new DetectPoleOneSensor(SharedHardware.turret, io.distSensorM, 300);
+        Lift l = new Lift(hardwareMap);
+        l.closeClaw();
         waitForStart();
+        l.setVerticalTarget(2);
+        while (!l.isSatisfiedVertically() && opModeIsActive()) {
+            l.update();
+            telemetry.addLine("Waiting on lift...");
+            telemetry.update();
+        }
         while (opModeIsActive()) {
+            l.update();
             telemetry.addData("State", dpos.state);
             telemetry.addData("Last Distance", dpos.lastDist);
             DetectPoleOneSensor.Result result = dpos.getResult();
