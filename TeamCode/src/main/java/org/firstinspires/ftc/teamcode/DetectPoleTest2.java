@@ -38,7 +38,7 @@ public class DetectPoleTest2 extends LinearOpMode {
                 detector.stateChange(DetectPoleV2.State.IDLE);  // force reset
             }
             if (gamepad2.y) {
-                SharedHardware.turret.setPower(gamepad2.left_stick_x);
+                SharedHardware.turret.setPower(gamepad2.left_stick_x * 0.5);
             }
             if (isFallingEdge(gamepad2.y)) {
                 SharedHardware.turret.setPower(0);
