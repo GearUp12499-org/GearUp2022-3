@@ -26,16 +26,60 @@ public class DetectConeStack extends LinearOpMode {
 
         boolean initPosCompleted = false;
         boolean sweepCompleted = false;
+        double min_dist = -1;
+
+        int init_pos = -200; // "initialization" position (move to the right at first)
+        int sweep_pos = 200; // final sweep position (sweep from right to left)
+        int fudge = 10;
 
         ArrayList<Double> distances = new ArrayList<>();
         HashMap<Double, Double> encoderCounts = new HashMap<>();
-        int debug = -1;
-        double min_dist = -1;
+
         l.closeClaw();
+        sleep(600);
+
         waitForStart();
 
         while (opModeIsActive()) {
             double turretPos = turret.getCurrentPosition();
+
+            if (!initPosCompleted && !sweepCompleted) {
+                turret.setTargetPosition(init_pos);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(-0.5);
+
+                if (turretPos < init_pos + fudge && turretPos > init_pos - fudge) {
+                    initPosCompleted = true;
+                } else {
+                    // TODO
+                }
+            } else if (initPosCompleted && !sweepCompleted) {
+
+                //sweep
+                turret.setTargetPosition(sweep_pos);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(0.25);
+
+                //record
+                double distance = distanceSensor.getDistance(DistanceUnit.MM);
+                distances.add(distance);
+                encoderCounts.put(distance, turretPos);
+
+                if (turretPos < sweep_pos + fudge && turretPos > sweep_pos - fudge) {
+                    sweepCompleted = true;
+                } else {
+                    // TODO
+                }
+            } else {
+                min_dist = min(distances);
+                double target_turret_pos = encoderCounts.get(min_dist);
+
+                turret.setTargetPosition((int) target_turret_pos);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(0.25);
+            }
+
+            /*
             if (initPosCompleted && sweepCompleted){
                 min_dist = encoderCounts.get(min(distances));
 
@@ -75,15 +119,9 @@ public class DetectConeStack extends LinearOpMode {
                 }
             }
 
-            telemetry.addData("max", min_dist);
+            */
 
-            telemetry.addData("initPosCompleted", initPosCompleted);
-            telemetry.addData("turret.getCurrentPosition()", turret.getCurrentPosition());
-
-            telemetry.addData("distance", distances);
-            telemetry.addData("encoderCounts", encoderCounts);
-            telemetry.addData("debug", debug);
-
+            telemetry.addData("min_dist", min_dist);
             telemetry.update();
         }
     }
