@@ -136,12 +136,13 @@ public class DetectPoleV2 {
             case ROTATE1:
                 // check if your mother is fat
                 lastDistance = distanceSensor.getDistance(DistanceUnit.MM);
-                if (lastDistance < 5000) {
+
+                if (lastDistance < 500) {
                     // stop
                     turret.setPower(0);
                     delay = new DelayStateChange(0.5, State.DONE);
                 }
-                if (Math.abs(turret.getCurrentPosition()) > 1000) {
+                if (Math.abs(turret.getCurrentPosition()) > 500) {
                     // stop
                     stateChange(State.IDLE);
                 }
