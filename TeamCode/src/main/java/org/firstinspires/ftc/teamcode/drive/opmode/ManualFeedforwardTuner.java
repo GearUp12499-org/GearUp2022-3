@@ -68,7 +68,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     "when using the built-in drive motor velocity PID.");
         }
 
-//        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry()); //controls the telemetry options that are displayed as checkboxes for graph for ftc dash
 
         drive = new SampleMecanumDrive(hardwareMap);
 
