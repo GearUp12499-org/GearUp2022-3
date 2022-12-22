@@ -89,7 +89,7 @@ public class ConeDetectAutoRR extends LinearOpMode {
         waitForStart();
         l.closeClaw();
         sleep(500);
-        l.moveVertical(300); // lift claw so cone does not drag ground
+        l.moveVertical(00); // lift claw so cone does not drag ground
 
         /*
         Map<Integer, Integer> hist = new HashMap<Integer, Integer>() {
