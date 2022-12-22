@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
+import static org.firstinspires.ftc.teamcode.SharedHardware.*;
+
+import android.annotation.SuppressLint;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -10,6 +14,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.DetectPoleV2;
+import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -19,8 +25,8 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
-@Autonomous(name="RR AUTO" , group="GearUp")
 
+@Autonomous(name="RR AUTO" , group="GearUp")
 public class rrAutoComp3 extends LinearOpMode {
     public static double SPEED = 40;
     public static double DIST_FIRST = 2;
@@ -53,19 +59,29 @@ public class rrAutoComp3 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        l = new Lift(hardwareMap);
-        liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
-        liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftVertical1.setTargetPosition(0);
-        liftVertical1.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftVertical1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        liftVertical2 = hardwareMap.get(DcMotor.class, "lift2");
-        liftVertical2.setPower(0);
-        liftVertical2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        // expose the hardware to the rest of the code (mainly 'turret' for now)
+        prepareHardware(hardwareMap);
+        l = new Lift(hardwareMap);
+        IOControl io = new IOControl(hardwareMap);
+        DetectPoleV2 detector = new DetectPoleV2(turret, io.distSensorM, l, true);
+
+        /**
+         * FIXME: why is this here?
+         * @see org.firstinspires.ftc.teamcode.Lift#Lift(com.qualcomm.robotcore.hardware.HardwareMap)
+         */
+//        liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
+//        liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        liftVertical1.setTargetPosition(0);
+//        liftVertical1.setDirection(DcMotorSimple.Direction.REVERSE);
+//        liftVertical1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//        liftVertical2 = hardwareMap.get(DcMotor.class, "lift2");
+//        liftVertical2.setPower(0);
+//        liftVertical2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -86,7 +102,7 @@ public class rrAutoComp3 extends LinearOpMode {
         telemetry.setMsTransmissionInterval(50);
         l.openClaw();
         waitForStart();
-        if (position.equals("rrautotest")) {
+        if (position.equals("rrautotest")) {  // set by extending classes
             int a = 2; //counter for where to go
             runtime.reset();
             while (runtime.seconds()<0.5) {
@@ -143,11 +159,18 @@ public class rrAutoComp3 extends LinearOpMode {
             }
             l.closeClaw();
             sleep(250);
-            liftVertical1.setTargetPosition(800);
-            liftVertical1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            liftVertical1.setPower(-1);
-            while(liftVertical1.getCurrentPosition()<800)
-                liftVertical2.setPower(1);
+
+            l.setVerticalTargetManual(800); // look, APIs exist for a reason (btw this one is new)
+
+            while (!l.isSatisfiedVertically()) {
+                telemetry.addLine("Waiting for lift...");
+                telemetry.addData("Current Position", l.liftVertical1.getCurrentPosition());
+                telemetry.addData("Goal", l.targetVerticalCount);
+                telemetry.update();
+                l.update();
+            }
+
+            // TrajectorySequenceBuilder is better tbh -Miles
             ArrayList<Trajectory> trags = new ArrayList<>();
             trags.add(drive.trajectoryBuilder(new Pose2d())
                     .forward(51,
@@ -159,9 +182,24 @@ public class rrAutoComp3 extends LinearOpMode {
             for (Trajectory t : trags) {
                 drive.followTrajectory(t);
             }
+
+            // NEW: Pole scanner
+            detector.beginScan(DetectPoleV2.RotateDirection.CW);
+            // DONE = done
+            // IDLE = something broke :(
+            while (detector.getState() != DetectPoleV2.State.DONE && opModeIsActive() && detector.getState() != DetectPoleV2.State.IDLE) {
+                detector.run();
+                l.update();
+                telemetry.addData("Current state", detector.getState());
+                telemetry.addData("Current reading", detector.lastDistance);
+                telemetry.update();
+            }
+
+            while (opModeIsActive()) ; // wait for the match to end
         }
     }
     //--------------------------------------------------------------
+    @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection) {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));

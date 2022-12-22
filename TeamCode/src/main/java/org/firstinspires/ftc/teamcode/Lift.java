@@ -107,6 +107,16 @@ public class Lift {
         updTargets();
     }
 
+    public void setVerticalTargetManual(int target) {
+        targetVerticalCount = target;
+        updTargets();
+    }
+
+    public void setHorizontalTargetManual(int target) {
+        targetHorizontalCount = target;
+        updTargets();
+    }
+
     public void moveVertical(int delta) {
         targetVerticalCount += delta;
         updTargets();
