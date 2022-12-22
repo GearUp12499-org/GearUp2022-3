@@ -11,8 +11,18 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.lib.Consumer;
 
 public class DetectPoleV2 {
+    /**
+     * DO NOT:
+     * <ul>
+     *  <li>call changeState(...) every loop</li>
+     *  <li>use State.DONE to request that the scanner drop control of the turret</li>
+     *  <li>spam State.IDLE to stop the turret (just turn off the power manually)</li>
+     * </ul>
+     */
     public final DcMotor turret;
     public final DistanceSensor distanceSensor;
+    public final Lift liftController;
+    public final boolean extraActions;
     public double lastDistance;
 
     public State getState() {
@@ -26,10 +36,18 @@ public class DetectPoleV2 {
     }
 
     public enum State {
+        /* Result states */
         IDLE,
-        WAITING,
+        WAITING, /* USED INTERNALLY DO NOT DELETE */
         BEGIN,
-        DONE, ROTATE1
+        DONE,
+
+        /* Action states; first to last */
+        LIFT_UP1,
+        ROTATE1, /* This is the only one that runs with extraActions == false */
+        LIFT_UP2,
+        CLAW_OPEN,
+        LIFT_DOWN
     }
 
     public static final Map<State, Consumer<DetectPoleV2>> ON_ENTER_DEFAULTS = new HashMap<>();
@@ -37,25 +55,53 @@ public class DetectPoleV2 {
 
     public static final double SPEED = 0.5;
 
-    static {
+    // Static class initializer; runs once when the class is loaded
+    static {   // Debugging? This block is called <clinit>
         ON_ENTER_DEFAULTS.put(State.IDLE, o -> {
             o.turret.setPower(0); // Force stop
         });
         ON_ENTER_DEFAULTS.put(State.DONE, o -> {
-            o.turret.setPower(0); // Stop
+            o.turret.setPower(0); // Stop as well
         });
-        ON_ENTER_DEFAULTS.put(State.BEGIN, o -> o.stateChange(State.ROTATE1));  // Change entrypoint
+        ON_ENTER_DEFAULTS.put(State.BEGIN, o -> o.stateChange(o.extraActions ? State.LIFT_UP1 : State.ROTATE1));  // Change entrypoint here
+
+        ON_ENTER_DEFAULTS.put(State.LIFT_UP1, o -> o.liftController.setVerticalTarget(1));
+
         ON_ENTER_DEFAULTS.put(State.ROTATE1, o -> {
+            o.turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             o.turret.setPower(SPEED * o.rotateDirection.powerModifier);
         });
+
+        ON_ENTER_DEFAULTS.put(State.LIFT_UP2, o -> o.liftController.setVerticalTarget(2));
+
+        ON_ENTER_DEFAULTS.put(State.CLAW_OPEN, o -> {
+            o.liftController.openClaw();
+            o.stateChange(State.LIFT_DOWN);  // One-shot state
+        });
+
+        ON_ENTER_DEFAULTS.put(State.LIFT_DOWN, o -> o.liftController.setVerticalTarget(1));
     }
 
     private final Map<State, Consumer<DetectPoleV2>> onEnter = new HashMap<>(ON_ENTER_DEFAULTS);
     private final Map<State, Consumer<DetectPoleV2>> onExit = new HashMap<>(ON_EXIT_DEFAULTS);
 
-    public DetectPoleV2(DcMotor turret, DistanceSensor distanceSensor) {
+    public DetectPoleV2(DcMotor turret, DistanceSensor distanceSensor, Lift liftController, boolean extraActions) {
         this.turret = turret;
         this.distanceSensor = distanceSensor;
+        this.liftController = liftController;
+        this.extraActions = extraActions;
+    }
+
+    // <init> aliases
+    public DetectPoleV2(DcMotor turret, DistanceSensor distanceSensor, Lift liftController) {
+        this(turret, distanceSensor, liftController, false);
+    }
+
+    public void dropControls() {
+        if (currentState == State.IDLE) {
+            return;
+        }
+        stateChange(State.IDLE);
     }
 
     public void attachOnEnter(State state, Consumer<DetectPoleV2> runnable) {
@@ -117,7 +163,6 @@ public class DetectPoleV2 {
     private DelayStateChange delay = null;
 
     public RotateDirection rotateDirection = RotateDirection.CW;
-    public double rotateSpeed = 0.5;
 
     public void run() {
         if (currentState == State.IDLE) {
@@ -134,19 +179,35 @@ public class DetectPoleV2 {
         }
         switch (currentState) {
             case ROTATE1:
-                // check if your mother is fat
+                // check distance
                 lastDistance = distanceSensor.getDistance(DistanceUnit.MM);
 
                 if (lastDistance < 500) {
                     // stop
                     turret.setPower(0);
-                    delay = new DelayStateChange(0.5, State.DONE);
+                    delay = new DelayStateChange(0.5, extraActions ? State.LIFT_UP2 : State.DONE);
                 }
                 if (Math.abs(turret.getCurrentPosition()) > 500) {
-                    // stop
+                    // give up (fail fast™)
                     stateChange(State.IDLE);
                 }
                 break;
+            case LIFT_UP1:
+                if (liftController.isSatisfiedVertically()) {
+                    stateChange(State.ROTATE1);
+                }
+                break;
+            case LIFT_UP2:
+                if (liftController.isSatisfiedVertically()) {
+                    stateChange(State.CLAW_OPEN);
+                }
+                break;
+            case LIFT_DOWN:
+                if (liftController.isSatisfiedVertically()) {
+                    stateChange(State.DONE);
+                }
+                break;
+
         }
     }
 }
