@@ -150,7 +150,7 @@ public class GoBuildaStraferV5Base implements RobotConfig {
 
     @Override
     public double getEncoderLateralDistance() {
-        return 13.25f;
+        return 13.24f;
     }
 
     @Override

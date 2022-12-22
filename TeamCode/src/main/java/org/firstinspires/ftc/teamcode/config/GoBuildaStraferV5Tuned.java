@@ -18,13 +18,13 @@ public class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
 
     @Override
     public double getTrackWidth() {
-        return 13.4;
+        return 20.0;
     }
 
     @Override
     public double getXMultiplier() {
-        return 1.0074;
-    }
+        return 1.0062;
+    }//1.0074
 
     @Override
     public double getYMultiplier() {
@@ -33,8 +33,8 @@ public class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
 
     @Override
     public double getKV() {
-        return 0.01841;
-    }
+        return 0.02;
+    } //0.01841
 
     @Override
     public double getKA() {
@@ -53,12 +53,12 @@ public class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
 
     @Override
     public PIDCoefficients getHeadingPID() {
-        return new PIDCoefficients(8, 0, 0);
+        return new PIDCoefficients(0, 0, 0);
     }
 
     @Override
     public PIDCoefficients getTranslationalPID() {
-        return new PIDCoefficients(8, 0, 0);
+        return new PIDCoefficients(0, 0, 0);
     }
 
     @Override
