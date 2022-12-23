@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.lib.RisingFallingEdges;
 
 @TeleOp(name="TeleOp")
@@ -21,11 +22,13 @@ public class Teleop extends LinearOpMode {
     public final int TURRET_DELTA = 1500; // STILL HAVE TO TEST
     public int turret_center;
     public boolean forward = true;
+    public IOControl io;
 
     @Override
     public void runOpMode() {
         prepareHardware(hardwareMap);
         l = new Lift(hardwareMap);
+        io = new IOControl(hardwareMap);
         turret_center = turret.getCurrentPosition();
 
         waitForStart();
@@ -97,8 +100,6 @@ public class Teleop extends LinearOpMode {
     /////////////////////////////////////////////////////
 
     private boolean lastLeftBumper1 = false;
-    private boolean lastLeftBumper2 = false;
-    private boolean lastRightBumper2 = false;
 
     public void lift() {
         // TODO make dpad not go BRRRRRRRRRRRRRRRRRRRRRR
@@ -135,8 +136,8 @@ public class Teleop extends LinearOpMode {
         else if (gamepad2.dpad_down)
             l.moveVertical(-10);
 
-        if (gamepad2.right_bumper && !lastRightBumper2) l.retract();
-        else if (gamepad2.left_bumper && !lastLeftBumper2) l.extend();
+        if (RisingFallingEdges.isRisingEdge(gamepad2.right_bumper)) l.retract();
+        else if (RisingFallingEdges.isRisingEdge(gamepad2.left_bumper)) l.extend();
         else if (gamepad2.dpad_right) l.moveHorizontal(-5);
         else if (gamepad2.dpad_left) l.moveHorizontal(5);
 
@@ -150,9 +151,10 @@ public class Teleop extends LinearOpMode {
         else if (gamepad1.right_bumper) l.openClaw();
 
         lastLeftBumper1 = gamepad1.left_bumper;
-        lastLeftBumper2 = gamepad2.left_bumper;
-        lastRightBumper2 = gamepad2.right_bumper;
         l.update();
+
+        telemetry.addData("horizontal slider", l.liftHorizontal.getCurrentPosition());
+        telemetry.addData("sensor read", io.distSensorM.getDistance(DistanceUnit.MM));
     }
 
     ////////////////////////////////////////////////////////////////////
@@ -187,5 +189,6 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("turret center:", turret_center);
         telemetry.addData("turret position:", now);
         telemetry.addData("turret speed:", speed);
+
     }
 }

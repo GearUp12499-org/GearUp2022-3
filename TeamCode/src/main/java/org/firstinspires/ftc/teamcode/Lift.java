@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift {
     public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3100};
-    public static final int[] HORIZONTAL_TARGETS = {0, 200};
+    public static final int[] HORIZONTAL_TARGETS = {0, 220};
     public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 3500;
     public static final int LOWER_HORIZONTAL_BOUND = 0, UPPER_HORIZONTAL_BOUND = 225;
     public int currentVerticalTarget = 0, targetVerticalCount = VERTICAL_TARGETS[0];
@@ -17,6 +17,7 @@ public class Lift {
     public final DcMotor liftHorizontal;
 
     public static final double POWER_UP = 0.8;
+    public static final double POWER_H = 0.8;
     public static final double POWER_DOWN = -0.5;
 
     public final Servo servo;
@@ -41,10 +42,11 @@ public class Lift {
         liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         liftHorizontal = hardwareMap.get(DcMotor.class, "liftHorizontal");
-//        liftHorizontal.setPower(1);
-//        liftHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        liftHorizontal.setTargetPosition(0);
-//        liftHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftHorizontal.setPower(POWER_H);
+        liftHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftHorizontal.setTargetPosition(0);
+        liftHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftHorizontal.setDirection(DcMotorSimple.Direction.REVERSE);
         liftHorizontal.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         servo = hardwareMap.get(Servo.class, "servo");
@@ -142,5 +144,10 @@ public class Lift {
     public boolean isSatisfiedVertically() {
         final int MAX_FUDGERY = 100;
         return Math.abs(targetVerticalCount - liftVertical1.getCurrentPosition()) < MAX_FUDGERY;
+    }
+
+    public boolean isSatisfiedHorizontally() {
+        final int MAX_FUDGERY = 100;
+        return Math.abs(targetHorizontalCount - liftHorizontal.getCurrentPosition()) < MAX_FUDGERY;
     }
 }

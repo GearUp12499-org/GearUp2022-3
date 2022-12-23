@@ -11,6 +11,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.lib.Consumer;
 
 public class DetectPoleV2 {
+    public static int realMMToEncoderH(double mms) {
+        // 220 et => 160 mm
+        //
+        return (int) ((16/22.0) * mms);
+    }
+
+    public static double readMMtoRealMM(double reading) {
+        return reading - 0;
+    }
+
+    private static final int MAX_SCAN_FROM_CENTER = 500;
     /**
      * DO NOT:
      * <ul>
@@ -24,6 +35,7 @@ public class DetectPoleV2 {
     public final Lift liftController;
     public final boolean extraActions;
     public double lastDistance;
+    public double captureDistance;
 
     public State getState() {
         return currentState;
@@ -46,7 +58,9 @@ public class DetectPoleV2 {
         LIFT_UP1,
         ROTATE1, /* This is the only one that runs with extraActions == false */
         LIFT_UP2,
+        EXTEND,
         CLAW_OPEN,
+        RETRACT,
         LIFT_DOWN
     }
 
@@ -72,11 +86,20 @@ public class DetectPoleV2 {
             o.turret.setPower(SPEED * o.rotateDirection.powerModifier);
         });
 
+        ON_EXIT_DEFAULTS.put(State.ROTATE1, o -> o.captureDistance = o.lastDistance);
+
         ON_ENTER_DEFAULTS.put(State.LIFT_UP2, o -> o.liftController.setVerticalTarget(3));
+
+        ON_ENTER_DEFAULTS.put(State.EXTEND, o -> {
+            o.liftController.setHorizontalTargetManual(realMMToEncoderH(readMMtoRealMM(o.captureDistance)));
+        });
 
         ON_ENTER_DEFAULTS.put(State.CLAW_OPEN, o -> {
             o.liftController.openClaw();
-            o.stateChange(State.LIFT_DOWN);  // One-shot state
+        });
+
+        ON_ENTER_DEFAULTS.put(State.RETRACT, o -> {
+            o.liftController.setHorizontalTarget(0);
         });
 
         ON_ENTER_DEFAULTS.put(State.LIFT_DOWN, o -> o.liftController.setVerticalTarget(1));
@@ -187,7 +210,7 @@ public class DetectPoleV2 {
                     turret.setPower(0);
                     delay = new DelayStateChange(0.5, extraActions ? State.LIFT_UP2 : State.DONE);
                 }
-                if (Math.abs(turret.getCurrentPosition()) > 500) {
+                if (Math.abs(turret.getCurrentPosition()) > MAX_SCAN_FROM_CENTER) {
                     // give up (fail fast™)
                     stateChange(State.IDLE);
                 }
@@ -199,7 +222,20 @@ public class DetectPoleV2 {
                 break;
             case LIFT_UP2:
                 if (liftController.isSatisfiedVertically()) {
-                    stateChange(State.CLAW_OPEN);
+                    stateChange(State.EXTEND);
+                }
+                break;
+            case EXTEND:
+                if (liftController.isSatisfiedHorizontally()) {
+                    delay = new DelayStateChange(0.5, State.CLAW_OPEN);
+                }
+                break;
+            case CLAW_OPEN:
+                delay = new DelayStateChange(0.5, State.RETRACT);
+                break;
+            case RETRACT:
+                if (liftController.isSatisfiedHorizontally()) {
+                    delay = new DelayStateChange(0.5, State.LIFT_DOWN);
                 }
                 break;
             case LIFT_DOWN:

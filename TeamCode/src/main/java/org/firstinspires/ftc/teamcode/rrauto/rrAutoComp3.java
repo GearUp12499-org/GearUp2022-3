@@ -160,7 +160,7 @@ public class rrAutoComp3 extends LinearOpMode {
             l.closeClaw();
             sleep(250);
 
-            l.setVerticalTargetManual(800); // look, APIs exist for a reason (btw this one is new)
+            l.setVerticalTargetManual(1500); // look, APIs exist for a reason (btw this one is new)
 
 //            while (!l.isSatisfiedVertically()) {
 //                telemetry.addLine("Waiting for lift...");
@@ -170,7 +170,7 @@ public class rrAutoComp3 extends LinearOpMode {
 //                l.update();
 //            }
 
-            // TrajectorySequenceBuilder is better tbh -Miles
+//             TrajectorySequenceBuilder is better tbh -Miles TODO uncomment
             ArrayList<Trajectory> trags = new ArrayList<>();
             trags.add(drive.trajectoryBuilder(new Pose2d())
                     .forward(51,
@@ -192,6 +192,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.update();
                 telemetry.addData("Current state", detector.getState());
                 telemetry.addData("Current reading", detector.lastDistance);
+                telemetry.addData("Capture reading", detector.captureDistance);
                 telemetry.update();
             }
 
