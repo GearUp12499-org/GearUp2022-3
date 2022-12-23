@@ -162,13 +162,13 @@ public class rrAutoComp3 extends LinearOpMode {
 
             l.setVerticalTargetManual(800); // look, APIs exist for a reason (btw this one is new)
 
-            while (!l.isSatisfiedVertically()) {
-                telemetry.addLine("Waiting for lift...");
-                telemetry.addData("Current Position", l.liftVertical1.getCurrentPosition());
-                telemetry.addData("Goal", l.targetVerticalCount);
-                telemetry.update();
-                l.update();
-            }
+//            while (!l.isSatisfiedVertically()) {
+//                telemetry.addLine("Waiting for lift...");
+//                telemetry.addData("Current Position", l.liftVertical1.getCurrentPosition());
+//                telemetry.addData("Goal", l.targetVerticalCount);
+//                telemetry.update();
+//                l.update();
+//            }
 
             // TrajectorySequenceBuilder is better tbh -Miles
             ArrayList<Trajectory> trags = new ArrayList<>();

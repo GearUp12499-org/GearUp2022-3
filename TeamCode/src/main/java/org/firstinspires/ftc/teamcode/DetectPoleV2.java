@@ -72,7 +72,7 @@ public class DetectPoleV2 {
             o.turret.setPower(SPEED * o.rotateDirection.powerModifier);
         });
 
-        ON_ENTER_DEFAULTS.put(State.LIFT_UP2, o -> o.liftController.setVerticalTarget(2));
+        ON_ENTER_DEFAULTS.put(State.LIFT_UP2, o -> o.liftController.setVerticalTarget(3));
 
         ON_ENTER_DEFAULTS.put(State.CLAW_OPEN, o -> {
             o.liftController.openClaw();
@@ -122,7 +122,7 @@ public class DetectPoleV2 {
         }
     }
 
-    private final class DelayStateChange {
+    final class DelayStateChange {
         private final double seconds;
         private final ElapsedTime timer;
         private final State to;
