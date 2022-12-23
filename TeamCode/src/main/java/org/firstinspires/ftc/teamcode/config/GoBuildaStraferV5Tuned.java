@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 
 public class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
-    public static double SLOWDOWN = 0.5;
+    public static double SLOWDOWN = 1;
 
     @Override
     public double getMaxVel() {
