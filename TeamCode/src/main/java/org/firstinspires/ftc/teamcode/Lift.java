@@ -97,6 +97,14 @@ public class Lift {
         updTargets();
     }
 
+    public void speedVlift(double counts) {
+        while (liftVertical1.getCurrentPosition() < counts){
+            liftVertical1.setPower(1);
+            liftVertical2.setPower(1);
+        }
+        liftVertical1.setPower(0);
+        liftVertical2.setPower(0);
+    }
     public void setVerticalTarget(int index) {
         currentVerticalTarget = index;
         targetVerticalCount = VERTICAL_TARGETS[currentVerticalTarget];

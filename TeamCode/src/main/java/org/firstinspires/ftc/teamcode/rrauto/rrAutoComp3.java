@@ -159,8 +159,8 @@ public class rrAutoComp3 extends LinearOpMode {
             }
             l.closeClaw();
             sleep(250);
-
-            l.setVerticalTargetManual(1500); // look, APIs exist for a reason (btw this one is new)
+            l.speedVlift(1500);
+           // l.setVerticalTargetManual(1500); // look, APIs exist for a reason (btw this one is new)
 
 //            while (!l.isSatisfiedVertically()) {
 //                telemetry.addLine("Waiting for lift...");
