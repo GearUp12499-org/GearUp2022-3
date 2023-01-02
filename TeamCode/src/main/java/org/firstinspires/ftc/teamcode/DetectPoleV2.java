@@ -67,7 +67,7 @@ public class DetectPoleV2 {
     public static final Map<State, Consumer<DetectPoleV2>> ON_ENTER_DEFAULTS = new HashMap<>();
     public static final Map<State, Consumer<DetectPoleV2>> ON_EXIT_DEFAULTS = new HashMap<>();
 
-    public static final double SPEED = 0.5;
+    public static final double SPEED = 0.35;
 
     // Static class initializer; runs once when the class is loaded
     static {   // Debugging? This block is called <clinit>

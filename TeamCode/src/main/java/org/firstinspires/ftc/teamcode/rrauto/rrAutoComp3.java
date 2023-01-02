@@ -104,6 +104,7 @@ public class rrAutoComp3 extends LinearOpMode {
         waitForStart();
         if (position.equals("rrautotest")) {  // set by extending classes
             int a = 2; //counter for where to go
+            /*
             runtime.reset();
             while (runtime.seconds()<0.5) {
                 ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -159,8 +160,9 @@ public class rrAutoComp3 extends LinearOpMode {
             }
             l.closeClaw();
             sleep(250);
-            l.speedVlift(1500);
-           // l.setVerticalTargetManual(1500); // look, APIs exist for a reason (btw this one is new)
+            //l.speedVlift(1500);
+            l.setVerticalTargetManual(2000); // look, APIs exist for a reason (btw this one is new)
+            sleep(600);
 
 //            while (!l.isSatisfiedVertically()) {
 //                telemetry.addLine("Waiting for lift...");
@@ -182,8 +184,13 @@ public class rrAutoComp3 extends LinearOpMode {
             for (Trajectory t : trags) {
                 drive.followTrajectory(t);
             }
-
+*/
             // NEW: Pole scanner
+            l.closeClaw();
+
+            sleep(250);
+            l.setVerticalTargetManual(2000);
+
             detector.beginScan(DetectPoleV2.RotateDirection.CW);
             // DONE = done
             // IDLE = something broke :(
@@ -195,6 +202,8 @@ public class rrAutoComp3 extends LinearOpMode {
                 telemetry.addData("Capture reading", detector.captureDistance);
                 telemetry.update();
             }
+            l.setVerticalTargetManual(3800);
+
 
             while (opModeIsActive()) ; // wait for the match to end
         }
