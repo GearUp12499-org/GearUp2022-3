@@ -9,7 +9,7 @@ public class Lift {
     public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3100};
     public static final int[] HORIZONTAL_TARGETS = {0, 220};
     public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 3500;
-    public static final int LOWER_HORIZONTAL_BOUND = 0, UPPER_HORIZONTAL_BOUND = 225;
+    public static final int LOWER_HORIZONTAL_BOUND = 0, UPPER_HORIZONTAL_BOUND = 500; // was 225
     public int currentVerticalTarget = 0, targetVerticalCount = VERTICAL_TARGETS[0];
     public int currentHorizontalTarget = 0, targetHorizontalCount = HORIZONTAL_TARGETS[0];
     public final DcMotor liftVertical1;
@@ -17,7 +17,7 @@ public class Lift {
     public final DcMotor liftHorizontal;
 
     public static final double POWER_UP = 0.8;
-    public static final double POWER_H = 0.8;
+    public static final double POWER_H = 0.3;
     public static final double POWER_DOWN = -0.5;
 
     public final Servo servo;

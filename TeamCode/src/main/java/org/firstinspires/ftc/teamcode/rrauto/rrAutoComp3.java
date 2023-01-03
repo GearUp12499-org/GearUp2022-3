@@ -200,6 +200,8 @@ public class rrAutoComp3 extends LinearOpMode {
                 telemetry.addData("Current state", detector.getState());
                 telemetry.addData("Current reading", detector.lastDistance);
                 telemetry.addData("Capture reading", detector.captureDistance);
+                telemetry.addData("HTargetPos", l.liftHorizontal.getTargetPosition());
+                telemetry.addData("HCurrenPos", l.liftHorizontal.getCurrentPosition());
                 telemetry.update();
             }
             l.setVerticalTargetManual(3800);

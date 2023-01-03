@@ -14,14 +14,14 @@ public class DetectPoleV2 {
     public static int realMMToEncoderH(double mms) {
         // 220 et => 160 mm
         //
-        return (int) ((16/22.0) * mms);
+        return (int) ((145.0/112) * mms);
     }
 
     public static double readMMtoRealMM(double reading) {
-        return reading - 0;
+        return reading > 600 ? 90 : reading;
     }
 
-    private static final int MAX_SCAN_FROM_CENTER = 500;
+    private static final int MAX_SCAN_FROM_CENTER = 1000;
     /**
      * DO NOT:
      * <ul>
@@ -61,7 +61,9 @@ public class DetectPoleV2 {
         EXTEND,
         CLAW_OPEN,
         RETRACT,
-        LIFT_DOWN
+        LIFT_DOWN,
+
+        RECENTER
     }
 
     public static final Map<State, Consumer<DetectPoleV2>> ON_ENTER_DEFAULTS = new HashMap<>();
@@ -103,6 +105,11 @@ public class DetectPoleV2 {
         });
 
         ON_ENTER_DEFAULTS.put(State.LIFT_DOWN, o -> o.liftController.setVerticalTarget(1));
+
+        ON_ENTER_DEFAULTS.put(State.RECENTER, o -> {
+            o.turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            o.turret.setPower(SPEED * o.rotateDirection.powerModifier * -1);
+        });
     }
 
     private final Map<State, Consumer<DetectPoleV2>> onEnter = new HashMap<>(ON_ENTER_DEFAULTS);
@@ -227,6 +234,7 @@ public class DetectPoleV2 {
                 break;
             case EXTEND:
                 if (liftController.isSatisfiedHorizontally()) {
+//                    stateChange(State.IDLE);
                     delay = new DelayStateChange(0.5, State.CLAW_OPEN);
                 }
                 break;
@@ -240,10 +248,15 @@ public class DetectPoleV2 {
                 break;
             case LIFT_DOWN:
                 if (liftController.isSatisfiedVertically()) {
-                    stateChange(State.DONE);
+                    stateChange(State.RECENTER);
                 }
                 break;
-
+            case RECENTER:
+                if (Math.abs(turret.getCurrentPosition()) <= 10) {
+                    turret.setPower(0);
+                    stateChange(State.IDLE);
+                }
+                break;
         }
     }
 }
