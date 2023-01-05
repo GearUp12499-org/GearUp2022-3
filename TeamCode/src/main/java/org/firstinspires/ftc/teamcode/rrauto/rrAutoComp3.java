@@ -189,23 +189,50 @@ public class rrAutoComp3 extends LinearOpMode {
             l.closeClaw();
 
             sleep(250);
-            l.setVerticalTargetManual(2000);
 
-            detector.beginScan(DetectPoleV2.RotateDirection.CW);
-            // DONE = done
-            // IDLE = something broke :(
-            while (detector.getState() != DetectPoleV2.State.DONE && opModeIsActive() && detector.getState() != DetectPoleV2.State.IDLE) {
-                detector.run();
+            boolean USE_DISTANCE_SENSOR = false; // for testing purposes
+
+            if (USE_DISTANCE_SENSOR) {
+                l.setVerticalTargetManual(2000);
+                detector.beginScan(DetectPoleV2.RotateDirection.CW);
+
+                sleep(500);
+                turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                // DONE = done
+                // IDLE = something broke :(
+                while (detector.getState() != DetectPoleV2.State.DONE && opModeIsActive() && detector.getState() != DetectPoleV2.State.IDLE) {
+                    detector.run();
+                    l.update();
+                    telemetry.addData("Current state", detector.getState());
+                    telemetry.addData("Current reading", detector.lastDistance);
+                    telemetry.addData("Capture reading", detector.captureDistance);
+                    telemetry.addData("HTargetPos", l.liftHorizontal.getTargetPosition());
+                    telemetry.addData("HCurrenPos", l.liftHorizontal.getCurrentPosition());
+                    telemetry.update();
+                }
+                l.setVerticalTargetManual(3800);
+
+            } else {
+                l.setVerticalTarget(3);
                 l.update();
-                telemetry.addData("Current state", detector.getState());
-                telemetry.addData("Current reading", detector.lastDistance);
-                telemetry.addData("Capture reading", detector.captureDistance);
-                telemetry.addData("HTargetPos", l.liftHorizontal.getTargetPosition());
-                telemetry.addData("HCurrenPos", l.liftHorizontal.getCurrentPosition());
-                telemetry.update();
-            }
-            l.setVerticalTargetManual(3800);
+                sleep(300);
+                turret.setTargetPosition(-370);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(0.3);
+                sleep(2500);
+                l.setHorizontalTargetManual(240);
+                sleep(700);
+                l.openClaw();
+                sleep(300);
+                l.closeClaw();
+                l.setHorizontalTarget(0);
 
+                turret.setTargetPosition(0);
+                sleep(500);
+                l.setVerticalTarget(1);
+                l.update();
+            }
 
             while (opModeIsActive()) ; // wait for the match to end
         }

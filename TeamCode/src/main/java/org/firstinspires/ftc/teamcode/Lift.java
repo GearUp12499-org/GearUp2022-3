@@ -16,8 +16,8 @@ public class Lift {
     public final DcMotor liftVertical2;
     public final DcMotor liftHorizontal;
 
-    public static final double POWER_UP = 0.8;
-    public static final double POWER_H = 0.3;
+    public static final double POWER_UP = 1.0;
+    public static final double POWER_H = 0.65;
     public static final double POWER_DOWN = -0.5;
 
     public final Servo servo;
