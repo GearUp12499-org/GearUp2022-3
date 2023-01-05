@@ -190,7 +190,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             sleep(250);
 
-            boolean USE_DISTANCE_SENSOR = false; // for testing purposes
+            boolean USE_DISTANCE_SENSOR = true; // for testing purposes
 
             if (USE_DISTANCE_SENSOR) {
                 l.setVerticalTargetManual(2000);
@@ -209,6 +209,7 @@ public class rrAutoComp3 extends LinearOpMode {
                     telemetry.addData("Capture reading", detector.captureDistance);
                     telemetry.addData("HTargetPos", l.liftHorizontal.getTargetPosition());
                     telemetry.addData("HCurrenPos", l.liftHorizontal.getCurrentPosition());
+                    telemetry.addData("turretPos", turret.getCurrentPosition());
                     telemetry.update();
                 }
                 l.setVerticalTargetManual(3800);

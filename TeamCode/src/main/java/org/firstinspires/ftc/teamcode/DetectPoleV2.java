@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -63,6 +65,8 @@ public class DetectPoleV2 {
         RETRACT,
         LIFT_DOWN,
 
+        ROTATE_TO_STACK,
+
         RECENTER
     }
 
@@ -70,6 +74,8 @@ public class DetectPoleV2 {
     public static final Map<State, Consumer<DetectPoleV2>> ON_EXIT_DEFAULTS = new HashMap<>();
 
     public static final double SPEED = 0.35;
+    public static final int HORIZONTAL_EXTEND_DISTANCE = 215;
+    public static final int CONE_STACK_ROTATE_POS = 1500;
 
     // Static class initializer; runs once when the class is loaded
     static {   // Debugging? This block is called <clinit>
@@ -93,7 +99,8 @@ public class DetectPoleV2 {
         ON_ENTER_DEFAULTS.put(State.LIFT_UP2, o -> o.liftController.setVerticalTarget(3));
 
         ON_ENTER_DEFAULTS.put(State.EXTEND, o -> {
-            o.liftController.setHorizontalTargetManual(realMMToEncoderH(readMMtoRealMM(o.captureDistance)));
+            // o.liftController.setHorizontalTargetManual(realMMToEncoderH(readMMtoRealMM(o.captureDistance)));
+            o.liftController.setHorizontalTargetManual(HORIZONTAL_EXTEND_DISTANCE);
         });
 
         ON_ENTER_DEFAULTS.put(State.CLAW_OPEN, o -> {
@@ -105,6 +112,14 @@ public class DetectPoleV2 {
         });
 
         ON_ENTER_DEFAULTS.put(State.LIFT_DOWN, o -> o.liftController.setVerticalTarget(1));
+
+        ON_ENTER_DEFAULTS.put(State.ROTATE_TO_STACK, o -> {
+            o.turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+            o.turret.setTargetPosition(CONE_STACK_ROTATE_POS);
+            o.turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            o.turret.setPower(SPEED * o.rotateDirection.powerModifier);
+        });
 
         ON_ENTER_DEFAULTS.put(State.RECENTER, o -> {
             o.turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -248,9 +263,13 @@ public class DetectPoleV2 {
                 break;
             case LIFT_DOWN:
                 if (liftController.isSatisfiedVertically()) {
-                    stateChange(State.RECENTER);
+                    delay = new DelayStateChange(1.0, State.ROTATE_TO_STACK);
                 }
                 break;
+            case ROTATE_TO_STACK:
+                if(turret.getCurrentPosition() >= CONE_STACK_ROTATE_POS){
+                    delay = new DelayStateChange(1.0, State.IDLE);
+                }
             case RECENTER:
                 if (Math.abs(turret.getCurrentPosition()) <= 10) {
                     turret.setPower(0);
