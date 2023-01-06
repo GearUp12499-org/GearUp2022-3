@@ -270,6 +270,7 @@ public class DetectPoleV2 {
                 if(turret.getCurrentPosition() >= CONE_STACK_ROTATE_POS){
                     delay = new DelayStateChange(1.0, State.IDLE);
                 }
+                break;
             case RECENTER:
                 if (Math.abs(turret.getCurrentPosition()) <= 10) {
                     turret.setPower(0);
