@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
 import static org.firstinspires.ftc.teamcode.SharedHardware.*;
+import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderLeft;
+import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderRight;
 
 import android.annotation.SuppressLint;
 
@@ -14,6 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.DetectPoleV2;
 import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
@@ -28,7 +31,7 @@ import java.util.ArrayList;
 
 @Autonomous(name="RR AUTO" , group="GearUp")
 public class rrAutoComp3 extends LinearOpMode {
-    public static double SPEED = 40;
+    public static double SPEED = 20; // was 40
     public static double DIST_FIRST = 2;
     public static double DIST_SECOND = 4;
     public static double DIST_THIRD = 6;
@@ -171,11 +174,19 @@ public class rrAutoComp3 extends LinearOpMode {
 //                telemetry.update();
 //                l.update();
 //            }
+*/
 
 //             TrajectorySequenceBuilder is better tbh -Miles TODO uncomment
+
+            l.closeClaw();
+            sleep(500);
+            l.setVerticalTargetManual(850);
+            l.update();
+
+            /*
             ArrayList<Trajectory> trags = new ArrayList<>();
             trags.add(drive.trajectoryBuilder(new Pose2d())
-                    .forward(51,
+                    .forward(50,
                             SampleMecanumDrive.getVelocityConstraint(SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                     .build());
@@ -183,10 +194,9 @@ public class rrAutoComp3 extends LinearOpMode {
 
             for (Trajectory t : trags) {
                 drive.followTrajectory(t);
-            }
-*/
-            // NEW: Pole scanner
-            l.closeClaw();
+            }*/
+
+            // driveStraight(0.5, 0.5, 0.5, 0.5, 50);
 
             sleep(250);
 
@@ -215,22 +225,48 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.setVerticalTargetManual(3800);
 
             } else {
+                int polePos = -370;
+                l.setVerticalTargetManual(1500);
+                sleep(1500);
+                while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
+                    turret.setPower(-0.35);
+                    telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
+                    telemetry.update();
+                }
+                turret.setPower(0);
+
+                sleep(500);
+
+                if (Math.abs(turret.getCurrentPosition()) < 700)
+                    polePos = turret.getCurrentPosition();
+
+                telemetry.addData("polepos:", polePos);
+                telemetry.update();
+
+                /*
+                turret.setTargetPosition(polePos);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(0.3);*/
+
                 l.setVerticalTarget(3);
                 l.update();
-                sleep(300);
-                turret.setTargetPosition(-370);
-                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                turret.setPower(0.3);
+
                 sleep(2500);
                 l.setHorizontalTargetManual(225);
+                l.update();
+
                 sleep(700);
                 l.openClaw();
                 sleep(300);
                 // l.closeClaw();
                 l.setHorizontalTarget(0);
+                l.update();
 
                 for(int i = 0; i < 2; i++) {
                     turret.setTargetPosition(750);
+                    turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    turret.setPower(0.3);
+
                     sleep(500);
                     l.setVerticalTargetManual(700 - (i * 50));
                     l.update();
@@ -245,15 +281,18 @@ public class rrAutoComp3 extends LinearOpMode {
                     l.update();
                     sleep(500);
                     l.setHorizontalTargetManual(0);
+                    l.update();
 
-                    turret.setTargetPosition(-370);
+                    turret.setTargetPosition(polePos);
                     sleep(2000);
                     l.setHorizontalTargetManual(225);
+                    l.update();
                     sleep(650);
                     l.openClaw();
                     sleep(300);
                     // l.closeClaw();
                     l.setHorizontalTarget(0);
+                    l.update();
                 }
 
                 turret.setTargetPosition(0);
@@ -275,5 +314,49 @@ public class rrAutoComp3 extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    }
+
+
+    public void driveStraight(double lf, double lb,
+                              double rf, double rb, double distance) { //leftFront leftBack etc
+        // sets power for all drive motors
+        double posR = 0;
+        double posL = 0;
+        double mult = 1.0025;
+        double mult2 = 1.0008;
+        //encoderRight.setCurrentPosition() = 0;
+        if(Math.abs(distance)<8000){
+            mult = 1;
+            mult2 = 1;
+        }
+        //robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        while(Math.abs((posR+posL)/2)<Math.abs(distance)){
+            posR = encoderRight.getCurrentPosition();
+            posL = encoderLeft.getCurrentPosition();
+            frontLeft.setPower(lf);
+            rearLeft.setPower(lb);
+            frontRight.setPower(rf);
+            rearRight.setPower(rb);
+            telemetry.addData("EncoderRight:", posR);
+            telemetry.addData("Encoder Left:", posL);
+            if(posR < posL){
+                rf = rf*mult;
+                rb = rb*mult;
+                lf = lf*mult2;
+                lb = lb*mult2;
+            }
+            else{
+                lf = lf*mult;
+                lb = lb*mult;
+                rf = rf*mult2; //mult2 is so that the robot doesn't become too tilted,
+                rb = rb*mult2;
+            }
+            telemetry.update();
+        }
+        frontLeft.setPower(0);
+        rearLeft.setPower(0);
+        frontRight.setPower(0);
+        rearRight.setPower(0);
     }
 }
