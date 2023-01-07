@@ -75,7 +75,7 @@ public class DetectPoleV2 {
 
     public static final double SPEED = 0.35;
     public static final int HORIZONTAL_EXTEND_DISTANCE = 215;
-    public static final int CONE_STACK_ROTATE_POS = 1500;
+    public static final int CONE_STACK_ROTATE_POS = 770;
 
     // Static class initializer; runs once when the class is loaded
     static {   // Debugging? This block is called <clinit>

@@ -190,7 +190,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             sleep(250);
 
-            boolean USE_DISTANCE_SENSOR = true; // for testing purposes
+            boolean USE_DISTANCE_SENSOR = false; // for testing purposes
 
             if (USE_DISTANCE_SENSOR) {
                 l.setVerticalTargetManual(2000);
@@ -222,16 +222,43 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
                 sleep(2500);
-                l.setHorizontalTargetManual(240);
+                l.setHorizontalTargetManual(225);
                 sleep(700);
                 l.openClaw();
                 sleep(300);
-                l.closeClaw();
+                // l.closeClaw();
                 l.setHorizontalTarget(0);
+
+                for(int i = 0; i < 2; i++) {
+                    turret.setTargetPosition(750);
+                    sleep(500);
+                    l.setVerticalTargetManual(700 - (i * 50));
+                    l.update();
+                    sleep(3000);
+
+                    l.setHorizontalTargetManual(850);
+                    l.update();
+                    sleep(800);
+                    l.closeClaw();
+                    sleep(500);
+                    l.setVerticalTarget(3);
+                    l.update();
+                    sleep(500);
+                    l.setHorizontalTargetManual(0);
+
+                    turret.setTargetPosition(-370);
+                    sleep(2000);
+                    l.setHorizontalTargetManual(225);
+                    sleep(650);
+                    l.openClaw();
+                    sleep(300);
+                    // l.closeClaw();
+                    l.setHorizontalTarget(0);
+                }
 
                 turret.setTargetPosition(0);
                 sleep(500);
-                l.setVerticalTarget(1);
+                l.setVerticalTarget(0);
                 l.update();
             }
 
