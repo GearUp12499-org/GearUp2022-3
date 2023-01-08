@@ -30,6 +30,7 @@ public class SharedHardware {
             frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             frontLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         } catch (IllegalArgumentException ignore) {
+            throw new RuntimeException("frontLeft not found. is it connected & the configuration correct?");
         }
 
         try {
@@ -39,6 +40,7 @@ public class SharedHardware {
             frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (IllegalArgumentException ignore) {
+            throw new RuntimeException("frontRight not found. is it connected & the configuration correct?");
         }
 
         try {
@@ -49,6 +51,7 @@ public class SharedHardware {
             rearLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         } catch (IllegalArgumentException ignore) {
+            throw new RuntimeException("rearLeft not found. is it connected & the configuration correct?");
         }
         try {
             rearRight = hardwareMap.get(DcMotorEx.class, "rightBack");
@@ -57,6 +60,7 @@ public class SharedHardware {
             rearRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             rearRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (IllegalArgumentException ignore) {
+            throw new RuntimeException("rearRight not found. is it connected & the configuration correct?");
         }
 
         try {
