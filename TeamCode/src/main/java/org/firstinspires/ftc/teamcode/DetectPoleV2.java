@@ -13,17 +13,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.lib.Consumer;
 
 public class DetectPoleV2 {
-    public static int realMMToEncoderH(double mms) {
-        // 220 et => 160 mm
-        //
-        return (int) ((145.0/112) * mms);
-    }
-
-    public static double readMMtoRealMM(double reading) {
-        return reading > 600 ? 90 : reading;
-    }
-
     private static final int MAX_SCAN_FROM_CENTER = 1000;
+
+    private static final int DEFAULT_POS = -370;
+
     /**
      * DO NOT:
      * <ul>
@@ -59,6 +52,7 @@ public class DetectPoleV2 {
         /* Action states; first to last */
         LIFT_UP1,
         ROTATE1, /* This is the only one that runs with extraActions == false */
+        ROTATE_DEFAULT,
         LIFT_UP2,
         EXTEND,
         CLAW_OPEN,
@@ -94,7 +88,15 @@ public class DetectPoleV2 {
             o.turret.setPower(SPEED * o.rotateDirection.powerModifier);
         });
 
+        ON_ENTER_DEFAULTS.put(State.ROTATE_DEFAULT, o -> {
+            o.turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            // Which direction?
+            int direction = sign(DEFAULT_POS - o.turret.getCurrentPosition());
+            o.turret.setPower(SPEED * direction);
+        });
+
         ON_EXIT_DEFAULTS.put(State.ROTATE1, o -> o.captureDistance = o.lastDistance);
+        ON_EXIT_DEFAULTS.put(State.ROTATE_DEFAULT, o -> o.captureDistance = o.lastDistance);
 
         ON_ENTER_DEFAULTS.put(State.LIFT_UP2, o -> o.liftController.setVerticalTarget(3));
 
@@ -125,6 +127,10 @@ public class DetectPoleV2 {
             o.turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             o.turret.setPower(SPEED * o.rotateDirection.powerModifier * -1);
         });
+    }
+
+    private static int sign(int in) {
+        return Integer.compare(in, 0);
     }
 
     private final Map<State, Consumer<DetectPoleV2>> onEnter = new HashMap<>(ON_ENTER_DEFAULTS);
@@ -234,7 +240,13 @@ public class DetectPoleV2 {
                 }
                 if (Math.abs(turret.getCurrentPosition()) > MAX_SCAN_FROM_CENTER) {
                     // give up (fail fast™)
-                    stateChange(State.IDLE);
+                    stateChange(State.ROTATE_DEFAULT); // New!
+                }
+                break;
+            case ROTATE_DEFAULT:
+                if (Math.abs(DEFAULT_POS - turret.getCurrentPosition()) <= 10) {
+                    turret.setPower(0);
+                    delay = new DelayStateChange(0.5, extraActions ? State.LIFT_UP2 : State.DONE);
                 }
                 break;
             case LIFT_UP1:
@@ -268,7 +280,7 @@ public class DetectPoleV2 {
                 break;
             case ROTATE_TO_STACK:
                 if(turret.getCurrentPosition() >= CONE_STACK_ROTATE_POS){
-                    delay = new DelayStateChange(1.0, State.IDLE);
+                    delay = new DelayStateChange(1.0, State.RECENTER);
                 }
                 break;
             case RECENTER:

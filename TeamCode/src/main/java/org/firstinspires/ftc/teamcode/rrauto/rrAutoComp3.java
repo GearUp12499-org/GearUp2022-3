@@ -28,6 +28,8 @@ import java.util.ArrayList;
 
 @Autonomous(name = "RR AUTO", group = "GearUp")
 public class rrAutoComp3 extends LinearOpMode {
+    public static final double SPEED = 40;
+
     double fx = 578.272;
     double fy = 578.272;
     double cx = 402.145;
@@ -146,8 +148,7 @@ public class rrAutoComp3 extends LinearOpMode {
 //                telemetry.update();
 //                l.update();
 //            }
-
-//             TrajectorySequenceBuilder is better tbh -Miles TODO uncomment
+*/
             ArrayList<Trajectory> trags = new ArrayList<>();
             trags.add(drive.trajectoryBuilder(new Pose2d())
                     .forward(51,
@@ -159,7 +160,6 @@ public class rrAutoComp3 extends LinearOpMode {
             for (Trajectory t : trags) {
                 drive.followTrajectory(t);
             }
-*/
             // NEW: Pole scanner
             l.closeClaw();
 
