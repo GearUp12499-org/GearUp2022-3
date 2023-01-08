@@ -80,6 +80,7 @@ public class rrAutoComp3 extends LinearOpMode {
         l.openClaw();
         waitForStart();
         if (position.equals("rrautotest")) {  // set by extending classes
+            l.closeClaw();
             int a = 2; //counter for where to go
             /*  TODO uncomment (use AprilTags)
             runtime.reset();
