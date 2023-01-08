@@ -26,7 +26,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name="RR AUTO" , group="GearUp")
+@Autonomous(name = "RR AUTO", group = "GearUp")
 public class rrAutoComp3 extends LinearOpMode {
     public static double SPEED = 40;
     public static double DIST_FIRST = 2;
@@ -56,6 +56,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
     static final double FEET_PER_METER = 3.28084;
     Lift l;
+
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -188,6 +189,7 @@ public class rrAutoComp3 extends LinearOpMode {
             // NEW: Pole scanner
             l.closeClaw();
 
+
             sleep(250);
 
             boolean USE_DISTANCE_SENSOR = false; // for testing purposes
@@ -210,6 +212,11 @@ public class rrAutoComp3 extends LinearOpMode {
                     telemetry.addData("HTargetPos", l.liftHorizontal.getTargetPosition());
                     telemetry.addData("HCurrenPos", l.liftHorizontal.getCurrentPosition());
                     telemetry.addData("turretPos", turret.getCurrentPosition());
+
+                    telemetry.addLine("Odometry:");
+                    telemetry.addData("left", encoderLeft.getCurrentPosition());
+                    telemetry.addData("right", encoderRight.getCurrentPosition());
+                    telemetry.addData("f/b", encoderRear.getCurrentPosition());
                     telemetry.update();
                 }
                 l.setVerticalTargetManual(3800);
@@ -229,7 +236,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 // l.closeClaw();
                 l.setHorizontalTarget(0);
 
-                for(int i = 0; i < 2; i++) {
+                for (int i = 0; i < 2; i++) {
                     turret.setTargetPosition(750);
                     sleep(500);
                     l.setVerticalTargetManual(700 - (i * 50));
@@ -265,6 +272,7 @@ public class rrAutoComp3 extends LinearOpMode {
             while (opModeIsActive()) ; // wait for the match to end
         }
     }
+
     //--------------------------------------------------------------
     @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection) {

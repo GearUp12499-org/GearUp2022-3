@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
@@ -14,7 +17,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.lib.RisingFallingEdges;
 
-@TeleOp(name="TeleOp")
+@TeleOp(name = "TeleOp")
 public class Teleop extends LinearOpMode {
     public Lift l;
 
@@ -36,6 +39,13 @@ public class Teleop extends LinearOpMode {
             drive();
             lift();
             turret();
+
+            telemetry.addLine("Distance sensor:");
+            telemetry.addData("Distance (mm)", io.distSensorM.getDistance(DistanceUnit.MM));
+            telemetry.addLine("Odometry:");
+            telemetry.addData("left", encoderLeft.getCurrentPosition());
+            telemetry.addData("right", encoderRight.getCurrentPosition());
+            telemetry.addData("f/b", encoderRear.getCurrentPosition());
             telemetry.update();
         }
     }
@@ -73,18 +83,18 @@ public class Teleop extends LinearOpMode {
     }
 
     public void updateDirection() {
-        if(gamepad1.right_trigger > 0.5) {
-            if(gamepad1.x)
+        if (gamepad1.right_trigger > 0.5) {
+            if (gamepad1.x)
                 forward = true;
-            else if(gamepad1.y)
+            else if (gamepad1.y)
                 forward = false;
         }
     }
 
     public void driveMotor(double lf, double lb, double rf, double rb) {
-        if(!l.isExtended())
+        if (!l.isExtended())
             lf = lb = rf = rb = 0;
-        if(!forward) {
+        if (!forward) {
             lf = -lf;
             lb = -lb;
             rf = -rf;
@@ -126,8 +136,7 @@ public class Teleop extends LinearOpMode {
         else if (gamepad2.b) {
             l.retract();
             l.setVerticalTarget(0);
-        }
-        else if (gamepad2.a)
+        } else if (gamepad2.a)
             l.setVerticalTarget(1);
         else if (gamepad2.x)
             l.setVerticalTarget(2);
@@ -147,8 +156,7 @@ public class Teleop extends LinearOpMode {
             l.closeClaw();
             sleep(600);
             l.moveVertical(300);
-        }
-        else if (gamepad1.right_bumper) l.openClaw();
+        } else if (gamepad1.right_bumper) l.openClaw();
 
         lastLeftBumper1 = gamepad1.left_bumper;
         l.update();
