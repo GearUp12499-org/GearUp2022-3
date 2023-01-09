@@ -238,7 +238,7 @@ public class DetectPoleV2 {
                 if (lastDistance < 500) {
                     // stop
                     turret.setPower(0);
-                    delay = new DelayStateChange(0.5, extraActions ? State.LIFT_UP2 : State.DONE);
+                    stateChange(extraActions ? State.LIFT_UP2 : State.DONE);
                 }
                 if (Math.abs(turret.getCurrentPosition()) > MAX_SCAN_FROM_CENTER) {
                     // give up (fail fast™)
@@ -248,7 +248,7 @@ public class DetectPoleV2 {
             case ROTATE_DEFAULT:
                 if (Math.abs(DEFAULT_POS - turret.getCurrentPosition()) <= 10) {
                     turret.setPower(0);
-                    delay = new DelayStateChange(0.5, extraActions ? State.LIFT_UP2 : State.DONE);
+                    stateChange(extraActions ? State.LIFT_UP2 : State.DONE);
                 }
                 break;
             case LIFT_UP1:
@@ -264,25 +264,25 @@ public class DetectPoleV2 {
             case EXTEND:
                 if (liftController.isSatisfiedHorizontally()) {
 //                    stateChange(State.IDLE);
-                    delay = new DelayStateChange(0.5, State.CLAW_OPEN);
+                    stateChange(State.CLAW_OPEN);
                 }
                 break;
             case CLAW_OPEN:
-                delay = new DelayStateChange(0.5, State.RETRACT);
+                stateChange(State.RETRACT);
                 break;
             case RETRACT:
                 if (liftController.isSatisfiedHorizontally()) {
-                    delay = new DelayStateChange(0.5, State.LIFT_DOWN);
+                    stateChange(State.LIFT_DOWN);
                 }
                 break;
             case LIFT_DOWN:
                 if (liftController.isSatisfiedVertically()) {
-                    delay = new DelayStateChange(1.0, State.ROTATE_TO_STACK);
+                    stateChange(State.ROTATE_TO_STACK);
                 }
                 break;
             case ROTATE_TO_STACK:
                 if(turret.getCurrentPosition() >= CONE_STACK_ROTATE_POS){
-                    delay = new DelayStateChange(1.0, State.RECENTER);
+                    stateChange(State.RECENTER);
                 }
                 break;
             case RECENTER:
