@@ -115,12 +115,12 @@ public class GoBuildaStraferV5Base implements RobotConfig {
      */
     @Override
     public double getMaxVel() {
-        return 52.48180821614297;
+        return 45.74;
     }
 
     @Override
     public double getMaxAccel() {
-        return 52.48180821614297;
+        return 45.74;
     }
 
     @Override

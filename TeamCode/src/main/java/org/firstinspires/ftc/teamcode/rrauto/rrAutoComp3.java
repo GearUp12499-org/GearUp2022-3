@@ -31,7 +31,7 @@ import java.util.ArrayList;
 
 @Autonomous(name="RR AUTO" , group="GearUp")
 public class rrAutoComp3 extends LinearOpMode {
-    public static double SPEED = 20; // was 40
+    public static double SPEED = 40; // was 40
     public static double DIST_FIRST = 2;
     public static double DIST_SECOND = 4;
     public static double DIST_THIRD = 6;
@@ -183,10 +183,10 @@ public class rrAutoComp3 extends LinearOpMode {
             l.setVerticalTargetManual(850);
             l.update();
 
-            /*
+
             ArrayList<Trajectory> trags = new ArrayList<>();
             trags.add(drive.trajectoryBuilder(new Pose2d())
-                    .forward(50,
+                    .forward(67,
                             SampleMecanumDrive.getVelocityConstraint(SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                     .build());
@@ -194,7 +194,10 @@ public class rrAutoComp3 extends LinearOpMode {
 
             for (Trajectory t : trags) {
                 drive.followTrajectory(t);
-            }*/
+                Pose2d poseEstimate = drive.getPoseEstimate();
+                telemetry.addData("finalX", poseEstimate.getX());
+                telemetry.addData("finalY", poseEstimate.getY());
+            }
 
             // driveStraight(0.5, 0.5, 0.5, 0.5, 50);
 
