@@ -149,13 +149,11 @@ public class Lift {
         return (currentVerticalTarget != LOWER_VERTICAL_BOUND || liftVertical1.getPower() == 0);
     }
 
-    public boolean isSatisfiedVertically() {
-        final int MAX_FUDGERY = 100;
-        return Math.abs(targetVerticalCount - liftVertical1.getCurrentPosition()) < MAX_FUDGERY;
+    public boolean isSatisfiedVertically(int threshold) {
+        return Math.abs(targetVerticalCount - liftVertical1.getCurrentPosition()) < threshold;
     }
 
-    public boolean isSatisfiedHorizontally() {
-        final int MAX_FUDGERY = 100;
-        return Math.abs(targetHorizontalCount - liftHorizontal.getCurrentPosition()) < MAX_FUDGERY;
+    public boolean isSatisfiedHorizontally(int threshold) {
+        return Math.abs(targetHorizontalCount - liftHorizontal.getCurrentPosition()) < threshold;
     }
 }

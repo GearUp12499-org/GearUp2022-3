@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -252,17 +250,17 @@ public class DetectPoleV2 {
                 }
                 break;
             case LIFT_UP1:
-                if (liftController.isSatisfiedVertically()) {
+                if (liftController.isSatisfiedVertically(100)) {
                     stateChange(State.ROTATE1);
                 }
                 break;
             case LIFT_UP2:
-                if (liftController.isSatisfiedVertically()) {
+                if (liftController.isSatisfiedVertically(100)) {
                     stateChange(State.EXTEND);
                 }
                 break;
             case EXTEND:
-                if (liftController.isSatisfiedHorizontally()) {
+                if (liftController.isSatisfiedHorizontally(100)) {
 //                    stateChange(State.IDLE);
                     stateChange(State.CLAW_OPEN);
                 }
@@ -271,12 +269,12 @@ public class DetectPoleV2 {
                 stateChange(State.RETRACT);
                 break;
             case RETRACT:
-                if (liftController.isSatisfiedHorizontally()) {
+                if (liftController.isSatisfiedHorizontally(100)) {
                     stateChange(State.LIFT_DOWN);
                 }
                 break;
             case LIFT_DOWN:
-                if (liftController.isSatisfiedVertically()) {
+                if (liftController.isSatisfiedVertically(100)) {
                     stateChange(State.ROTATE_TO_STACK);
                 }
                 break;

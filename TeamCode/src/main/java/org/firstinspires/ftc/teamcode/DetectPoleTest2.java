@@ -21,7 +21,7 @@ public class DetectPoleTest2 extends LinearOpMode {
         l.setVerticalTarget(1);
 
         while (opModeIsActive()) {
-            if (!l.isSatisfiedVertically()) {
+            if (!l.isSatisfiedVertically(100)) {
                 telemetry.addLine("Waiting on lift... (" + l.targetVerticalCount + " -> " + l.liftVertical1.getCurrentPosition() + ")");
             }
             l.update();
