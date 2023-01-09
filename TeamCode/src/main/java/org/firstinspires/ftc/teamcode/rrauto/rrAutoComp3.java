@@ -150,17 +150,17 @@ public class rrAutoComp3 extends LinearOpMode {
 //                l.update();
 //            }
 */
-            ArrayList<Trajectory> trags = new ArrayList<>();
-            trags.add(drive.trajectoryBuilder(new Pose2d())
-                    .forward(51,
-                            SampleMecanumDrive.getVelocityConstraint(SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build());
+//            ArrayList<Trajectory> trags = new ArrayList<>();
+//            trags.add(drive.trajectoryBuilder(new Pose2d())
+//                    .forward(51,
+//                            SampleMecanumDrive.getVelocityConstraint(SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+//                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+//                    .build());
 
-
-            for (Trajectory t : trags) {
-                drive.followTrajectory(t);
-            }
+//
+//            for (Trajectory t : trags) {
+//                drive.followTrajectory(t);
+//            }
             // NEW: Pole scanner
             l.closeClaw();
 

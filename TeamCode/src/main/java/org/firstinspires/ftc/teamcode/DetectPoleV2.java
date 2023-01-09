@@ -260,13 +260,14 @@ public class DetectPoleV2 {
                 }
                 break;
             case EXTEND:
-                if (liftController.isSatisfiedHorizontally(100)) {
+                if (liftController.isSatisfiedHorizontally(10)) {
 //                    stateChange(State.IDLE);
-                    stateChange(State.CLAW_OPEN);
+                    liftController.moveVertical(-200);
+                    delay = new DelayStateChange(1, State.CLAW_OPEN);
                 }
                 break;
             case CLAW_OPEN:
-                stateChange(State.RETRACT);
+                delay = new DelayStateChange(0.2, State.RETRACT);
                 break;
             case RETRACT:
                 if (liftController.isSatisfiedHorizontally(100)) {
@@ -280,11 +281,11 @@ public class DetectPoleV2 {
                 break;
             case ROTATE_TO_STACK:
                 if(turret.getCurrentPosition() >= CONE_STACK_ROTATE_POS){
-                    stateChange(State.RECENTER);
+                    stateChange(State.IDLE);
                 }
                 break;
             case RECENTER:
-                if (Math.abs(turret.getCurrentPosition()) <= 10) {
+                if (Math.abs(turret.getCurrentPosition()) <= 20) {
                     turret.setPower(0);
                     stateChange(State.IDLE);
                 }
