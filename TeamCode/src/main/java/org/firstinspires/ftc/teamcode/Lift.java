@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift {
-    public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3100};
+    public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3200};
     public static final int[] HORIZONTAL_TARGETS = {0, 220};
     public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 3500;
     public static final int LOWER_HORIZONTAL_BOUND = 0, UPPER_HORIZONTAL_BOUND = 850; // was 225, then 500

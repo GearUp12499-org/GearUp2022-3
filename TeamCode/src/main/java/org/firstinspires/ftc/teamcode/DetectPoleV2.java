@@ -125,7 +125,9 @@ public class DetectPoleV2 {
 
         ON_ENTER_DEFAULTS.put(State.RECENTER, o -> {
             o.turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            o.turret.setPower(SPEED * o.rotateDirection.powerModifier * -1);
+            // Which direction?
+            int direction = sign(-o.turret.getCurrentPosition());
+            o.turret.setPower(SPEED * direction);
         });
     }
 
