@@ -111,16 +111,15 @@ public class GoBuildaStraferV5Base implements RobotConfig {
      *
      * Maximum Angular Velocity is calculated as: maximum velocity / trackWidth * (180 / Math.PI) but capped at 360°/s.
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
-
      */
     @Override
     public double getMaxVel() {
-        return 52.48180821614297;
+        return 45.74;
     }
 
     @Override
     public double getMaxAccel() {
-        return 52.48180821614297;
+        return 45.74;
     }
 
     @Override

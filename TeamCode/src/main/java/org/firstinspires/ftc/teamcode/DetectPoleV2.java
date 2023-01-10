@@ -118,7 +118,7 @@ public class DetectPoleV2 {
 
             o.turret.setTargetPosition(CONE_STACK_ROTATE_POS);
             o.turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            o.turret.setPower(SPEED * o.rotateDirection.powerModifier);
+            o.turret.setPower(0.5 * o.rotateDirection.powerModifier); //
         });
 
         ON_ENTER_DEFAULTS.put(State.RECENTER, o -> {

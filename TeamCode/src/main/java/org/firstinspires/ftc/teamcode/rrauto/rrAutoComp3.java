@@ -150,30 +150,35 @@ public class rrAutoComp3 extends LinearOpMode {
 //                l.update();
 //            }
 */
-//            ArrayList<Trajectory> trags = new ArrayList<>();
-//            trags.add(drive.trajectoryBuilder(new Pose2d())
-//                    .forward(51,
-//                            SampleMecanumDrive.getVelocityConstraint(SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-//                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-//                    .build());
-
-//
-//            for (Trajectory t : trags) {
-//                drive.followTrajectory(t);
-//            }
-            // NEW: Pole scanner
             l.closeClaw();
 
 
             sleep(250);
 
-            l.setVerticalTargetManual(2000);
+           l.setVerticalTargetManual(2000);
+                //742 90 degrees
+            sleep(1000);
 
-            sleep(500);
+            ArrayList<Trajectory> trags = new ArrayList<>();
+            trags.add(drive.trajectoryBuilder(new Pose2d())
+                    .forward(56.5,
+                            SampleMecanumDrive.getVelocityConstraint(SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                    .build());
+
+
+            for (Trajectory t : trags) {
+                drive.followTrajectory(t);
+            }
+
+            //straight(51, 0.3); //50.75 2500
+            // NEW: Pole scanner
+
             turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             // DONE = done
             // IDLE = something broke :(
+
             for (int i = 0; i < 3; i++) {
 
                 detector.beginScan(DetectPoleV2.RotateDirection.CW);
@@ -237,10 +242,27 @@ public class rrAutoComp3 extends LinearOpMode {
                 detector.run();
                 l.update();
             }
+
+
         }
     }
 
     //--------------------------------------------------------------
+    void straight(double distance, double power){ //distance inches
+        while((encoderRight.getCurrentPosition() + encoderLeft.getCurrentPosition())/(2*49.26)<=distance){
+            frontLeft.setPower(power);
+            frontRight.setPower(power);
+            rearLeft.setPower(power);
+            rearRight.setPower(power);
+        }
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        rearLeft.setPower(0);
+        rearRight.setPower(0);
+
+
+    }
+
     @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection) {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
