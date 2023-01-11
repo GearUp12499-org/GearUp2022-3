@@ -186,7 +186,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             ArrayList<Trajectory> trags = new ArrayList<>();
             trags.add(drive.trajectoryBuilder(new Pose2d())
-                    .forward(67,
+                    .forward(60,
                             SampleMecanumDrive.getVelocityConstraint(SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                     .build());
@@ -230,7 +230,7 @@ public class rrAutoComp3 extends LinearOpMode {
             } else {
                 int polePos = -370;
                 l.setVerticalTargetManual(1500);
-                sleep(1500);
+                sleep(1000);
                 while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
                     turret.setPower(-0.35);
                     telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
@@ -238,7 +238,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 }
                 turret.setPower(0);
 
-                sleep(500);
+                // sleep(250);
 
                 if (Math.abs(turret.getCurrentPosition()) < 700)
                     polePos = turret.getCurrentPosition();
@@ -254,11 +254,11 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.setVerticalTarget(3);
                 l.update();
 
-                sleep(2500);
+                sleep(1500);
                 l.setHorizontalTargetManual(225);
                 l.update();
 
-                sleep(700);
+                sleep(650);
                 l.openClaw();
                 sleep(300);
                 // l.closeClaw();
@@ -273,13 +273,13 @@ public class rrAutoComp3 extends LinearOpMode {
                     sleep(500);
                     l.setVerticalTargetManual(700 - (i * 50));
                     l.update();
-                    sleep(3000);
+                    sleep(1500);
 
                     l.setHorizontalTargetManual(850);
                     l.update();
-                    sleep(800);
+                    sleep(1000);
                     l.closeClaw();
-                    sleep(500);
+                    sleep(300);
                     l.setVerticalTarget(3);
                     l.update();
                     sleep(500);
@@ -287,7 +287,7 @@ public class rrAutoComp3 extends LinearOpMode {
                     l.update();
 
                     turret.setTargetPosition(polePos);
-                    sleep(2000);
+                    sleep(2250);
                     l.setHorizontalTargetManual(225);
                     l.update();
                     sleep(650);
@@ -304,7 +304,33 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.update();
             }
 
-            while (opModeIsActive()) ; // wait for the match to end
+            ArrayList<Trajectory> park = new ArrayList<>();
+
+            a = 1;
+            if (a == 1) {
+                // strafe left
+                park.add(drive.trajectoryBuilder(new Pose2d())
+                        .strafeLeft(25,
+                                SampleMecanumDrive.getVelocityConstraint(SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .build());
+            } else if (a == 3) {
+                // strafe right
+                park.add(drive.trajectoryBuilder(new Pose2d())
+                        .strafeRight(25,
+                                SampleMecanumDrive.getVelocityConstraint(SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .build());
+            }
+
+            for (Trajectory t : park) {
+                drive.followTrajectory(t);
+                Pose2d poseEstimate = drive.getPoseEstimate();
+                telemetry.addData("finalX", poseEstimate.getX());
+                telemetry.addData("finalY", poseEstimate.getY());
+            }
+
+            // while (opModeIsActive()) ; // wait for the match to end
         }
     }
     //--------------------------------------------------------------

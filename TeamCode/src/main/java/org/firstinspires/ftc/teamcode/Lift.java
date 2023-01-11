@@ -18,7 +18,7 @@ public class Lift {
 
     public static final double POWER_UP = 1.0;
     public static final double POWER_H = 0.65;
-    public static final double POWER_DOWN = -0.5;
+    public static final double POWER_DOWN = -0.8;
 
     public final Servo servo;
     
