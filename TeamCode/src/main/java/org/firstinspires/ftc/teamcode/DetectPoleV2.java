@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -11,10 +13,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.lib.Consumer;
 
 public class DetectPoleV2 {
+    public static int realMMToEncoderH(double mms) {
+        // 220 et => 160 mm
+        //
+        return (int) ((145.0/112) * mms);
+    }
+
+    public static double readMMtoRealMM(double reading) {
+        return reading > 600 ? 90 : reading;
+    }
+
     private static final int MAX_SCAN_FROM_CENTER = 1000;
-
-    private static final int DEFAULT_POS = -370;
-
     /**
      * DO NOT:
      * <ul>
@@ -50,7 +59,6 @@ public class DetectPoleV2 {
         /* Action states; first to last */
         LIFT_UP1,
         ROTATE1, /* This is the only one that runs with extraActions == false */
-        ROTATE_DEFAULT,
         LIFT_UP2,
         EXTEND,
         CLAW_OPEN,
@@ -86,15 +94,7 @@ public class DetectPoleV2 {
             o.turret.setPower(SPEED * o.rotateDirection.powerModifier);
         });
 
-        ON_ENTER_DEFAULTS.put(State.ROTATE_DEFAULT, o -> {
-            o.turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            // Which direction?
-            int direction = sign(DEFAULT_POS - o.turret.getCurrentPosition());
-            o.turret.setPower(SPEED * direction);
-        });
-
         ON_EXIT_DEFAULTS.put(State.ROTATE1, o -> o.captureDistance = o.lastDistance);
-        ON_EXIT_DEFAULTS.put(State.ROTATE_DEFAULT, o -> o.captureDistance = o.lastDistance);
 
         ON_ENTER_DEFAULTS.put(State.LIFT_UP2, o -> o.liftController.setVerticalTarget(3));
 
@@ -118,19 +118,13 @@ public class DetectPoleV2 {
 
             o.turret.setTargetPosition(CONE_STACK_ROTATE_POS);
             o.turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            o.turret.setPower(0.5 * o.rotateDirection.powerModifier); //
+            o.turret.setPower(1* o.rotateDirection.powerModifier);
         });
 
         ON_ENTER_DEFAULTS.put(State.RECENTER, o -> {
             o.turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            // Which direction?
-            int direction = sign(-o.turret.getCurrentPosition());
-            o.turret.setPower(SPEED * direction);
+            o.turret.setPower(0.7 * o.rotateDirection.powerModifier * -1);
         });
-    }
-
-    private static int sign(int in) {
-        return Integer.compare(in, 0);
     }
 
     private final Map<State, Consumer<DetectPoleV2>> onEnter = new HashMap<>(ON_ENTER_DEFAULTS);
@@ -236,56 +230,49 @@ public class DetectPoleV2 {
                 if (lastDistance < 500) {
                     // stop
                     turret.setPower(0);
-                    stateChange(extraActions ? State.LIFT_UP2 : State.DONE);
+                    delay = new DelayStateChange(0.5, extraActions ? State.LIFT_UP2 : State.DONE);
                 }
                 if (Math.abs(turret.getCurrentPosition()) > MAX_SCAN_FROM_CENTER) {
                     // give up (fail fast™)
-                    stateChange(State.ROTATE_DEFAULT); // New!
-                }
-                break;
-            case ROTATE_DEFAULT:
-                if (Math.abs(DEFAULT_POS - turret.getCurrentPosition()) <= 10) {
-                    turret.setPower(0);
-                    stateChange(extraActions ? State.LIFT_UP2 : State.DONE);
+                    stateChange(State.IDLE);
                 }
                 break;
             case LIFT_UP1:
-                if (liftController.isSatisfiedVertically(100)) {
+                if (liftController.isSatisfiedVertically()) {
                     stateChange(State.ROTATE1);
                 }
                 break;
             case LIFT_UP2:
-                if (liftController.isSatisfiedVertically(100)) {
+                if (liftController.isSatisfiedVertically()) {
                     stateChange(State.EXTEND);
                 }
                 break;
             case EXTEND:
-                if (liftController.isSatisfiedHorizontally(10)) {
+                if (liftController.isSatisfiedHorizontally()) {
 //                    stateChange(State.IDLE);
-                    liftController.moveVertical(-200);
                     delay = new DelayStateChange(0.5, State.CLAW_OPEN);
                 }
                 break;
             case CLAW_OPEN:
-                delay = new DelayStateChange(0.2, State.RETRACT);
+                delay = new DelayStateChange(0.5, State.RETRACT);
                 break;
             case RETRACT:
-                if (liftController.isSatisfiedHorizontally(100)) {
-                    stateChange(State.LIFT_DOWN);
+                if (liftController.isSatisfiedHorizontally()) {
+                    delay = new DelayStateChange(0.5, State.LIFT_DOWN);
                 }
                 break;
             case LIFT_DOWN:
-                if (liftController.isSatisfiedVertically(100)) {
-                    stateChange(State.ROTATE_TO_STACK);
+                if (liftController.isSatisfiedVertically()) {
+                    delay = new DelayStateChange(1.0, State.ROTATE_TO_STACK);
                 }
                 break;
             case ROTATE_TO_STACK:
                 if(turret.getCurrentPosition() >= CONE_STACK_ROTATE_POS){
-                    stateChange(State.DONE);
+                    delay = new DelayStateChange(1.0, State.IDLE);
                 }
                 break;
             case RECENTER:
-                if (Math.abs(turret.getCurrentPosition()) <= 20) {
+                if (Math.abs(turret.getCurrentPosition()) <= 10) {
                     turret.setPower(0);
                     stateChange(State.IDLE);
                 }

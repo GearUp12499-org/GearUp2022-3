@@ -20,7 +20,7 @@ public class DetectPoleTest2 extends LinearOpMode {
         waitForStart();
         l.setVerticalTarget(1);
 
-        while (opModeIsActive()) {
+       /* while (opModeIsActive()) {
             if (!l.isSatisfiedVertically(100)) {
                 telemetry.addLine("Waiting on lift... (" + l.targetVerticalCount + " -> " + l.liftVertical1.getCurrentPosition() + ")");
             }
@@ -65,6 +65,6 @@ public class DetectPoleTest2 extends LinearOpMode {
             telemetry.addData("Reading", detector.lastDistance);
 //            telemetry.addData("Reached vert target 3", ReachedVertTargetThree);
             telemetry.update();
-        }
+        }*/
     }
 }

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
 import static org.firstinspires.ftc.teamcode.SharedHardware.*;
+import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderLeft;
+import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderRight;
 
 import android.annotation.SuppressLint;
 
@@ -14,6 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.DetectPoleV2;
 import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
@@ -26,9 +29,16 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name = "RR AUTO", group = "GearUp")
+@Autonomous(name="RR AUTO" , group="GearUp")
 public class rrAutoComp3 extends LinearOpMode {
-    public static final double SPEED = 40;
+    public static double SPEED = 40; // was 40
+    public static double DIST_FIRST = 2;
+    public static double DIST_SECOND = 4;
+    public static double DIST_THIRD = 6;
+    public DcMotor liftVertical1 = null;
+    public DcMotor liftVertical2 = null;
+
+    private ElapsedTime runtime = new ElapsedTime();
 
     double fx = 578.272;
     double fy = 578.272;
@@ -49,7 +59,6 @@ public class rrAutoComp3 extends LinearOpMode {
 
     static final double FEET_PER_METER = 3.28084;
     Lift l;
-
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -59,6 +68,23 @@ public class rrAutoComp3 extends LinearOpMode {
         l = new Lift(hardwareMap);
         IOControl io = new IOControl(hardwareMap);
         DetectPoleV2 detector = new DetectPoleV2(turret, io.distSensorM, l, true);
+
+        /**
+         * FIXME: why is this here?
+         * @see org.firstinspires.ftc.teamcode.Lift#Lift(com.qualcomm.robotcore.hardware.HardwareMap)
+         */
+//        liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
+//        liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        liftVertical1.setTargetPosition(0);
+//        liftVertical1.setDirection(DcMotorSimple.Direction.REVERSE);
+//        liftVertical1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//
+//        liftVertical2 = hardwareMap.get(DcMotor.class, "lift2");
+//        liftVertical2.setPower(0);
+//        liftVertical2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -80,18 +106,14 @@ public class rrAutoComp3 extends LinearOpMode {
         l.openClaw();
         waitForStart();
         if (position.equals("rrautotest")) {  // set by extending classes
-            l.closeClaw();
             int a = 2; //counter for where to go
-            /*  TODO uncomment (use AprilTags)
+            /*
             runtime.reset();
             while (runtime.seconds()<0.5) {
                 ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-
                 if (currentDetections.size() != 0) {
                     boolean tagFound = false;
-
                     for (AprilTagDetection tag : currentDetections) {
-
                         if (tag.id == LEFT || tag.id == CENTER || tag.id == RIGHT) {
                             if(tag.id == LEFT){
                                 a =1;
@@ -100,19 +122,16 @@ public class rrAutoComp3 extends LinearOpMode {
                                 a =2;
                             if(tag.id == RIGHT)
                                 a =3;
-
                             tagOfInterest = tag;
                             tagFound = true;
                             break;
                         }
                     }
-
                     if (tagFound) {
                         telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
                         tagToTelemetry(tagOfInterest);
                     } else {
                         telemetry.addLine("Don't see tag of interest :(");
-
                         if (tagOfInterest == null) {
                             telemetry.addLine("(The tag has never been seen)");
                         } else {
@@ -120,19 +139,15 @@ public class rrAutoComp3 extends LinearOpMode {
                             tagToTelemetry(tagOfInterest);
                         }
                     }
-
                 } else {
                     telemetry.addLine("Don't see tag of interest :(");
-
                     if (tagOfInterest == null) {
                         telemetry.addLine("(The tag has never been seen)");
                     } else {
                         telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
                         tagToTelemetry(tagOfInterest);
                     }
-
                 }
-
                 telemetry.update();
                 sleep(20);
             }
@@ -141,7 +156,6 @@ public class rrAutoComp3 extends LinearOpMode {
             //l.speedVlift(1500);
             l.setVerticalTargetManual(2000); // look, APIs exist for a reason (btw this one is new)
             sleep(600);
-
 //            while (!l.isSatisfiedVertically()) {
 //                telemetry.addLine("Waiting for lift...");
 //                telemetry.addData("Current Position", l.liftVertical1.getCurrentPosition());
@@ -150,40 +164,47 @@ public class rrAutoComp3 extends LinearOpMode {
 //                l.update();
 //            }
 */
+
+//             TrajectorySequenceBuilder is better tbh -Miles TODO uncomment
+
             l.closeClaw();
+            sleep(500);
+            l.setVerticalTargetManual(850);
+            l.update();
 
-
-            sleep(250);
-
-           l.setVerticalTargetManual(2000);
-                //742 90 degrees
-            sleep(1000);
 
             ArrayList<Trajectory> trags = new ArrayList<>();
+            //batt 2 65, batt 3, 75
             trags.add(drive.trajectoryBuilder(new Pose2d())
-                    .forward(56.5,
-                            SampleMecanumDrive.getVelocityConstraint(SPEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                    .forward(52,
+                            SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                     .build());
 
 
             for (Trajectory t : trags) {
                 drive.followTrajectory(t);
+                Pose2d poseEstimate = drive.getPoseEstimate();
+                telemetry.addData("finalX", poseEstimate.getX());
+                telemetry.addData("finalY", poseEstimate.getY());
             }
 
-            //straight(51, 0.3); //50.75 2500
-            // NEW: Pole scanner
+            // driveStraight(0.5, 0.5, 0.5, 0.5, 50);
 
-            turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            sleep(250);
 
-            // DONE = done
-            // IDLE = something broke :(
+            boolean USE_DISTANCE_SENSOR = false; // for testing purposes
 
-            for (int i = 0; i < 3; i++) {
-
+            if (USE_DISTANCE_SENSOR) {
+                l.setVerticalTargetManual(2000);
                 detector.beginScan(DetectPoleV2.RotateDirection.CW);
+
+                sleep(500);
+                turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                // DONE = done
+                // IDLE = something broke :(
                 while (detector.getState() != DetectPoleV2.State.DONE && opModeIsActive() && detector.getState() != DetectPoleV2.State.IDLE) {
-                    // USE DetectPoleV2 FOR AUTO, IT WORKS Jan 7 2023
                     detector.run();
                     l.update();
                     telemetry.addData("Current state", detector.getState());
@@ -192,77 +213,125 @@ public class rrAutoComp3 extends LinearOpMode {
                     telemetry.addData("HTargetPos", l.liftHorizontal.getTargetPosition());
                     telemetry.addData("HCurrenPos", l.liftHorizontal.getCurrentPosition());
                     telemetry.addData("turretPos", turret.getCurrentPosition());
-
-                    telemetry.addLine("Odometry:");
-                    telemetry.addData("left", encoderLeft.getCurrentPosition());
-                    telemetry.addData("right", encoderRight.getCurrentPosition());
-                    telemetry.addData("f/b", encoderRear.getCurrentPosition());
                     telemetry.update();
                 }
-                if (i == 2 || !opModeIsActive()) {
-                    detector.stateChange(DetectPoleV2.State.RECENTER);
-                    break;
+                l.setVerticalTargetManual(3800);
+
+            } else {
+                int polePos = -370;
+                l.setVerticalTargetManual(1500);
+                sleep(1000);
+                while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
+                    turret.setPower(-0.35);
+                    telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
+                    telemetry.update();
                 }
-                l.setVerticalTargetManual(700 - (i * 50));
-                while (!l.isSatisfiedVertically(50) && opModeIsActive()) {
-                    l.update();
-                }
-                l.setHorizontalTarget(2);
-                while (!l.isSatisfiedHorizontally(50) && opModeIsActive()) {
-                    l.update();
-                }
-                l.closeClaw();
-                sleep(250);
-                l.moveVertical(700);
-                while (!l.isSatisfiedVertically(50) && opModeIsActive()) {
-                    l.update();
-                }
+                turret.setPower(0);
+
+                // sleep(250);
+
+                if (Math.abs(turret.getCurrentPosition()) < 700)
+                    polePos = turret.getCurrentPosition();
+
+                telemetry.addData("polepos:", polePos);
+                telemetry.update();
+
+                /*
+                turret.setTargetPosition(polePos);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(0.3);*/
+
+                l.setVerticalTarget(3);
+                l.update();
+
+                sleep(1500);
+                l.setHorizontalTargetManual(225);//225
+                l.update();
+
+                sleep(650);
+                l.openClaw();
+                sleep(300);
+                // l.closeClaw();
                 l.setHorizontalTarget(0);
-                detector.stateChange(DetectPoleV2.State.RECENTER);
-                while (detector.getState() != DetectPoleV2.State.DONE && opModeIsActive() && detector.getState() != DetectPoleV2.State.IDLE) {
-                    detector.run();
-                    l.update();
-                    telemetry.addData("Current state", detector.getState());
-                    telemetry.addData("Current reading", detector.lastDistance);
-                    telemetry.addData("Capture reading", detector.captureDistance);
-                    telemetry.addData("HTargetPos", l.liftHorizontal.getTargetPosition());
-                    telemetry.addData("HCurrenPos", l.liftHorizontal.getCurrentPosition());
-                    telemetry.addData("turretPos", turret.getCurrentPosition());
+                l.update();
 
-                    telemetry.addLine("Odometry:");
-                    telemetry.addData("left", encoderLeft.getCurrentPosition());
-                    telemetry.addData("right", encoderRight.getCurrentPosition());
-                    telemetry.addData("f/b", encoderRear.getCurrentPosition());
-                    telemetry.update();
+                for(int i = 0; i < 3; i++) {
+                    turret.setTargetPosition(790); //750
+                    turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    turret.setPower(0.9); //0.3
+
+                    sleep(500);
+                    l.setVerticalTargetManual(700 - (i * 50));
+                    l.update();
+                    sleep(1500);
+
+                    l.setHorizontalTargetManual(850);
+                    l.update();
+                    sleep(500); //1000
+                    l.closeClaw();
+                    sleep(300);
+                    l.setVerticalTarget(3);
+                    l.update();
+                    sleep(500);
+                    l.setHorizontalTargetManual(0);
+                    l.update();
+
+                    turret.setTargetPosition(polePos+27);
+                    turret.setPower(-0.5); //0.3
+
+                    sleep(2250);
+                    l.setHorizontalTargetManual(225); //225
+                    l.update();
+                    sleep(350); //650
+                    l.openClaw();
+                    sleep(300);
+                    // l.closeClaw();
+                    l.setHorizontalTarget(0);
+                    l.update();
                 }
 
-            }
-            while (opModeIsActive()) {
-                // wait for the match to end
-                detector.run();
+                turret.setTargetPosition(0);
+                turret.setPower(1); //0.3
+
+                sleep(500);
+                l.setVerticalTarget(0);
                 l.update();
             }
 
+            ArrayList<Trajectory> park = new ArrayList<>();
 
+            a = 1;
+            if (a == 1) {
+                // strafe left
+                /*park.add(drive.trajectoryBuilder(new Pose2d())
+                        .strafeLeft(25,
+                                SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .build());*/
+                strafe(0.6, 'l',18);
+
+            } else if (a == 3) {
+                // strafe right
+               /* park.add(drive.trajectoryBuilder(new Pose2d())
+                        .strafeRight(25,
+                                SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        .build());*/
+                strafe(0.6, 'r',18);
+
+            }
+
+            for (Trajectory t : park) {
+                drive.followTrajectory(t);
+                Pose2d poseEstimate = drive.getPoseEstimate();
+                telemetry.addData("finalX", poseEstimate.getX());
+                telemetry.addData("finalY", poseEstimate.getY());
+            }
+
+            // while (opModeIsActive()) ; // wait for the match to end
         }
     }
-
     //--------------------------------------------------------------
-    void straight(double distance, double power){ //distance inches
-        while((encoderRight.getCurrentPosition() + encoderLeft.getCurrentPosition())/(2*49.26)<=distance){
-            frontLeft.setPower(power);
-            frontRight.setPower(power);
-            rearLeft.setPower(power);
-            rearRight.setPower(power);
-        }
-        frontLeft.setPower(0);
-        frontRight.setPower(0);
-        rearLeft.setPower(0);
-        rearRight.setPower(0);
-
-
-    }
-
     @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection) {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
@@ -272,5 +341,66 @@ public class rrAutoComp3 extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    }
+
+    void strafe (double speed, char direction,double distance){ // distance is in inches
+        //2500 encoder counts to 1 inch.
+        while(encoderRear.getCurrentPosition()/2500 <= distance){
+            if(direction == 'l'){
+                frontLeft.setPower(-speed);
+                frontRight.setPower(speed);
+                rearLeft.setPower(speed);
+                rearRight.setPower(-speed);
+            }
+            else if(direction == 'r'){
+                frontLeft.setPower(speed);
+                frontRight.setPower(-speed);
+                rearLeft.setPower(-speed);
+                rearRight.setPower(speed);
+            }
+
+        }
+    }
+    public void driveStraight(double lf, double lb,
+                              double rf, double rb, double distance) { //leftFront leftBack etc
+        // sets power for all drive motors
+        double posR = 0;
+        double posL = 0;
+        double mult = 1.0025;
+        double mult2 = 1.0008;
+        //encoderRight.setCurrentPosition() = 0;
+        if(Math.abs(distance)<8000){
+            mult = 1;
+            mult2 = 1;
+        }
+        //robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        while(Math.abs((posR+posL)/2)<Math.abs(distance)){
+            posR = encoderRight.getCurrentPosition();
+            posL = encoderLeft.getCurrentPosition();
+            frontLeft.setPower(lf);
+            rearLeft.setPower(lb);
+            frontRight.setPower(rf);
+            rearRight.setPower(rb);
+            telemetry.addData("EncoderRight:", posR);
+            telemetry.addData("Encoder Left:", posL);
+            if(posR < posL){
+                rf = rf*mult;
+                rb = rb*mult;
+                lf = lf*mult2;
+                lb = lb*mult2;
+            }
+            else{
+                lf = lf*mult;
+                lb = lb*mult;
+                rf = rf*mult2; //mult2 is so that the robot doesn't become too tilted,
+                rb = rb*mult2;
+            }
+            telemetry.update();
+        }
+        frontLeft.setPower(0);
+        rearLeft.setPower(0);
+        frontRight.setPower(0);
+        rearRight.setPower(0);
     }
 }

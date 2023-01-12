@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift {
-    public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3150};
-    public static final int[] HORIZONTAL_TARGETS = {0, 220, 850};
+    public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3100};
+    public static final int[] HORIZONTAL_TARGETS = {0, 220};
     public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 3500;
     public static final int LOWER_HORIZONTAL_BOUND = 0, UPPER_HORIZONTAL_BOUND = 850; // was 225, then 500
     public int currentVerticalTarget = 0, targetVerticalCount = VERTICAL_TARGETS[0];
@@ -17,11 +17,11 @@ public class Lift {
     public final DcMotor liftHorizontal;
 
     public static final double POWER_UP = 1.0;
-    public static final double POWER_H = 0.65;
-    public static final double POWER_DOWN = -0.5;
+    public static final double POWER_H = 1; //0.65
+    public static final double POWER_DOWN = -0.8;
 
     public final Servo servo;
-    
+
     private static int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
     }
@@ -149,11 +149,13 @@ public class Lift {
         return (currentVerticalTarget != LOWER_VERTICAL_BOUND || liftVertical1.getPower() == 0);
     }
 
-    public boolean isSatisfiedVertically(int threshold) {
-        return Math.abs(targetVerticalCount - liftVertical1.getCurrentPosition()) < threshold;
+    public boolean isSatisfiedVertically() {
+        final int MAX_FUDGERY = 100;
+        return Math.abs(targetVerticalCount - liftVertical1.getCurrentPosition()) < MAX_FUDGERY;
     }
 
-    public boolean isSatisfiedHorizontally(int threshold) {
-        return Math.abs(targetHorizontalCount - liftHorizontal.getCurrentPosition()) < threshold;
+    public boolean isSatisfiedHorizontally() {
+        final int MAX_FUDGERY = 100;
+        return Math.abs(targetHorizontalCount - liftHorizontal.getCurrentPosition()) < MAX_FUDGERY;
     }
 }

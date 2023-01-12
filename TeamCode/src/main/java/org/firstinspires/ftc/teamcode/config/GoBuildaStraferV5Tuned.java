@@ -58,8 +58,8 @@ public class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
 
     @Override
     public PIDCoefficients getTranslationalPID() {
-        return new PIDCoefficients(0.5, 0, 0);
-    }
+        return new PIDCoefficients(4, 0, 0);
+    } //0.5
 
     @Override
     public double getEncoderLateralDistance() {
