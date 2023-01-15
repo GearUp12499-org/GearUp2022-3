@@ -196,9 +196,9 @@ public class rrAutoComp3 extends LinearOpMode {
             int polePos = -370;
             //l.setVerticalTargetManual(1500);
             l.verticalLift(1500);
-            sleep(1000);
+            sleep(100);
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
-                turret.setPower(-0.35);
+                turret.setPower(-0.2); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
             }
@@ -213,15 +213,15 @@ public class rrAutoComp3 extends LinearOpMode {
             l.verticalLift(VERTICAL_TARGETS[3]);
             l.update();
 
-            sleep(1500);
-            l.setHorizontalTargetManual(225);//225
-            l.update();
+            //sleep(1500);
+            l.setHorizontalTargetManual(215);//225
+            while (!l.isSatisfiedHorizontally()) l.update();
 
-            sleep(650);
+            sleep(100);
             l.openClaw();
             sleep(300);
             l.setHorizontalTarget(0);
-            l.update();
+            l.update();  // intentional
 
             for(int i = 0; i < 3; i++) {
                 turret.setTargetPosition(740); //750
@@ -231,30 +231,32 @@ public class rrAutoComp3 extends LinearOpMode {
 
                 sleep(500);
                 //l.setVerticalTargetManual(700 - (i * 50));
-                l.verticalLift(700-(i*50));
-                l.update();
-                sleep(1500);
+                l.verticalLift(740-(i*50));
+//                l.update();
+//                sleep(1500);
 
                 l.setHorizontalTargetManual(850);
-                l.update();
+                //l.update();
                 sleep(500); //1000
                 l.closeClaw();
                 sleep(300);
                 //l.setVerticalTarget(3);
                 l.verticalLift(700-(i*50)+100);
+//                l.update();
+
                 l.update();
-
-
-                sleep(500);
+                sleep(600);
+//                sleep(500);
                 l.setHorizontalTargetManual(0);
                 sleep(300);
                 l.verticalLift(VERTICAL_TARGETS[3]);
-                sleep(700);
-                l.update();
+//                sleep(700);
+//                l.update();
                 turret.setTargetPosition(polePos+27);
                 turret.setPower(-0.5); //0.3
 
                 sleep(2250);
+                l.update();
                 l.setHorizontalTargetManual(225); //225
                 sleep(350); //650
                 l.openClaw();

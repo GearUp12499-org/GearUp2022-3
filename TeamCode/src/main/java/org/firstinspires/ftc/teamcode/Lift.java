@@ -54,16 +54,16 @@ public class Lift {
     }
 
     public void update() {
-        if (liftVertical1.getCurrentPosition() > targetVerticalCount + 20)
-            liftVertical2.setPower(POWER_DOWN);
-        else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 20)
-            liftVertical2.setPower(POWER_UP);
-        else
-            liftVertical2.setPower(0);
-        if (liftVertical1.getCurrentPosition() > targetVerticalCount)
+        if (liftVertical1.getCurrentPosition() > targetVerticalCount + 10) {
             liftVertical1.setPower(POWER_DOWN);
-        else if (liftVertical1.getCurrentPosition() < targetVerticalCount)
+            liftVertical2.setPower(POWER_DOWN);
+        } else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 10) {
             liftVertical1.setPower(POWER_UP);
+            liftVertical2.setPower(POWER_UP);
+        } else {
+            liftVertical1.setPower(0);
+            liftVertical2.setPower(0);
+        }
     }
 
     public void updTargets() {
