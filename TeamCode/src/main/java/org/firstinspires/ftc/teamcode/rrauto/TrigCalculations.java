@@ -8,7 +8,7 @@ package org.firstinspires.ftc.teamcode.rrauto;
  * +y is moving left
  * -y is moving right
  *
- * (0, 0) start
+ * (0, 0) start (center of turret)
  * (60, 0) expected stop position
  * (72, -12) pole position (B)
  * * (60, 36) cone stack position (C)
@@ -19,34 +19,55 @@ package org.firstinspires.ftc.teamcode.rrauto;
 
 public class TrigCalculations {
 
+    private static final double startX = 9, startY = 0;
+    private static final double stopX = 60, stopY = 0;
     private static final double poleX = 72, poleY = -12;    // pole
     private static final double stackX = 60, stackY = 36;     // cone stack
 
-    private static double poleAngle(int x, int y) {
-        double deltaX = poleX - x;
-        double deltaY = Math.abs(poleY - y);
-        return Math.atan(deltaY / deltaX);
+    // values adjusted for non-(0, 0) start position
+    private static final double poleDiffX = poleX - startX, poleDiffY = poleY - startY;
+    private static final double stackDiffX = stackX - startX, stackDiffY = stackY - startY;
+
+    // account for distance from center of turret to front of claw
+    private static final int HORIZONTAL_DISTANCE_DIFFERENCE_IN = 8;
+
+    public static double initialDrive() {
+        return stopX - startX;
     }
 
-    private static double stackAngle(int x, int y) {
-        double deltaX = stackX - x;
-        double deltaY = stackY - y;
-        return Math.atan(deltaY / deltaX);
+    public static double poleAngle(double x, double y) {
+        double deltaX = poleDiffX - x;
+        double deltaY = poleDiffY - y;
+
+        // should return negative angle value
+        return Math.toDegrees(Math.atan(deltaY / deltaX));
     }
 
-    public static double angleDelta(int x, int y){
-        return poleAngle(x, y) + stackAngle(x, y);
+    public static double stackAngle(double x, double y) {
+        double deltaX = stackDiffX - x;
+        double deltaY = stackDiffY - y;
+
+        return Math.toDegrees(Math.atan(deltaY / deltaX));
     }
 
-    public static double distToPole(int x, int y) {
-        double xComponent = poleX - x;
-        double yComponent = Math.abs(poleY - y);
-        return Math.sqrt(xComponent * xComponent + yComponent * yComponent);
+    public static double sumDeltaAngle(double x, double y) {
+        // account for negative values from poleAngle()
+        return Math.abs(poleAngle(x, y)) + Math.abs(stackAngle(x, y));
     }
 
-    public static double distToStack(int x, int y) {
-        double xComponent = stackX - x;
-        double yComponent = stackY - y;
-        return Math.sqrt(xComponent * xComponent + yComponent * yComponent);
+    public static double distToPole(double x, double y) {
+        double xComponent = poleDiffX - x;
+        double yComponent = poleDiffY - y;
+
+        double turretToPole = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
+        return turretToPole - HORIZONTAL_DISTANCE_DIFFERENCE_IN;
+    }
+
+    public static double distToStack(double x, double y) {
+        double xComponent = stackDiffX - x;
+        double yComponent = stackDiffY - y;
+
+        double turretToStack = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
+        return turretToStack - HORIZONTAL_DISTANCE_DIFFERENCE_IN;
     }
 }
