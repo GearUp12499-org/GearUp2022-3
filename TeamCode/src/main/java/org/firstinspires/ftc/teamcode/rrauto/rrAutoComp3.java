@@ -241,11 +241,14 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);*/
 
-                l.setVerticalTarget(3);
-                l.update();
+                //l.setVerticalTarget(3);
+
+                //l.update();
+                l.verticalLift(3);
 
                 sleep(1500);
                 l.setHorizontalTargetManual(225);//225
+
                 l.update();
 
                 sleep(650);
@@ -255,7 +258,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.setHorizontalTarget(0);
                 l.update();
 
-                for(int i = 0; i < 3; i++) {
+                for(int i = 0; i < 0; i++) {
                     turret.setTargetPosition(790); //750
                     turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     turret.setPower(0.9); //0.3
@@ -300,7 +303,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             ArrayList<Trajectory> park = new ArrayList<>();
 
-            a = 1;
+            a = 2;
             if (a == 1) {
                 // strafe left
                 /*park.add(drive.trajectoryBuilder(new Pose2d())
