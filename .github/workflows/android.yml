@@ -23,4 +23,12 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew assembleDebug
+    - name: Copy files
+      run: |
+        cp TeamCode/build/outputs/apk/debug/TeamCode-debug.apk build-debug.apk
+    - name: Export artifact
+        uses: actions/upload-artifact@v2
+        with:
+            name: build-debug.apk
+            path: build-debug.apk
