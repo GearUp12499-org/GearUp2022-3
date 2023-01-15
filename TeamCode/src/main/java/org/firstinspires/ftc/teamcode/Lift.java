@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift {
     public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3100};
-    public static final int[] HORIZONTAL_TARGETS = {0, 220};
+    public static final int[] HORIZONTAL_TARGETS = {40, 220};
     public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 3500;
     public static final int LOWER_HORIZONTAL_BOUND = 0, UPPER_HORIZONTAL_BOUND = 850; // was 225, then 500
     public int currentVerticalTarget = 0, targetVerticalCount = VERTICAL_TARGETS[0];
@@ -17,7 +17,7 @@ public class Lift {
     public final DcMotor liftHorizontal;
 
     public static final double POWER_UP = 1.0;
-    public static final double POWER_H = 1; //0.65
+    public static final double POWER_H = 0.65; //0.65
     public static final double POWER_DOWN = -0.8;
 
     public final Servo servo;
@@ -105,13 +105,23 @@ public class Lift {
         liftVertical1.setPower(0);
         liftVertical2.setPower(0);
     }
-    public void verticalLift(int index){ //runs without encoder
+    public void verticalLift(int position){ //runs without encoder
         liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        while (liftVertical1.getCurrentPosition() < VERTICAL_TARGETS[index]) {
-            liftVertical1.setPower(Lift.POWER_UP);
-            liftVertical2.setPower(Lift.POWER_UP);
+        targetVerticalCount=position;
+        if(liftVertical1.getCurrentPosition()< position){
+            while (liftVertical1.getCurrentPosition() < position) {
+                liftVertical1.setPower(Lift.POWER_UP);
+                liftVertical2.setPower(Lift.POWER_UP);
+            }
         }
+        else if(liftVertical1.getCurrentPosition()>position){
+            while (liftVertical1.getCurrentPosition() > position) {
+                liftVertical1.setPower(Lift.POWER_DOWN);
+                liftVertical2.setPower(Lift.POWER_DOWN);
+            }
+        }
+
         liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftVertical2.setPower(0);

@@ -45,5 +45,6 @@ public class LiftMotorTest extends LinearOpMode {
         }
         telemetry.addData("lv1", l.liftVertical1.getCurrentPosition());
         telemetry.addData("lv2", l.liftVertical2.getCurrentPosition());
+        //telemetry.addData('turret', turret.getCurrentPosition)
     }
 }

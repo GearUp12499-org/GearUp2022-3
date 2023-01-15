@@ -31,6 +31,7 @@ import java.util.ArrayList;
 
 @Autonomous(name="RR AUTO" , group="GearUp")
 public class rrAutoComp3 extends LinearOpMode {
+    public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3100};
     public static double SPEED = 40; // was 40
     public static double DIST_FIRST = 2;
     public static double DIST_SECOND = 4;
@@ -187,119 +188,87 @@ public class rrAutoComp3 extends LinearOpMode {
                 Pose2d poseEstimate = drive.getPoseEstimate();
                 telemetry.addData("finalX", poseEstimate.getX());
                 telemetry.addData("finalY", poseEstimate.getY());
-            }
-
-            // driveStraight(0.5, 0.5, 0.5, 0.5, 50);
-
-            sleep(250);
-
-            boolean USE_DISTANCE_SENSOR = false; // for testing purposes
-
-            if (USE_DISTANCE_SENSOR) {
-                l.setVerticalTargetManual(2000);
-                detector.beginScan(DetectPoleV2.RotateDirection.CW);
-
-                sleep(500);
-                turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-                // DONE = done
-                // IDLE = something broke :(
-                while (detector.getState() != DetectPoleV2.State.DONE && opModeIsActive() && detector.getState() != DetectPoleV2.State.IDLE) {
-                    detector.run();
-                    l.update();
-                    telemetry.addData("Current state", detector.getState());
-                    telemetry.addData("Current reading", detector.lastDistance);
-                    telemetry.addData("Capture reading", detector.captureDistance);
-                    telemetry.addData("HTargetPos", l.liftHorizontal.getTargetPosition());
-                    telemetry.addData("HCurrenPos", l.liftHorizontal.getCurrentPosition());
-                    telemetry.addData("turretPos", turret.getCurrentPosition());
-                    telemetry.update();
-                }
-                l.setVerticalTargetManual(3800);
-
-            } else {
-                int polePos = -370;
-                l.setVerticalTargetManual(1500);
-                sleep(1000);
-                while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
-                    turret.setPower(-0.35);
-                    telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
-                    telemetry.update();
-                }
-                turret.setPower(0);
-
-                // sleep(250);
-
-                if (Math.abs(turret.getCurrentPosition()) < 700)
-                    polePos = turret.getCurrentPosition();
-
-                telemetry.addData("polepos:", polePos);
                 telemetry.update();
 
-                /*
-                turret.setTargetPosition(polePos);
+            }
+
+            sleep(250);
+            int polePos = -370;
+            //l.setVerticalTargetManual(1500);
+            l.verticalLift(1500);
+            sleep(1000);
+            while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
+                turret.setPower(-0.35);
+                telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
+                telemetry.update();
+            }
+            turret.setPower(0);
+
+            if (Math.abs(turret.getCurrentPosition()) < 700)
+                polePos = turret.getCurrentPosition();
+
+            telemetry.addData("polepos:", polePos);
+            telemetry.update();
+
+            l.verticalLift(VERTICAL_TARGETS[3]);
+            l.update();
+
+            sleep(1500);
+            l.setHorizontalTargetManual(225);//225
+            l.update();
+
+            sleep(650);
+            l.openClaw();
+            sleep(300);
+            l.setHorizontalTarget(0);
+            l.update();
+
+            for(int i = 0; i < 3; i++) {
+                turret.setTargetPosition(740); //750
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                turret.setPower(0.3);*/
 
-                //l.setVerticalTarget(3);
+                turret.setPower(0.8); //0.3
 
-                //l.update();
-                l.verticalLift(3);
-
+                sleep(500);
+                //l.setVerticalTargetManual(700 - (i * 50));
+                l.verticalLift(700-(i*50));
+                l.update();
                 sleep(1500);
-                l.setHorizontalTargetManual(225);//225
 
+                l.setHorizontalTargetManual(850);
+                l.update();
+                sleep(500); //1000
+                l.closeClaw();
+                sleep(300);
+                //l.setVerticalTarget(3);
+                l.verticalLift(700-(i*50)+100);
                 l.update();
 
-                sleep(650);
+
+                sleep(500);
+                l.setHorizontalTargetManual(0);
+                sleep(300);
+                l.verticalLift(VERTICAL_TARGETS[3]);
+                sleep(700);
+                l.update();
+                turret.setTargetPosition(polePos+27);
+                turret.setPower(-0.5); //0.3
+
+                sleep(2250);
+                l.setHorizontalTargetManual(225); //225
+                sleep(350); //650
                 l.openClaw();
                 sleep(300);
                 // l.closeClaw();
                 l.setHorizontalTarget(0);
-                l.update();
-
-                for(int i = 0; i < 0; i++) {
-                    turret.setTargetPosition(790); //750
-                    turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    turret.setPower(0.9); //0.3
-
-                    sleep(500);
-                    l.setVerticalTargetManual(700 - (i * 50));
-                    l.update();
-                    sleep(1500);
-
-                    l.setHorizontalTargetManual(850);
-                    l.update();
-                    sleep(500); //1000
-                    l.closeClaw();
-                    sleep(300);
-                    l.setVerticalTarget(3);
-                    l.update();
-                    sleep(500);
-                    l.setHorizontalTargetManual(0);
-                    l.update();
-
-                    turret.setTargetPosition(polePos+27);
-                    turret.setPower(-0.5); //0.3
-
-                    sleep(2250);
-                    l.setHorizontalTargetManual(225); //225
-                    l.update();
-                    sleep(350); //650
-                    l.openClaw();
-                    sleep(300);
-                    // l.closeClaw();
-                    l.setHorizontalTarget(0);
-                    l.update();
-                }
-
-                turret.setTargetPosition(0);
-                turret.setPower(1); //0.3
-
-                sleep(500);
-                l.setVerticalTarget(0);
-                l.update();
             }
+
+            turret.setTargetPosition(0);
+            turret.setPower(1); //0.3
+
+            sleep(500);
+            //l.setVerticalTarget(0);
+            l.verticalLift(VERTICAL_TARGETS[0]);
 
             ArrayList<Trajectory> park = new ArrayList<>();
 
@@ -326,9 +295,6 @@ public class rrAutoComp3 extends LinearOpMode {
 
             for (Trajectory t : park) {
                 drive.followTrajectory(t);
-                Pose2d poseEstimate = drive.getPoseEstimate();
-                telemetry.addData("finalX", poseEstimate.getX());
-                telemetry.addData("finalY", poseEstimate.getY());
             }
 
             // while (opModeIsActive()) ; // wait for the match to end
