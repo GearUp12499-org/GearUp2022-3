@@ -28,7 +28,7 @@ jobs:
       run: |
         cp TeamCode/build/outputs/apk/debug/TeamCode-debug.apk build-debug.apk
     - name: Export artifact
-        uses: actions/upload-artifact@v2
-        with:
-            name: build-debug.apk
-            path: build-debug.apk
+      uses: actions/upload-artifact@v2
+      with:
+          name: build-debug.apk
+          path: build-debug.apk
