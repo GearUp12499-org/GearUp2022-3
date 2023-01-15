@@ -45,9 +45,7 @@ public class TrigCalcAuto extends LinearOpMode {
 
         // drive straight
         Trajectory initialStraight = drive.trajectoryBuilder(new Pose2d())
-                .forward(TrigCalculations.initialDrive(),
-                        SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .forward(TrigCalculations.initialDrive())
                 .build();
         drive.followTrajectory(initialStraight);
 
