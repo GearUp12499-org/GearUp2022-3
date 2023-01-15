@@ -97,28 +97,6 @@ public class Lift {
         updTargets();
     }
 
-    public void speedVlift(double counts) {
-        while (liftVertical1.getCurrentPosition() < counts){
-            liftVertical1.setPower(1);
-            liftVertical2.setPower(1);
-        }
-        liftVertical1.setPower(0);
-        liftVertical2.setPower(0);
-    }
-    public void verticalLift(int index){ //runs without encoder
-        liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        while (liftVertical1.getCurrentPosition() < VERTICAL_TARGETS[index]) {
-            liftVertical1.setPower(Lift.POWER_UP);
-            liftVertical2.setPower(Lift.POWER_UP);
-        }
-        liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftVertical2.setPower(0);
-        liftVertical1.setPower(0);
-
-
-    }
     public void setVerticalTarget(int index) {
         currentVerticalTarget = index;
         targetVerticalCount = VERTICAL_TARGETS[currentVerticalTarget];
