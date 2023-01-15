@@ -50,9 +50,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  * The sample will display the current Yaw, Pitch and Roll of the robot.<br>
  * With the correct orientation parameters selected, pitch/roll/yaw should act as follows:
  * <p>
- *   Pitch value should INCREASE as the robot is tipped UP at the front. (Rotation about X) <br>
- *   Roll value should INCREASE as the robot is tipped UP at the left side. (Rotation about Y) <br>
- *   Yaw value should INCREASE as the robot is rotated Counter Clockwise. (Rotation about Z) <br>
+ * Pitch value should INCREASE as the robot is tipped UP at the front. (Rotation about X) <br>
+ * Roll value should INCREASE as the robot is tipped UP at the left side. (Rotation about Y) <br>
+ * Yaw value should INCREASE as the robot is rotated Counter Clockwise. (Rotation about Z) <br>
  * <p>
  * The yaw can be reset (to zero) by pressing the Y button on the gamepad (Triangle on a PS4 controller)
  * <p>
@@ -73,8 +73,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  */
 @TeleOp(name = "Sensor: IMU Non-Orthogonal", group = "Sensor")
 @Disabled     // Comment this out to add to the OpMode list
-public class SensorIMUNonOrthogonal extends LinearOpMode
-{
+public class SensorIMUNonOrthogonal extends LinearOpMode {
     // The IMU sensor object
     IMU imu;
 
@@ -82,7 +81,8 @@ public class SensorIMUNonOrthogonal extends LinearOpMode
     // Main logic
     //----------------------------------------------------------------------------------------------
 
-    @Override public void runOpMode() throws InterruptedException {
+    @Override
+    public void runOpMode() throws InterruptedException {
 
         // Retrieve and initialize the IMU.
         // This sample expects the IMU to be in a REV Hub and named "imu".

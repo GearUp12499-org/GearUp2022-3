@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 @Config
-@TeleOp(name="RR: Strafe + Turn Test", group="$RR")
+@TeleOp(name = "RR: Strafe + Turn Test", group = "$RR")
 public class StrafeTurnTest extends LinearOpMode {
     public static double DIST = 48;
 

@@ -123,7 +123,7 @@ public class WebServerVer1 {
             Recorder testing = new Recorder();
             Random rng = new Random();
             for (int i = 0; i < 100; i++) {
-                testing.put(rng.nextDouble()*15, rng.nextDouble()*100000);
+                testing.put(rng.nextDouble() * 15, rng.nextDouble() * 100000);
             }
             testing.finalize(0);
             String name = "export_test_" + rng.nextInt(2048) + ".csv";

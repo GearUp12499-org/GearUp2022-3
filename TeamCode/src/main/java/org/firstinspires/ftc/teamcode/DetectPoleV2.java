@@ -1,22 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.lib.Consumer;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class DetectPoleV2 {
     public static int realMMToEncoderH(double mms) {
         // 220 et => 160 mm
         //
-        return (int) ((145.0/112) * mms);
+        return (int) ((145.0 / 112) * mms);
     }
 
     public static double readMMtoRealMM(double reading) {
@@ -118,7 +116,7 @@ public class DetectPoleV2 {
 
             o.turret.setTargetPosition(CONE_STACK_ROTATE_POS);
             o.turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            o.turret.setPower(1* o.rotateDirection.powerModifier);
+            o.turret.setPower(1 * o.rotateDirection.powerModifier);
         });
 
         ON_ENTER_DEFAULTS.put(State.RECENTER, o -> {
@@ -162,6 +160,7 @@ public class DetectPoleV2 {
         CCW(1);
 
         public final int powerModifier;
+
         RotateDirection(int powerModifier) {
             this.powerModifier = powerModifier;
         }
@@ -197,11 +196,13 @@ public class DetectPoleV2 {
 
     public void stateChange(State newState) {
         Consumer<DetectPoleV2> exit = onExit.get(currentState);
-        if (exit == null) exit = ign -> {};
+        if (exit == null) exit = ign -> {
+        };
         exit.accept(this);
         currentState = newState;
         Consumer<DetectPoleV2> enter = onEnter.get(currentState);
-        if (enter == null) enter = ign -> {};
+        if (enter == null) enter = ign -> {
+        };
         enter.accept(this);
     }
 
@@ -267,7 +268,7 @@ public class DetectPoleV2 {
                 }
                 break;
             case ROTATE_TO_STACK:
-                if(turret.getCurrentPosition() >= CONE_STACK_ROTATE_POS){
+                if (turret.getCurrentPosition() >= CONE_STACK_ROTATE_POS) {
                     delay = new DelayStateChange(1.0, State.IDLE);
                 }
                 break;

@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.nav;
 
-import static org.firstinspires.ftc.teamcode.SharedHardware.*;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -12,7 +17,6 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-import org.firstinspires.ftc.teamcode.util.NotImplemented;
 
 import java.util.List;
 
@@ -32,6 +36,7 @@ public class StupidAuto extends LinearOpMode {
 
     int target = 0;
     boolean lastA = false;
+
     @Override
     public void runOpMode() throws InterruptedException {
         initVuforia();
@@ -64,21 +69,21 @@ public class StupidAuto extends LinearOpMode {
 
         telemetry.addData("Selected target: ", target);
         telemetry.update();
-        if (tfod != null){
+        if (tfod != null) {
             List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-            if(updatedRecognitions != null) {
+            if (updatedRecognitions != null) {
                 telemetry.addData("# Object Detected", updatedRecognitions.size());
                 int i = 0;
-                for(Recognition recognition : updatedRecognitions){
-                    double col = (recognition.getLeft() + recognition.getRight()) / 2 ;
-                    double row = (recognition.getTop()  + recognition.getBottom()) / 2 ;
-                    double width  = Math.abs(recognition.getRight() - recognition.getLeft()) ;
-                    double height = Math.abs(recognition.getTop()  - recognition.getBottom()) ;
+                for (Recognition recognition : updatedRecognitions) {
+                    double col = (recognition.getLeft() + recognition.getRight()) / 2;
+                    double row = (recognition.getTop() + recognition.getBottom()) / 2;
+                    double width = Math.abs(recognition.getRight() - recognition.getLeft());
+                    double height = Math.abs(recognition.getTop() - recognition.getBottom());
 
-                    telemetry.addData(""," ");
-                    telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
-                    telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
-                    telemetry.addData("- Size (Width/Height)","%.0f / %.0f", width, height);
+                    telemetry.addData("", " ");
+                    telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
+                    telemetry.addData("- Position (Row/Col)", "%.0f / %.0f", row, col);
+                    telemetry.addData("- Size (Width/Height)", "%.0f / %.0f", width, height);
 
                     if (recognition.getLabel().equals("1 Bolt"))
                         target = 1;
@@ -92,7 +97,7 @@ public class StupidAuto extends LinearOpMode {
         }
 
         //if (target != 0)
-            //break;
+        //break;
         nav.moveForward(2);
       /*  switch (target) {
             case 0:

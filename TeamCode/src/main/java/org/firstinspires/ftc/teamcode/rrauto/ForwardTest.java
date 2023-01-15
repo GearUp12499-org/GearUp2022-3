@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.localization.Localizer;
@@ -11,7 +10,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
 
 @Config
-@TeleOp(name="RR: Forward Test", group="$RR")
+@TeleOp(name = "RR: Forward Test", group = "$RR")
 public class ForwardTest extends LinearOpMode {
     public static double DIST = 48;
 
@@ -21,7 +20,7 @@ public class ForwardTest extends LinearOpMode {
 //        telemetry = FtcDashboard.getInstance().getTelemetry();
         waitForStart();
         drive.followTrajectorySequence(drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
-                        .forward(DIST)
+                .forward(DIST)
                 .build());
         Localizer localizer = drive.getLocalizer();
         if (localizer instanceof StandardTrackingWheelLocalizer) {

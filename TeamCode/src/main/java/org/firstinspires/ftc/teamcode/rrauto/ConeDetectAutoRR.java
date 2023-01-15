@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
-import static org.firstinspires.ftc.teamcode.SharedHardware.*;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -20,12 +24,10 @@ import org.firstinspires.ftc.teamcode.nav.EncoderNavigation;
 import org.firstinspires.ftc.teamcode.nav.Paths;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
-@Autonomous(name = "Auto (+Cone) (+RR)", group="!!!!!!!!")
+@Autonomous(name = "Auto (+Cone) (+RR)", group = "!!!!!!!!")
 public class ConeDetectAutoRR extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "PowerPlay.tflite";
     // private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/CustomTeamModel.tflite";
@@ -122,7 +124,7 @@ public class ConeDetectAutoRR extends LinearOpMode {
                         telemetry.addData("- Position (Row/Col)", "%.0f / %.0f", row, col);
                         telemetry.addData("- Size (Width/Height)", "%.0f / %.0f", width, height);
                         */
-                        if (recognition.getConfidence() > max_obs_conf){
+                        if (recognition.getConfidence() > max_obs_conf) {
                             if (recognition.getLabel().equals("1 Bolt")) {
                                 bestMatch = 1;
                             } else if (recognition.getLabel().equals("2 Bulb")) {

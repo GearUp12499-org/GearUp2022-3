@@ -16,6 +16,7 @@ public class RisingFallingEdges {
         }
         throw new RuntimeException("cannot find call context");
     }
+
     public static boolean isRisingEdge(boolean value) {
         StackTraceElement el = getCallSource();
         boolean result = false;
@@ -25,6 +26,7 @@ public class RisingFallingEdges {
         lastState.put(el, value);
         return result;
     }
+
     public static boolean isFallingEdge(boolean value) {
         StackTraceElement el = getCallSource();
         boolean result = false;
@@ -34,6 +36,7 @@ public class RisingFallingEdges {
         lastState.put(el, value);
         return result;
     }
+
     public static boolean isAnyEdge(boolean value) {
         StackTraceElement el = getCallSource();
         boolean result = false;

@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -25,7 +23,7 @@ import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
  * offset. We can compute this offset by calculating (change in y position) / (change in heading)
  * which returns the radius if the angle (change in heading) is in radians. This is based
  * on the arc length formula of length = theta * radius.
- *
+ * <p>
  * To run this routine, simply adjust the desired angle and specify the number of trials
  * and the desired delay. Then, run the procedure. Once it finishes, it will print the
  * average of all the calculated forward offsets derived from the calculation. This calculated
@@ -34,7 +32,7 @@ import org.firstinspires.ftc.teamcode.drive.StandardTrackingWheelLocalizer;
  * satisfactory result is produced.
  */
 @Config
-@Autonomous(group="drive")
+@Autonomous(group = "drive")
 public class TrackingWheelForwardOffsetTuner extends LinearOpMode {
     public static double ANGLE = 180; // deg
     public static int NUM_TRIALS = 5;

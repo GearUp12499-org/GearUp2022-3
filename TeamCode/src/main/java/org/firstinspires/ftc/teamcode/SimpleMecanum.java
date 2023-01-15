@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.SharedHardware.*;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="MecanumDrive_v1")
+@TeleOp(name = "MecanumDrive_v1")
 public class SimpleMecanum extends LinearOpMode {
     @Override
     public void runOpMode() {

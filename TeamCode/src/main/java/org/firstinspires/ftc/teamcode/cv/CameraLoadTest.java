@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.cv;
 
-import static org.opencv.core.CvType.*;
+import static org.opencv.core.CvType.CV_32FC1;
 import static org.opencv.imgcodecs.Imgcodecs.imwrite;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -12,7 +12,10 @@ import org.firstinspires.ftc.teamcode.cv.pipes.SharpEdgesPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.*;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,9 +26,9 @@ public class CameraLoadTest extends LinearOpMode {
     static class PixelCounter extends OpenCvPipeline {
         public static final Mat xFilter = new Mat(3, 3, CV_32FC1);
         public static final float[] xFilterDat = {
-           -1, 0, 1,
-            -2, 0, 2,
-            -1, 0, 1
+                -1, 0, 1,
+                -2, 0, 2,
+                -1, 0, 1
         };
 
         static {
@@ -57,10 +60,10 @@ public class CameraLoadTest extends LinearOpMode {
             if (!takePicture) return input;
             c += 1;
             takePicture = false;
-            imwrite(new File(saveItHerePls, "snapshot"+c+".png").toString(), input);
-            imwrite(new File(saveItHerePls, "snapshot"+c+"_sxb.png").toString(), sobelXB);
-            imwrite(new File(saveItHerePls, "snapshot"+c+"_sxg.png").toString(), sobelXG);
-            imwrite(new File(saveItHerePls, "snapshot"+c+"_sxr.png").toString(), sobelXR);
+            imwrite(new File(saveItHerePls, "snapshot" + c + ".png").toString(), input);
+            imwrite(new File(saveItHerePls, "snapshot" + c + "_sxb.png").toString(), sobelXB);
+            imwrite(new File(saveItHerePls, "snapshot" + c + "_sxg.png").toString(), sobelXG);
+            imwrite(new File(saveItHerePls, "snapshot" + c + "_sxr.png").toString(), sobelXR);
             return input;
         }
 
@@ -74,12 +77,14 @@ public class CameraLoadTest extends LinearOpMode {
     }
 
     OpenCvCamera camera;
+
     private enum CameraState {
         NOT_READY,
         STARTING,
         READY,
         FAILED
     }
+
     private CameraState cameraState = CameraState.NOT_READY;
 
     @Override

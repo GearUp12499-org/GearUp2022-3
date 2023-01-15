@@ -100,8 +100,9 @@ public class Lift {
 
     /**
      * Move the vertical lift to a specific position (blocking).
+     *
      * @param position Target encoder position.
-     * @param op OpMode to use for thread control. (stopping) (can be null)
+     * @param op       OpMode to use for thread control. (stopping) (can be null)
      * @throws InterruptedException If the thread is interrupted or the op-mode is stopped.
      */
     public void verticalLift(int position, @Nullable LinearOpMode op) throws InterruptedException { //runs without encoder
@@ -111,11 +112,12 @@ public class Lift {
 
     /**
      * Wait for the lifts to reach their target positions.
+     *
      * @param op OpMode to use for thread control. (stopping) (can be null)
      * @throws InterruptedException If the thread is interrupted or the op-mode is stopped.
      */
     public void waitLift(@Nullable LinearOpMode op) throws InterruptedException {
-        while(!(isSatisfiedHorizontally() && isSatisfiedHorizontally() && (op == null || op.opModeIsActive()))) {
+        while (!(isSatisfiedHorizontally() && isSatisfiedHorizontally() && (op == null || op.opModeIsActive()))) {
             update();
             // spin :(
             Thread.sleep(10);
