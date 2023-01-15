@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import androidx.annotation.Nullable;
+
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -41,6 +44,7 @@ public class Lift {
     public Lift(HardwareMap hardwareMap) {
         liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
         liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftVertical1.setPower(POWER_UP);
         liftVertical1.setDirection(DcMotorSimple.Direction.REVERSE);
         liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -80,7 +84,6 @@ public class Lift {
     public void updTargets() {
         targetVerticalCount = clamp(targetVerticalCount, LOWER_VERTICAL_BOUND, UPPER_VERTICAL_BOUND);
         targetHorizontalCount = clamp(targetHorizontalCount, LOWER_HORIZONTAL_BOUND, UPPER_HORIZONTAL_BOUND);
-        liftVertical1.setTargetPosition(targetVerticalCount);
         liftHorizontal.setTargetPosition(targetHorizontalCount);
     }
 
@@ -108,27 +111,29 @@ public class Lift {
         updTargets();
     }
 
-    public void verticalLift(int position){ //runs without encoder
-        //liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        targetVerticalCount=position;
-        if(liftVertical1.getCurrentPosition()< position){
-            while (liftVertical1.getCurrentPosition() < position) {
-                liftVertical1.setPower(Lift.POWER_UP);
-                liftVertical2.setPower(Lift.POWER_UP);
-            }
-        }
-        else if(liftVertical1.getCurrentPosition()>position){
-            while (liftVertical1.getCurrentPosition() > position) {
-                liftVertical1.setPower(Lift.POWER_DOWN);
-                liftVertical2.setPower(Lift.POWER_DOWN);
-            }
-        }
+    /**
+     * Move the vertical lift to a specific position (blocking).
+     * @param position Target encoder position.
+     * @param op OpMode to use for thread control. (stopping) (can be null)
+     * @throws InterruptedException If the thread is interrupted or the op-mode is stopped.
+     */
+    public void verticalLift(int position, @Nullable LinearOpMode op) throws InterruptedException { //runs without encoder
+        setVerticalTargetManual(position);
+        waitLift(op);
+    }
 
-        //liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        //liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftVertical2.setPower(0);
-        liftVertical1.setPower(0);
+    /**
+     * Wait for the lifts to reach their target positions.
+     * @param op OpMode to use for thread control. (stopping) (can be null)
+     * @throws InterruptedException If the thread is interrupted or the op-mode is stopped.
+     */
+    public void waitLift(@Nullable LinearOpMode op) throws InterruptedException {
+        while(!(isSatisfiedHorizontally() && isSatisfiedHorizontally() && (op == null || op.opModeIsActive()))) {
+            update();
+            // spin :(
+            Thread.sleep(10);
+        }
+        update();
     }
 
     public void setVerticalTarget(int index) {
