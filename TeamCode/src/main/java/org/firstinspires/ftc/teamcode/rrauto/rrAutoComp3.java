@@ -7,12 +7,10 @@ import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderRight;
 import android.annotation.SuppressLint;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -29,17 +27,11 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
 
-@Autonomous(name="RR AUTO" , group="GearUp")
+@Autonomous(name = "RR AUTO", group = "GearUp")
 public class rrAutoComp3 extends LinearOpMode {
     public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3100};
-    public static double SPEED = 40; // was 40
-    public static double DIST_FIRST = 2;
-    public static double DIST_SECOND = 4;
-    public static double DIST_THIRD = 6;
     public DcMotor liftVertical1 = null;
     public DcMotor liftVertical2 = null;
-
-    private ElapsedTime runtime = new ElapsedTime();
 
     double fx = 578.272;
     double fy = 578.272;
@@ -60,6 +52,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
     static final double FEET_PER_METER = 3.28084;
     Lift l;
+
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -69,23 +62,6 @@ public class rrAutoComp3 extends LinearOpMode {
         l = new Lift(hardwareMap);
         IOControl io = new IOControl(hardwareMap);
         DetectPoleV2 detector = new DetectPoleV2(turret, io.distSensorM, l, true);
-
-        /**
-         * FIXME: why is this here?
-         * @see org.firstinspires.ftc.teamcode.Lift#Lift(com.qualcomm.robotcore.hardware.HardwareMap)
-         */
-//        liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
-//        liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        liftVertical1.setTargetPosition(0);
-//        liftVertical1.setDirection(DcMotorSimple.Direction.REVERSE);
-//        liftVertical1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//
-//        liftVertical2 = hardwareMap.get(DcMotor.class, "lift2");
-//        liftVertical2.setPower(0);
-//        liftVertical2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -195,7 +171,7 @@ public class rrAutoComp3 extends LinearOpMode {
             sleep(250);
             int polePos = -370;
             //l.setVerticalTargetManual(1500);
-            l.verticalLift(1500);
+            l.verticalLift(1500, this);
             sleep(100);
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
                 turret.setPower(-0.2); //.35
@@ -210,8 +186,7 @@ public class rrAutoComp3 extends LinearOpMode {
             telemetry.addData("polepos:", polePos);
             telemetry.update();
 
-            l.verticalLift(VERTICAL_TARGETS[3]);
-            l.update();
+            l.verticalLift(VERTICAL_TARGETS[3], this);
 
             //sleep(1500);
             l.setHorizontalTargetManual(215);//225
@@ -223,7 +198,7 @@ public class rrAutoComp3 extends LinearOpMode {
             l.setHorizontalTarget(0);
             l.update();  // intentional
 
-            for(int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3; i++) {
                 turret.setTargetPosition(740); //750
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -231,7 +206,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
                 sleep(500);
                 //l.setVerticalTargetManual(700 - (i * 50));
-                l.verticalLift(740-(i*50));
+                l.verticalLift(740 - (i * 50), this);
 //                l.update();
 //                sleep(1500);
 
@@ -241,7 +216,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.closeClaw();
                 sleep(300);
                 //l.setVerticalTarget(3);
-                l.verticalLift(700-(i*50)+100);
+                l.verticalLift(700 - (i * 50) + 100, this);
 //                l.update();
 
                 l.update();
@@ -249,10 +224,10 @@ public class rrAutoComp3 extends LinearOpMode {
 //                sleep(500);
                 l.setHorizontalTargetManual(0);
                 sleep(300);
-                l.verticalLift(VERTICAL_TARGETS[3]);
+                l.verticalLift(VERTICAL_TARGETS[3], this);
 //                sleep(700);
 //                l.update();
-                turret.setTargetPosition(polePos+27);
+                turret.setTargetPosition(polePos + 27);
                 turret.setPower(-0.5); //0.3
 
                 sleep(2250);
@@ -270,11 +245,10 @@ public class rrAutoComp3 extends LinearOpMode {
 
             sleep(500);
             //l.setVerticalTarget(0);
-            l.verticalLift(VERTICAL_TARGETS[0]);
+            l.verticalLift(VERTICAL_TARGETS[0], this);
 
             ArrayList<Trajectory> park = new ArrayList<>();
 
-            a = 2;
             if (a == 1) {
                 // strafe left
                 /*park.add(drive.trajectoryBuilder(new Pose2d())
@@ -282,7 +256,7 @@ public class rrAutoComp3 extends LinearOpMode {
                                 SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                         .build());*/
-                strafe(0.6, 'l',18);
+                strafe(0.6, 'l', 18);
 
             } else if (a == 3) {
                 // strafe right
@@ -291,7 +265,7 @@ public class rrAutoComp3 extends LinearOpMode {
                                 SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                                 SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                         .build());*/
-                strafe(0.6, 'r',18);
+                strafe(0.6, 'r', 18);
 
             }
 
@@ -302,6 +276,7 @@ public class rrAutoComp3 extends LinearOpMode {
             // while (opModeIsActive()) ; // wait for the match to end
         }
     }
+
     //--------------------------------------------------------------
     @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection) {
@@ -314,16 +289,15 @@ public class rrAutoComp3 extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
 
-    void strafe (double speed, char direction,double distance){ // distance is in inches
+    void strafe(double speed, char direction, double distance) { // distance is in inches
         //2500 encoder counts to 1 inch.
-        while(encoderRear.getCurrentPosition()/2500 <= distance){
-            if(direction == 'l'){
+        while (encoderRear.getCurrentPosition() / 2500.0 <= distance) {
+            if (direction == 'l') {
                 frontLeft.setPower(-speed);
                 frontRight.setPower(speed);
                 rearLeft.setPower(speed);
                 rearRight.setPower(-speed);
-            }
-            else if(direction == 'r'){
+            } else if (direction == 'r') {
                 frontLeft.setPower(speed);
                 frontRight.setPower(-speed);
                 rearLeft.setPower(-speed);
@@ -332,6 +306,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
         }
     }
+
     public void driveStraight(double lf, double lb,
                               double rf, double rb, double distance) { //leftFront leftBack etc
         // sets power for all drive motors
@@ -340,13 +315,13 @@ public class rrAutoComp3 extends LinearOpMode {
         double mult = 1.0025;
         double mult2 = 1.0008;
         //encoderRight.setCurrentPosition() = 0;
-        if(Math.abs(distance)<8000){
+        if (Math.abs(distance) < 8000) {
             mult = 1;
             mult2 = 1;
         }
         //robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        while(Math.abs((posR+posL)/2)<Math.abs(distance)){
+        while (Math.abs((posR + posL) / 2) < Math.abs(distance)) {
             posR = encoderRight.getCurrentPosition();
             posL = encoderLeft.getCurrentPosition();
             frontLeft.setPower(lf);
@@ -355,17 +330,16 @@ public class rrAutoComp3 extends LinearOpMode {
             rearRight.setPower(rb);
             telemetry.addData("EncoderRight:", posR);
             telemetry.addData("Encoder Left:", posL);
-            if(posR < posL){
-                rf = rf*mult;
-                rb = rb*mult;
-                lf = lf*mult2;
-                lb = lb*mult2;
-            }
-            else{
-                lf = lf*mult;
-                lb = lb*mult;
-                rf = rf*mult2; //mult2 is so that the robot doesn't become too tilted,
-                rb = rb*mult2;
+            if (posR < posL) {
+                rf = rf * mult;
+                rb = rb * mult;
+                lf = lf * mult2;
+                lb = lb * mult2;
+            } else {
+                lf = lf * mult;
+                lb = lb * mult;
+                rf = rf * mult2; //mult2 is so that the robot doesn't become too tilted,
+                rb = rb * mult2;
             }
             telemetry.update();
         }
