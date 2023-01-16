@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode.nav;
 
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import static org.firstinspires.ftc.teamcode.SharedHardware.*;
-
-import java.util.Locale;
-
-@Autonomous(name="NavTest", group="!!!!!!!!")
+@Autonomous(name = "NavTest", group = "!!!!!!!!")
 public class NavTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

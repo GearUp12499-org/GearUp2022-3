@@ -62,9 +62,9 @@ public class DriveConstants {
 //    public static double kV = 0.018043083213990764;
 //    public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
     public static double kV = DriveData.currentInstance.getKV();  // STRAIGHT TEST OVERSHOT BY MORE THAN EXPECTED - ADJUST IF ISSUES HAPPEN
-//    public static double kA = 0.002;
+    //    public static double kA = 0.002;
     public static double kA = DriveData.currentInstance.getKA();
-//    public static double kStatic = 0.006;
+    //    public static double kStatic = 0.006;
     public static double kStatic = DriveData.currentInstance.getKStatic();
 
     /*
@@ -82,18 +82,18 @@ public class DriveConstants {
      * This is only 85% of the theoretical maximum velocity of the bot, following the recommendation above.
      * This is capped at 85% because there are a number of variables that will prevent your bot from actually
      * reaching this maximum velocity: voltage dropping over the game, bot weight, general mechanical inefficiencies, etc.
-     * However, you can push this higher yourself if you'd like. Perhaps raise it to 90-95% of the theoretically 
+     * However, you can push this higher yourself if you'd like. Perhaps raise it to 90-95% of the theoretically
      * max velocity. The theoretically maximum velocity is 71.20943348136865 in/s.
      * Just make sure that your bot can actually reach this maximum velocity. Path following will be detrimentally
      * affected if it is aiming for a velocity not actually possible.
-     * 
+     *
      * The maximum acceleration is somewhat arbitrary and it is recommended that you tweak this yourself based on
      * actual testing. Just set it at a reasonable value and keep increasing until your path following starts
      * to degrade. As of now, it simply mirrors the velocity, resulting in 60.52801845916335 in/s/s
      *
      * Maximum Angular Velocity is calculated as: maximum velocity / trackWidth * (180 / Math.PI) but capped at 360°/s.
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
-     
+
      */
 
     public static double MAX_VEL = DriveData.currentInstance.getMaxVel();
@@ -114,7 +114,7 @@ public class DriveConstants {
     }
 
     public static double getMotorVelocityF(double ticksPerSecond) {
-      // see https://docs.google.com/document/d/1tyWrXDfMidwYyP_5H4mZyVgaEswhOC35gvdmP-V-5hA/edit#heading=h.61g9ixenznbx
-      return 32767 / ticksPerSecond;
+        // see https://docs.google.com/document/d/1tyWrXDfMidwYyP_5H4mZyVgaEswhOC35gvdmP-V-5hA/edit#heading=h.61g9ixenznbx
+        return 32767 / ticksPerSecond;
     }
 }

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@Autonomous(name="TelemetrySpeed", group="!test")
+@Autonomous(name = "TelemetrySpeed", group = "!test")
 public class TelemetrySpeed extends LinearOpMode {
     public static double testTime = 5000; // ms
 

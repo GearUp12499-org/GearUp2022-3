@@ -93,8 +93,8 @@ public class SharpEdgesPipeline extends OpenCvPipeline {
         // hit 100 points across the image in a grid
         // find the largest area
 
-        for (int x = 0; x < input.cols(); x += input.cols()/10) {
-            for (int y = 0; y < input.rows(); y += input.rows()/10) {
+        for (int x = 0; x < input.cols(); x += input.cols() / 10) {
+            for (int y = 0; y < input.rows(); y += input.rows() / 10) {
                 testAreaSize(input, y, x);
             }
         }

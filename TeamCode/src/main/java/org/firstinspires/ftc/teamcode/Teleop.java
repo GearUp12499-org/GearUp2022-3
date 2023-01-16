@@ -175,7 +175,7 @@ public class Teleop extends LinearOpMode {
 
     public void turret() {
         int b = 0;
-        if (l.liftVertical1.getCurrentPosition() < 100 )//TURRET_THRESHOLD)
+        if (l.liftVertical1.getCurrentPosition() < 100)//TURRET_THRESHOLD)
             return;
 
         double speed = gamepad2.left_stick_x * 0.5; //Math.pow(gamepad2.left_stick_x, 2);
@@ -184,7 +184,7 @@ public class Teleop extends LinearOpMode {
         turret.setPower(speed);
 
 
-        if(gamepad1.b){
+        if (gamepad1.b) {
             l.setVerticalTargetManual(600);
             sleep(1000);
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 1200) {
@@ -193,8 +193,7 @@ public class Teleop extends LinearOpMode {
                 telemetry.update();
             }
             turret.setPower(0);
-        }
-        else if(gamepad1.x) {
+        } else if (gamepad1.x) {
             l.setVerticalTargetManual(600);
             sleep(1000);
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 1200) {

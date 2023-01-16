@@ -32,6 +32,7 @@ public class Recorder {
     private boolean exported = false;
 
     private State state = State.OPEN;
+
     public State getState() {
         return state;
     }
@@ -39,7 +40,8 @@ public class Recorder {
     private boolean disallowFilter = false;
     public double disallowAfter = 0.0;
 
-    public Recorder() {}
+    public Recorder() {
+    }
 
     public void put(double time, double data) {
         if (disallowFilter && time > disallowAfter) return;
@@ -52,7 +54,8 @@ public class Recorder {
         state = State.CLOSED;
     }
 
-    @NonNull @Override
+    @NonNull
+    @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
         b.append('{');
@@ -117,7 +120,8 @@ public class Recorder {
     }
 
     public List<String> writeOnce(String target) {
-        if (exported) return Collections.singletonList("Already exported. Set exported to false to re-export.");
+        if (exported)
+            return Collections.singletonList("Already exported. Set exported to false to re-export.");
         return write(target);
     }
 

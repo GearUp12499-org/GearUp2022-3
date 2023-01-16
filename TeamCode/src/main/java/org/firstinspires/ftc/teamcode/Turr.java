@@ -1,18 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.SharedHardware.*;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.nav.EncoderNavigation;
-import org.firstinspires.ftc.teamcode.nav.Paths;
-
-@TeleOp(name="When the debugging", group = "!!!!!!!!!")
+@TeleOp(name = "When the debugging", group = "!!!!!!!!!")
 public class Turr extends LinearOpMode {
 
-    public static final double SEC_PER_IN = (double)1/25;
-    private static final double SEC_PER_IN_STR = (double)1/18;
+    public static final double SEC_PER_IN = (double) 1 / 25;
+    private static final double SEC_PER_IN_STR = (double) 1 / 18;
 
     public void doTheMoveForwardThing(double inc) {  // i hate this so much
         double time = Math.abs(inc);
@@ -49,9 +50,11 @@ public class Turr extends LinearOpMode {
         doTheStrafeRightThing(-1.75);
         doTheMoveForwardThing(34);
     }
+
     public void zone2() {
         doTheMoveForwardThing(36);
     }
+
     public void zone3() {
         doTheMoveForwardThing(2);
         doTheStrafeRightThing(1.75);

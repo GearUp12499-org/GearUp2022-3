@@ -10,9 +10,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.IOControl;
 
-@Autonomous(name="DistancePollSpeed", group="!test")
+@Autonomous(name = "DistancePollSpeed", group = "!test")
 public class DistancePollSpeed extends LinearOpMode {
     public static double testTime = 5000; // ms
+
     @Override
     public void runOpMode() throws InterruptedException {
         Telemetry merged = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());

@@ -12,42 +12,69 @@ import org.firstinspires.ftc.teamcode.util.Encoder;
 /**
  * Robot configuration template base.
  * Use the I↓ or O↓ action icons (in the gutter) to go to a configuration class and change values.
- *   (it's easier to do this than scroll through the 500+ lines in DriveData.java)
+ * (it's easier to do this than scroll through the 500+ lines in DriveData.java)
  * COMMENTS are the file that the values below are used in.
- *
+ * <p>
  * hint to future Miles:
- *   there's a "Implement Interface" intention in the Context Actions on the interface name :P
- *   ^^ ALT+ENTER (win/nix) or OPT+ENTER (mac) to show intentions
+ * there's a "Implement Interface" intention in the Context Actions on the interface name :P
+ * ^^ ALT+ENTER (win/nix) or OPT+ENTER (mac) to show intentions
  */
 public interface RobotConfig {
     // DriveConstants
     double getTicksPerRev();
+
     double getMaxRPM();
+
     boolean getRunUsingEncoder();
+
     PIDFCoefficients getMotorVeloPID();  // NOT WITH FEEDFORWARD!
+
     double getWheelRadius();
+
     double getGearRatio();
+
     double getTrackWidth();
+
     double getKV();       // Feedforward tuning
+
     double getKA();       // Feedforward tuning
+
     double getKStatic();  // Feedforward tuning
+
     double getMaxVel();
+
     double getMaxAccel();
+
     double getMaxAngVel();
+
     double getMaxAngAccel();
 
     // StandardTrackingWheelLocalizer
     double getEncoderTicksPerRev();
+
     double getEncoderWheelRadius(); // in
+
     double getEncoderGearRatio(); // output (wheel) speed / input (encoder) speed
+
     double getEncoderLateralDistance(); // in; distance between the left and right wheels
+
     double getEncoderForwardOffset(); // in; offset of the lateral wheel
-    default double getXMultiplier() { return 1; }
-    default double getYMultiplier() { return 1; }
+
+    default double getXMultiplier() {
+        return 1;
+    }
+
+    default double getYMultiplier() {
+        return 1;
+    }
 
     // SampleMecanumDrive
-    default double getLateralMultiplier() { return 1; }
+    default double getLateralMultiplier() {
+        return 1;
+    }
+
     PIDCoefficients getHeadingPID();
+
     PIDCoefficients getTranslationalPID();
 
 
@@ -55,26 +82,38 @@ public interface RobotConfig {
         // SampleMecanumDrive
         @Nullable
         DcMotorEx getLeftFrontMotor();
+
         DcMotorEx getLeftFrontMotor(HardwareMap hardwareMap);
+
         @Nullable
         DcMotorEx getLeftRearMotor();
+
         DcMotorEx getLeftRearMotor(HardwareMap hardwareMap);
+
         @Nullable
         DcMotorEx getRightFrontMotor();
+
         DcMotorEx getRightFrontMotor(HardwareMap hardwareMap);
+
         @Nullable
         DcMotorEx getRightRearMotor();
+
         DcMotorEx getRightRearMotor(HardwareMap hardwareMap);
 
         // StandardTrackingWheelLocalizer
         @Nullable
         Encoder getLeftEncoder();
+
         Encoder getLeftEncoder(HardwareMap hardwareMap);
+
         @Nullable
         Encoder getRightEncoder();
+
         Encoder getRightEncoder(HardwareMap hardwareMap);
+
         @Nullable
         Encoder getFrontEncoder();
+
         Encoder getFrontEncoder(HardwareMap hardwareMap);
     }
 

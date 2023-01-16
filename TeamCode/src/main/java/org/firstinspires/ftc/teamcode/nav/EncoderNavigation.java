@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.util.NotImplemented;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class EncoderNavigation {
     public static class Action {
@@ -23,6 +22,7 @@ public class EncoderNavigation {
         public enum Type {
             FORWARD, STRAFE
         }
+
         public final Type type;
         public final double value;
     }
@@ -60,7 +60,7 @@ public class EncoderNavigation {
         public void apply(DcMotor leftFront, DcMotor rightFront, DcMotor leftBack, DcMotor rightBack, double power) {
             double left = power * a;
             double right = power * b;
-            double scaleDown = 1/Math.max(abs(left), abs(right));
+            double scaleDown = 1 / Math.max(abs(left), abs(right));
             left *= scaleDown;
             right *= scaleDown;
             leftFront.setPower(left);
@@ -152,7 +152,8 @@ public class EncoderNavigation {
 
     /**
      * Add a task to make the robot move forward.
-     * @param inches inches to travel forward
+     *
+     * @param inches   inches to travel forward
      * @param override if true, will override any existing tasks
      */
     public void moveForward(double inches, boolean override) {
@@ -162,6 +163,7 @@ public class EncoderNavigation {
 
     /**
      * Add a task to make the robot move forward.
+     *
      * @param inches inches to travel forward
      */
     public void moveForward(double inches) {
@@ -170,7 +172,8 @@ public class EncoderNavigation {
 
     /**
      * Add a task to make the robot strafe right.
-     * @param inches inches to strafe right
+     *
+     * @param inches   inches to strafe right
      * @param override if true, will override any existing tasks
      */
     public void strafeRight(double inches, boolean override) {
@@ -180,6 +183,7 @@ public class EncoderNavigation {
 
     /**
      * Add a task to make the robot strafe right.
+     *
      * @param inches inches to strafe right
      */
     public void strafeRight(double inches) {
@@ -188,7 +192,8 @@ public class EncoderNavigation {
 
     /**
      * Add a task to make the robot strafe left.
-     * @param inches inches to strafe left
+     *
+     * @param inches   inches to strafe left
      * @param override if true, will override any existing tasks
      */
     public void strafeLeft(double inches, boolean override) {
@@ -197,13 +202,14 @@ public class EncoderNavigation {
 
     /**
      * Add a task to make the robot strafe left.
+     *
      * @param inches inches to strafe left
      */
     public void strafeLeft(double inches) {
         strafeLeft(inches, false);
     }
 
-    public void setGroup(double power, DcMotor ... motors) {
+    public void setGroup(double power, DcMotor... motors) {
         for (DcMotor motor : motors) {
             motor.setPower(power);
         }
@@ -294,11 +300,11 @@ public class EncoderNavigation {
         telemetry.addData("right", rightOdom.getCurrentPosition());
         telemetry.addData("center", frontOdom.getCurrentPosition());
         telemetry.addLine();
-        telemetry.addData("completion %", Math.round(lastKnownProgress / (double) targetEncoderValue * 10000)/100);
+        telemetry.addData("completion %", Math.round(lastKnownProgress / (double) targetEncoderValue * 10000) / 100);
         telemetry.addData("last progress", lastKnownProgress);
         telemetry.addData("target value", targetEncoderValue);
         if (getWaitPercent() > 0) {
-            telemetry.addData("delay %", Math.round(getWaitPercent()*10000)/100);
+            telemetry.addData("delay %", Math.round(getWaitPercent() * 10000) / 100);
         }
         telemetry.addLine();
         telemetry.addData("queue count", actionQueue.size());

@@ -47,8 +47,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  * code assumes there is an IMU configured with the name "imu".
  * <p>
  * Note: This OpMode is more of a tool than a code sample. The User Interface portion of this code
- *       goes beyond simply showing how to interface to the IMU.<br>
- *       For a minimal example of interfacing to an IMU, please see the SensorIMUOrthogonal or SensorIMUNonOrthogonal sample OpModes.
+ * goes beyond simply showing how to interface to the IMU.<br>
+ * For a minimal example of interfacing to an IMU, please see the SensorIMUOrthogonal or SensorIMUNonOrthogonal sample OpModes.
  * <p>
  * This sample enables you to re-specify the Hub Mounting orientation dynamically by using gamepad controls.
  * While doing so, the sample will display how Pitch, Roll and Yaw angles change as the hub is moved.
@@ -61,16 +61,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
  * How will you know if you have chosen the correct Orientation? With the correct orientation
  * parameters selected, pitch/roll/yaw should act as follows:
  * <p>
- *   Pitch value should INCREASE as the robot is tipped UP at the front. (Rotation about X) <br>
- *   Roll value should INCREASE as the robot is tipped UP at the left side. (Rotation about Y) <br>
- *   Yaw value should INCREASE as the robot is rotated Counter Clockwise. (Rotation about Z) <br>
+ * Pitch value should INCREASE as the robot is tipped UP at the front. (Rotation about X) <br>
+ * Roll value should INCREASE as the robot is tipped UP at the left side. (Rotation about Y) <br>
+ * Yaw value should INCREASE as the robot is rotated Counter Clockwise. (Rotation about Z) <br>
  * <p>
  * The Yaw can be reset (to zero) by pressing the Y button on the gamepad (Triangle on a PS4 controller)
  * <p>
  * The rotational velocities should follow the change in corresponding axes.
  */
 
-@TeleOp(name="Concept: IMU Orientation", group="Concept")
+@TeleOp(name = "Concept: IMU Orientation", group = "Concept")
 @Disabled
 public class ConceptExploringIMUOrientation extends LinearOpMode {
     static RevHubOrientationOnRobot.LogoFacingDirection[] logoFacingDirections
@@ -79,13 +79,14 @@ public class ConceptExploringIMUOrientation extends LinearOpMode {
             = RevHubOrientationOnRobot.UsbFacingDirection.values();
     static int LAST_DIRECTION = logoFacingDirections.length - 1;
     static float TRIGGER_THRESHOLD = 0.2f;
-            
+
     IMU imu;
     int logoFacingDirectionPosition;
     int usbFacingDirectionPosition;
     boolean orientationIsValid = true;
 
-    @Override public void runOpMode() throws InterruptedException {
+    @Override
+    public void runOpMode() throws InterruptedException {
         imu = hardwareMap.get(IMU.class, "imu");
         logoFacingDirectionPosition = 0; // Up
         usbFacingDirectionPosition = 2; // Forward

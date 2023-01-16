@@ -19,6 +19,7 @@ public class DetectPoleOneSensor {
             FAILURE("Failure"),
             NO_RESULT_YET("Running");
             final String name;
+
             State(String name) {
                 this.name = name;
             }
@@ -29,9 +30,11 @@ public class DetectPoleOneSensor {
                 return name;
             }
         }
+
         public final State state;
         public final int encoderValue;
         public final double estimatedDistance;
+
         private Result(State state, int encoderValue, double estimatedDistance) {
             this.state = state;
             this.encoderValue = encoderValue;
@@ -54,7 +57,8 @@ public class DetectPoleOneSensor {
         @Override
         public String toString() {
             if (state != State.SUCCESS) return String.format(Locale.ENGLISH, "[%s]", state.name());
-            else return String.format(Locale.ENGLISH, "[%s] %dc %fmm", state.name(), encoderValue, estimatedDistance);
+            else
+                return String.format(Locale.ENGLISH, "[%s] %dc %fmm", state.name(), encoderValue, estimatedDistance);
         }
     }
 

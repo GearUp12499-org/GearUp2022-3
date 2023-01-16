@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import java.util.ArrayList;
 
 @Config
-@TeleOp(name="RR: Dance", group="$RR")
+@TeleOp(name = "RR: Dance", group = "$RR")
 public class Dance extends LinearOpMode {
     public static double SPEEED = 20;
     public static double DIST_FIRST = 2;
@@ -27,7 +27,7 @@ public class Dance extends LinearOpMode {
         waitForStart();
         ArrayList<Trajectory> trags = new ArrayList<>();
         trags.add(drive.trajectoryBuilder(new Pose2d())
-                .forward(DIST_FIRST*12,
+                .forward(DIST_FIRST * 12,
                         SampleMecanumDrive.getVelocityConstraint(SPEEED, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineTo(new Vector2d(DIST_SECOND, DIST_SECOND), 90,

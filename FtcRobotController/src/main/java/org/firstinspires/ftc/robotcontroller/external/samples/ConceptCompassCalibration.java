@@ -38,37 +38,37 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This file illustrates the concept of calibrating a MR Compass
- *   This code assumes there is a compass configured with the name "compass"
- *
- *   This code will put the compass into calibration mode, wait three seconds and then attempt
- *   to rotate two full turns clockwise.  This will allow the compass to do a magnetic calibration.
- *
- *   Once compete, the program will put the compass back into measurement mode and check to see if the
- *   calibration was successful.
- *
+ * This code assumes there is a compass configured with the name "compass"
+ * <p>
+ * This code will put the compass into calibration mode, wait three seconds and then attempt
+ * to rotate two full turns clockwise.  This will allow the compass to do a magnetic calibration.
+ * <p>
+ * Once compete, the program will put the compass back into measurement mode and check to see if the
+ * calibration was successful.
+ * <p>
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Concept: Compass Calibration", group="Concept")
+@TeleOp(name = "Concept: Compass Calibration", group = "Concept")
 @Disabled
 public class ConceptCompassCalibration extends LinearOpMode {
 
     /* Declare OpMode members. */
-    public DcMotor leftDrive   = null;
-    public DcMotor  rightDrive  = null;
+    public DcMotor leftDrive = null;
+    public DcMotor rightDrive = null;
     private ElapsedTime runtime = new ElapsedTime();
-    CompassSensor       compass;
+    CompassSensor compass;
 
-    final static double     MOTOR_POWER   = 0.2; // scale from 0 to 1
-    static final long       HOLD_TIME_MS  = 3000;
-    static final double     CAL_TIME_SEC  = 20;
+    final static double MOTOR_POWER = 0.2; // scale from 0 to 1
+    static final long HOLD_TIME_MS = 3000;
+    static final double CAL_TIME_SEC = 20;
 
     @Override
     public void runOpMode() {
 
         // Initialize the drive system variables.
-        leftDrive  = hardwareMap.get(DcMotor.class, "left_drive");
+        leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
         rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.

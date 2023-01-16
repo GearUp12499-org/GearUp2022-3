@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static java.util.Collections.max;
 import static java.util.Collections.min;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
