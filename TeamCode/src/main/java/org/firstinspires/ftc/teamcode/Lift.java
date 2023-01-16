@@ -9,12 +9,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift {
-    public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3100};
-    public static final int[] HORIZONTAL_TARGETS = {40, 220};
-    public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 3500;
-    public static final int LOWER_HORIZONTAL_BOUND = 0, UPPER_HORIZONTAL_BOUND = 850; // was 225, then 500
+    public static final int[] VERTICAL_TARGETS = {20, inEnc(14), inEnc(26), 4500};
+    public static final int[] HORIZONTAL_TARGETS = {30, 220};
+    public static final double[] HORIZONTAL_POWER_LEVEL = {0, 0.65, 0.8, 1};
+    public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 4600;  // 3500
+    public static final int LOWER_HORIZONTAL_BOUND = 30, UPPER_HORIZONTAL_BOUND = 850; // was 225, then 500
     public int currentVerticalTarget = 0, targetVerticalCount = VERTICAL_TARGETS[0];
     public int currentHorizontalTarget = 0, targetHorizontalCount = HORIZONTAL_TARGETS[0];
+
+    public boolean inMotion = false;
+
     public final DcMotor liftVertical1;
     public final DcMotor liftVertical2;
     public final DcMotor liftHorizontal;
@@ -30,10 +34,10 @@ public class Lift {
 
     public final Servo servo;
 
-    private static int encoderCountsToInches(int counts) {
+    private static int encIn(int counts) {
         return (int)(counts * COUNTS_TO_INCHES_FACTOR);
     }
-    private static int inchesToEncoderCounts(int inches) {
+    public static int inEnc(int inches) {
         return (int)(inches / COUNTS_TO_INCHES_FACTOR);
     }
 
@@ -69,15 +73,18 @@ public class Lift {
     }
 
     public void update() {
-        if (liftVertical1.getCurrentPosition() > targetVerticalCount + 20) {
-            liftVertical1.setPower(POWER_DOWN);
-            liftVertical2.setPower(POWER_DOWN);
-        } else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 20) {
-            liftVertical1.setPower(POWER_UP);
-            liftVertical2.setPower(POWER_UP);
-        } else {
-            liftVertical1.setPower(0);
-            liftVertical2.setPower(0);
+        if (inMotion) {
+            if (liftVertical1.getCurrentPosition() > targetVerticalCount + 30) {
+                liftVertical1.setPower(POWER_DOWN);
+                liftVertical2.setPower(POWER_DOWN);
+            } else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 30) {
+                liftVertical1.setPower(POWER_UP);
+                liftVertical2.setPower(POWER_UP);
+            } else {
+                liftVertical1.setPower(0);
+                liftVertical2.setPower(0);
+                inMotion = false;
+            }
         }
     }
 
@@ -85,6 +92,7 @@ public class Lift {
         targetVerticalCount = clamp(targetVerticalCount, LOWER_VERTICAL_BOUND, UPPER_VERTICAL_BOUND);
         targetHorizontalCount = clamp(targetHorizontalCount, LOWER_HORIZONTAL_BOUND, UPPER_HORIZONTAL_BOUND);
         liftHorizontal.setTargetPosition(targetHorizontalCount);
+        inMotion = true;
     }
 
     public void goUp() {
@@ -189,5 +197,9 @@ public class Lift {
     public boolean isSatisfiedHorizontally() {
         final int MAX_FUDGERY = 100;
         return Math.abs(targetHorizontalCount - liftHorizontal.getCurrentPosition()) < MAX_FUDGERY;
+    }
+
+    public void setHorizontalPower(int index) {
+        liftHorizontal.setPower(HORIZONTAL_POWER_LEVEL[index]);
     }
 }

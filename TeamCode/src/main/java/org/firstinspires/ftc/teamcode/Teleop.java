@@ -12,10 +12,8 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.lib.RisingFallingEdges;
 
 @TeleOp(name = "TeleOp")
 public class Teleop extends LinearOpMode {
@@ -28,7 +26,7 @@ public class Teleop extends LinearOpMode {
     public IOControl io;
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         prepareHardware(hardwareMap);
         l = new Lift(hardwareMap);
         io = new IOControl(hardwareMap);
@@ -112,6 +110,9 @@ public class Teleop extends LinearOpMode {
     /////////////////////////////////////////////////////
 
     private boolean lastLeftBumper1 = false;
+    private boolean last2DpadUp = false;
+    private boolean last2DpadDown = false;
+
 
     public void lift() {
         // TODO make dpad not go BRRRRRRRRRRRRRRRRRRRRRR
@@ -136,23 +137,54 @@ public class Teleop extends LinearOpMode {
             return;  // Skip...
         }
         if (gamepad2.y)
-            l.setVerticalTarget(3);
+            l.setVerticalTarget(1);
         else if (gamepad2.b) {
+            l.setHorizontalPower(2);
             l.retract();
+            int direction = sign(-turret.getCurrentPosition());
+            turret.setPower(0.4 * direction);
+            while (opModeIsActive() && !(Math.abs(turret.getCurrentPosition()) <= 20 && l.isSatisfiedHorizontally())) {
+                if (Math.abs(turret.getCurrentPosition()) <= 10) {
+                    turret.setPower(0);
+                }
+                l.update();
+            }
             l.setVerticalTarget(0);
         } else if (gamepad2.a)
             l.setVerticalTarget(1);
         else if (gamepad2.x)
             l.setVerticalTarget(2);
-        else if (gamepad2.dpad_up)
-            l.moveVertical(10);
-        else if (gamepad2.dpad_down)
-            l.moveVertical(-10);
+        else if (gamepad2.dpad_up) {
+            l.liftVertical1.setPower(Lift.POWER_UP * 0.8);
+            l.liftVertical2.setPower(Lift.POWER_UP * 0.8);
+//            l.setVerticalTargetManual(l.liftVertical1.getCurrentPosition());
+//            l.inMotion = false;
+        } else if (gamepad2.dpad_down) {
+            l.liftVertical1.setPower(Lift.POWER_DOWN * 0.8);
+            l.liftVertical2.setPower(Lift.POWER_DOWN * 0.8);
+//            l.setVerticalTargetManual(l.liftVertical1.getCurrentPosition());
+//            l.inMotion = false;
+        }
 
-        if (RisingFallingEdges.isRisingEdge(gamepad2.right_bumper)) l.retract();
-        else if (RisingFallingEdges.isRisingEdge(gamepad2.left_bumper)) l.extend();
-        else if (gamepad2.dpad_right) l.moveHorizontal(-5);
-        else if (gamepad2.dpad_left) l.moveHorizontal(5);
+        if ((last2DpadUp && !gamepad2.dpad_up) || (last2DpadDown && !gamepad2.dpad_down)) {
+            l.setVerticalTargetManual(l.liftVertical1.getCurrentPosition());
+        }
+
+        last2DpadUp = gamepad2.dpad_up;
+        last2DpadDown = gamepad2.dpad_down;
+        if (gamepad2.right_bumper) {
+            l.setHorizontalPower(2);
+            l.moveHorizontal(-35);
+        } else if (gamepad2.left_bumper) {
+            l.setHorizontalPower(2);
+            l.moveHorizontal(35);
+        } else if (gamepad2.right_trigger > 0.2) {
+            l.setHorizontalPower(1);
+            l.moveHorizontal(-25);
+        } else if (gamepad2.left_trigger > 0.2) {
+            l.setHorizontalPower(1);
+            l.moveHorizontal(25);
+        }
 
 
         // CLAW
@@ -167,13 +199,17 @@ public class Teleop extends LinearOpMode {
         l.update();
 
         telemetry.addData("horizontal slider", l.liftHorizontal.getCurrentPosition());
+        telemetry.addData("horizontal slider to", l.liftHorizontal.getTargetPosition());
         telemetry.addData("sensor read", io.distSensorM.getDistance(DistanceUnit.MM));
-        telemetry.update();
+    }
+
+    private int sign(int i) {
+        return Integer.compare(i, 0);
     }
 
     ////////////////////////////////////////////////////////////////////
 
-    public void turret() {
+    public void turret() throws InterruptedException {
         int b = 0;
         if (l.liftVertical1.getCurrentPosition() < 100)//TURRET_THRESHOLD)
             return;
@@ -184,19 +220,19 @@ public class Teleop extends LinearOpMode {
         turret.setPower(speed);
 
 
-        if (gamepad1.b) {
-            l.setVerticalTargetManual(600);
-            sleep(1000);
-            while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 1200) {
+        if (gamepad1.x) {
+            l.setVerticalTargetManual(Lift.inEnc(19));
+            l.waitLift(this);
+            while (io.distSensorM.getDistance(DistanceUnit.MM) > 300 && Math.abs(turret.getCurrentPosition()) < 1200) {
                 turret.setPower(0.35);
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
             }
             turret.setPower(0);
-        } else if (gamepad1.x) {
-            l.setVerticalTargetManual(600);
-            sleep(1000);
-            while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 1200) {
+        } else if (gamepad1.b) {
+            l.setVerticalTargetManual(Lift.inEnc(19));
+            l.waitLift(this);
+            while (io.distSensorM.getDistance(DistanceUnit.MM) > 300 && Math.abs(turret.getCurrentPosition()) < 1200) {
                 turret.setPower(-0.35);
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
