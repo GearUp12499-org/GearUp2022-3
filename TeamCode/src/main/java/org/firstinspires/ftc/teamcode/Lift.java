@@ -20,7 +20,19 @@ public class Lift {
     public static final double POWER_H = 0.65; //0.65
     public static final double POWER_DOWN = -0.8;
 
+    public static final double ENCODER_COUNTS_PER_ROTATION = 537.7;
+    public static final double SPOOL_DIAMETER = 1.25;
+    public static final double SPOOL_CIRCUMFERENCE = SPOOL_DIAMETER * Math.PI;
+    public static final double COUNTS_TO_INCHES_FACTOR = SPOOL_CIRCUMFERENCE / ENCODER_COUNTS_PER_ROTATION;
+
     public final Servo servo;
+
+    private static int encoderCountsToInches(int counts) {
+        return (int)(counts * COUNTS_TO_INCHES_FACTOR);
+    }
+    private static int inchesToEncoderCounts(int inches) {
+        return (int)(inches / COUNTS_TO_INCHES_FACTOR);
+    }
 
     private static int clamp(int value, int min, int max) {
         return Math.max(min, Math.min(max, value));
@@ -29,17 +41,16 @@ public class Lift {
     public Lift(HardwareMap hardwareMap) {
         liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
         liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftVertical1.setPower(POWER_UP);
-        liftVertical1.setTargetPosition(0);
         liftVertical1.setDirection(DcMotorSimple.Direction.REVERSE);
-        liftVertical1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftVertical1.setPower(0);
 
         liftVertical2 = hardwareMap.get(DcMotor.class, "lift2");
-        liftVertical2.setPower(0);
         liftVertical2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        liftVertical2.setPower(0);
 
         liftHorizontal = hardwareMap.get(DcMotor.class, "liftHorizontal");
         liftHorizontal.setPower(POWER_H);
@@ -54,10 +65,10 @@ public class Lift {
     }
 
     public void update() {
-        if (liftVertical1.getCurrentPosition() > targetVerticalCount + 10) {
+        if (liftVertical1.getCurrentPosition() > targetVerticalCount + 20) {
             liftVertical1.setPower(POWER_DOWN);
             liftVertical2.setPower(POWER_DOWN);
-        } else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 10) {
+        } else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 20) {
             liftVertical1.setPower(POWER_UP);
             liftVertical2.setPower(POWER_UP);
         } else {
@@ -96,9 +107,10 @@ public class Lift {
         targetHorizontalCount = HORIZONTAL_TARGETS[currentHorizontalTarget];
         updTargets();
     }
+
     public void verticalLift(int position){ //runs without encoder
-        liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         targetVerticalCount=position;
         if(liftVertical1.getCurrentPosition()< position){
             while (liftVertical1.getCurrentPosition() < position) {
@@ -113,13 +125,12 @@ public class Lift {
             }
         }
 
-        liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftVertical2.setPower(0);
         liftVertical1.setPower(0);
-
-
     }
+
     public void setVerticalTarget(int index) {
         currentVerticalTarget = index;
         targetVerticalCount = VERTICAL_TARGETS[currentVerticalTarget];

@@ -46,6 +46,8 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("left", encoderLeft.getCurrentPosition());
             telemetry.addData("right", encoderRight.getCurrentPosition());
             telemetry.addData("f/b", encoderRear.getCurrentPosition());
+            telemetry.addData("lift counts:", l.liftVertical1.getCurrentPosition());
+            telemetry.addData("lift target:", l.targetVerticalCount);
             telemetry.update();
         }
     }
@@ -113,6 +115,7 @@ public class Teleop extends LinearOpMode {
 
     public void lift() {
         // TODO make dpad not go BRRRRRRRRRRRRRRRRRRRRRR
+        /*
         if (RisingFallingEdges.isRisingEdge(gamepad2.back)) {
             l.liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             l.liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -127,7 +130,8 @@ public class Teleop extends LinearOpMode {
             l.liftVertical2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             l.liftVertical2.setPower(0);
             l.liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
+        }*/
+
         if (gamepad2.back) {
             return;  // Skip...
         }
@@ -158,11 +162,13 @@ public class Teleop extends LinearOpMode {
             l.moveVertical(300);
         } else if (gamepad1.right_bumper) l.openClaw();
 
+
         lastLeftBumper1 = gamepad1.left_bumper;
         l.update();
 
         telemetry.addData("horizontal slider", l.liftHorizontal.getCurrentPosition());
         telemetry.addData("sensor read", io.distSensorM.getDistance(DistanceUnit.MM));
+        telemetry.update();
     }
 
     ////////////////////////////////////////////////////////////////////

@@ -276,23 +276,9 @@ public class rrAutoComp3 extends LinearOpMode {
 
             a = 2;
             if (a == 1) {
-                // strafe left
-                /*park.add(drive.trajectoryBuilder(new Pose2d())
-                        .strafeLeft(25,
-                                SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                        .build());*/
                 strafe(0.6, 'l',18);
-
             } else if (a == 3) {
-                // strafe right
-               /* park.add(drive.trajectoryBuilder(new Pose2d())
-                        .strafeRight(25,
-                                SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                                SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                        .build());*/
                 strafe(0.6, 'r',18);
-
             }
 
             for (Trajectory t : park) {

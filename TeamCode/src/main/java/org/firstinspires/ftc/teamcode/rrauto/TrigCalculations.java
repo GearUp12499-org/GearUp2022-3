@@ -40,14 +40,14 @@ public class TrigCalculations {
         double deltaY = poleDiffY - y;
 
         // should return negative angle value
-        return Math.toDegrees(Math.atan(deltaY / deltaX));
+        return Math.toDegrees(Math.atan2(deltaY, deltaX));
     }
 
     public static double stackAngle(double x, double y) {
         double deltaX = stackDiffX - x;
         double deltaY = stackDiffY - y;
 
-        return Math.toDegrees(Math.atan(deltaY / deltaX));
+        return Math.toDegrees(Math.atan2(deltaY, deltaX));
     }
 
     public static double sumDeltaAngle(double x, double y) {
