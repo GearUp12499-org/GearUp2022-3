@@ -16,6 +16,8 @@ public class SharedHardware {
     public static DcMotorEx rearRight;
 
     public static DcMotor turret;
+    public static DcMotor liftVertical1;
+
 
     public static Encoder encoderLeft;
     public static Encoder encoderRight;
@@ -70,7 +72,13 @@ public class SharedHardware {
             turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (IllegalArgumentException ignore) {
         }
-
+        try {
+            liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
+            liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        } catch (IllegalArgumentException ignore) {
+        }
         //copy motors over to encoders
         encoderRight = new Encoder(frontRight);   // 0
         encoderLeft = new Encoder(frontLeft);   // 1

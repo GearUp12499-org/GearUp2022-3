@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.liftVertical1;
 import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
@@ -136,8 +137,11 @@ public class Teleop extends LinearOpMode {
         if (gamepad2.back) {
             return;  // Skip...
         }
-        if (gamepad2.y)
-            l.setVerticalTarget(1);
+        if (gamepad2.y){
+                l.setVerticalTarget(2); //2
+                l.update();
+        }
+            //l.setVerticalTarget(1);
         else if (gamepad2.b) {
             l.setHorizontalPower(2);
             l.retract();
@@ -151,9 +155,14 @@ public class Teleop extends LinearOpMode {
             }
             l.setVerticalTarget(0);
         } else if (gamepad2.a)
-            l.setVerticalTarget(1);
-        else if (gamepad2.x)
-            l.setVerticalTarget(2);
+            l.setVerticalTarget(1); //2
+
+            //l.setVerticalTarget(1);
+        else if (gamepad2.x){
+            //while(liftVertical1.getCurrentPosition()<4500){
+                l.setVerticalTarget(3); //2
+                l.update();
+        }
         else if (gamepad2.dpad_up) {
             l.liftVertical1.setPower(Lift.POWER_UP * 0.8);
             l.liftVertical2.setPower(Lift.POWER_UP * 0.8);

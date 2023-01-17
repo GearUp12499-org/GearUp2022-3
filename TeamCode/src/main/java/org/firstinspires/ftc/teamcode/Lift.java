@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift {
-    public static final int[] VERTICAL_TARGETS = {20, inEnc(14), inEnc(26), 4500};
+    public static final int[] VERTICAL_TARGETS = {40, inEnc(14), inEnc(26), 4500};
     public static final int[] HORIZONTAL_TARGETS = {30, 220};
     public static final double[] HORIZONTAL_POWER_LEVEL = {0, 0.65, 0.8, 1};
     public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 4600;  // 3500
@@ -78,10 +78,17 @@ public class Lift {
             if (liftVertical1.getCurrentPosition() > targetVerticalCount + 30) {
                 liftVertical1.setPower(POWER_DOWN);
                 liftVertical2.setPower(POWER_DOWN);
-            } else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 30) {
+            }else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 30 && liftVertical1.getCurrentPosition()>targetVerticalCount-200) {
+                liftVertical1.setPower(0.4);
+                liftVertical2.setPower(0.4);
+            }else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 30) {
                 liftVertical1.setPower(POWER_UP);
                 liftVertical2.setPower(POWER_UP);
-            } else {
+            }
+            else {
+                liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
                 liftVertical1.setPower(0);
                 liftVertical2.setPower(0);
                 inMotion = false;

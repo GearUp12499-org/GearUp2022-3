@@ -28,11 +28,16 @@ public class LiftMotorTest extends LinearOpMode {
     public void lift() {
         l.liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         l.liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
+        double currentSpeed = Lift.POWER_UP;
         if (gamepad1.y) {
-            while (l.liftVertical1.getCurrentPosition() < 2200) {
-                l.liftVertical1.setPower(Lift.POWER_UP);
-                l.liftVertical2.setPower(Lift.POWER_UP);
+            while (l.liftVertical1.getCurrentPosition() < 4000) {
+                l.liftVertical1.setPower(currentSpeed);
+                l.liftVertical2.setPower(currentSpeed);
+                if(l.liftVertical1.getCurrentPosition()>3750){
+                    l.liftVertical1.setPower(currentSpeed/2);
+                    l.liftVertical2.setPower(currentSpeed/2);
+                }
+
             }
             l.liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             l.liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
