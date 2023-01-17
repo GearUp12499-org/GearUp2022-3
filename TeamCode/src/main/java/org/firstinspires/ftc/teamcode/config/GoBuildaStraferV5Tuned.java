@@ -43,8 +43,8 @@ public class GoBuildaStraferV5Tuned extends GoBuildaStraferV5Base {
 
     @Override
     public double getMaxAngVel() {
-        return Math.toRadians(2716.422) * SLOWDOWN;
-    }
+        return Math.toRadians(575.94) * SLOWDOWN;
+    } //2716.422
 
     @Override
     public double getLateralMultiplier() {
