@@ -7,8 +7,8 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
-import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderLeft;
-import static org.firstinspires.ftc.teamcode.jjnav.GearUpHardware.encoderRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
 
 import android.annotation.SuppressLint;
 
@@ -148,7 +148,9 @@ public class rrAutoComp3 extends LinearOpMode {
 */
 
 //             TrajectorySequenceBuilder is better tbh -Miles TODO uncomment
-
+            straight(0.5,54);
+            sleep(5000);
+/*
             l.closeClaw();
             sleep(500);
             l.setVerticalTargetManual(850);
@@ -178,6 +180,9 @@ public class rrAutoComp3 extends LinearOpMode {
             //l.setVerticalTargetManual(1500);
             l.verticalLift(1500, this);
             sleep(100);
+
+
+
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
                 turret.setPower(-0.2); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
@@ -202,8 +207,8 @@ public class rrAutoComp3 extends LinearOpMode {
             sleep(300);
             l.setHorizontalTarget(0);
             l.update();  // intentional
-
-            for (int i = 0; i < 3; i++) {
+*/
+            for (int i = 0; i < 0; i++) {
                 turret.setTargetPosition(740); //750
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
@@ -226,13 +231,11 @@ public class rrAutoComp3 extends LinearOpMode {
 
                 l.update();
                 sleep(600);
-//                sleep(500);
                 l.setHorizontalTargetManual(0);
                 sleep(300);
                 l.verticalLift(VERTICAL_TARGETS[3], this);
-//                sleep(700);
-//                l.update();
-                turret.setTargetPosition(polePos + 27);
+
+                //turret.setTargetPosition(polePos + 27);
                 turret.setPower(-0.5); //0.3
 
                 sleep(2250);
@@ -244,7 +247,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 // l.closeClaw();
                 l.setHorizontalTarget(0);
             }
-
+/*
             turret.setTargetPosition(0);
             turret.setPower(1); //0.3
 
@@ -264,6 +267,8 @@ public class rrAutoComp3 extends LinearOpMode {
                 drive.followTrajectory(t);
             }
 
+ */
+
             // while (opModeIsActive()) ; // wait for the match to end
         }
     }
@@ -279,7 +284,45 @@ public class rrAutoComp3 extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
+    void straight(double speed, double distance) { // distance is in inches
+        //2500 encoder counts to 1 inch.
+        double adjust = 0.05;
+        while ((encoderLeft.getCurrentPosition())/ (1700.0) <= distance) {
+            if(encoderLeft.getCurrentPosition()/1700>45){
+                frontLeft.setPower(0.2);
+                frontRight.setPower(0.2);
+                rearLeft.setPower(0.2);
+                rearRight.setPower(0.2);
+            }
+            else if(encoderLeft.getCurrentPosition()> encoderRight.getCurrentPosition()){//power per inches 0.05 power per inch
+                frontLeft.setPower(speed-adjust);
+                frontRight.setPower(speed);
+                rearLeft.setPower(speed-adjust);
+                rearRight.setPower(speed);
+            }
+            else if(encoderLeft.getCurrentPosition()< encoderRight.getCurrentPosition()){//power per inches 0.05 power per inch
+                frontLeft.setPower(speed+adjust);
+                frontRight.setPower(speed);
+                rearLeft.setPower(speed+adjust);
+                rearRight.setPower(speed);
+            }
+            else if(encoderLeft.getCurrentPosition()== encoderRight.getCurrentPosition()){//power per inches 0.05 power per inch
+                frontLeft.setPower(speed);
+                frontRight.setPower(speed);
+                rearLeft.setPower(speed);
+                rearRight.setPower(speed);
+            }
 
+
+        }
+        telemetry.addData("distance:", encoderLeft.getCurrentPosition()/1500.0);
+        telemetry.update();
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        rearLeft.setPower(0);
+        rearRight.setPower(0);
+
+    }
     void strafe(double speed, char direction, double distance) { // distance is in inches
         //2500 encoder counts to 1 inch.
         while (encoderRear.getCurrentPosition() / 2500.0 <= distance) {
