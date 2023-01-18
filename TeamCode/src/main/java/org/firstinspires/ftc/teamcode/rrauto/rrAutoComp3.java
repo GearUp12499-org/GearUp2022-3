@@ -148,15 +148,14 @@ public class rrAutoComp3 extends LinearOpMode {
 */
 
 //             TrajectorySequenceBuilder is better tbh -Miles TODO uncomment
-            straight(0.5,54);
-            sleep(5000);
-/*
+            
+
             l.closeClaw();
             sleep(500);
             l.setVerticalTargetManual(850);
             l.update();
 
-
+            /*
             ArrayList<Trajectory> trags = new ArrayList<>();
             //batt 2 65, batt 3, 75
             trags.add(drive.trajectoryBuilder(new Pose2d())
@@ -173,11 +172,11 @@ public class rrAutoComp3 extends LinearOpMode {
                 telemetry.addData("finalY", poseEstimate.getY());
                 telemetry.update();
 
-            }
+            }*/
+            straight(0.5,54); //function for driving straight 
 
             sleep(250);
             int polePos = -370;
-            //l.setVerticalTargetManual(1500);
             l.verticalLift(1500, this);
             sleep(100);
 
@@ -198,7 +197,6 @@ public class rrAutoComp3 extends LinearOpMode {
 
             l.verticalLift(VERTICAL_TARGETS[3], this);
 
-            //sleep(1500);
             l.setHorizontalTargetManual(215);//225
             while (!l.isSatisfiedHorizontally()) l.update();
 
@@ -207,27 +205,21 @@ public class rrAutoComp3 extends LinearOpMode {
             sleep(300);
             l.setHorizontalTarget(0);
             l.update();  // intentional
-*/
-            for (int i = 0; i < 0; i++) {
+
+            for (int i = 0; i < 3; i++) {
                 turret.setTargetPosition(740); //750
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 turret.setPower(0.8); //0.3
 
                 sleep(500);
-                //l.setVerticalTargetManual(700 - (i * 50));
                 l.verticalLift(740 - (i * 50), this);
-//                l.update();
-//                sleep(1500);
 
                 l.setHorizontalTargetManual(850);
-                //l.update();
                 sleep(500); //1000
                 l.closeClaw();
                 sleep(300);
-                //l.setVerticalTarget(3);
                 l.verticalLift(700 - (i * 50) + 100, this);
-//                l.update();
 
                 l.update();
                 sleep(600);
@@ -235,7 +227,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 sleep(300);
                 l.verticalLift(VERTICAL_TARGETS[3], this);
 
-                //turret.setTargetPosition(polePos + 27);
+                turret.setTargetPosition(polePos + 27);
                 turret.setPower(-0.5); //0.3
 
                 sleep(2250);
@@ -244,10 +236,9 @@ public class rrAutoComp3 extends LinearOpMode {
                 sleep(350); //650
                 l.openClaw();
                 sleep(300);
-                // l.closeClaw();
                 l.setHorizontalTarget(0);
             }
-/*
+
             turret.setTargetPosition(0);
             turret.setPower(1); //0.3
 
@@ -267,7 +258,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 drive.followTrajectory(t);
             }
 
- */
+ 
 
             // while (opModeIsActive()) ; // wait for the match to end
         }
