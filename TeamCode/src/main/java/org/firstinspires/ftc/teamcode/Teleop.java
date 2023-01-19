@@ -201,13 +201,16 @@ public class Teleop extends LinearOpMode {
         } else if (gamepad2.left_bumper) {
             liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             liftHorizontal.setPower(0.8);
+            l.update();
         } else if (gamepad2.right_trigger > 0.2) {
             liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             liftHorizontal.setPower(-0.2);
+            l.update();
         } else if (gamepad2.left_trigger > 0.2 ) {
 
             liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             liftHorizontal.setPower(0.2);
+            l.update();
         }else{
             liftHorizontal.setPower(0);
         }
@@ -244,7 +247,6 @@ public class Teleop extends LinearOpMode {
         int now = turret.getCurrentPosition() - turret_center;
         //if ((speed < 0 && now > -TURRET_DELTA) || (speed > 0 && now < TURRET_DELTA))
         turret.setPower(speed);
-
 
         if (gamepad1.b) {
             if(l.liftVertical1.getCurrentPosition()<Lift.inEnc(14))
