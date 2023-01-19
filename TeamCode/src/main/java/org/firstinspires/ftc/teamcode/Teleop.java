@@ -5,14 +5,17 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.liftHorizontal;
 import static org.firstinspires.ftc.teamcode.SharedHardware.liftVertical1;
 import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.runtime;
 import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -134,31 +137,38 @@ public class Teleop extends LinearOpMode {
             l.liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }*/
 
-        if (gamepad2.back) {
-            return;  // Skip...
+        if (gamepad2.back ) {
+            liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            //return;  // Skip...
         }
-        if (gamepad2.y){
+        if (gamepad2.x){
                 l.setVerticalTarget(2); //2
                 l.update();
         }
             //l.setVerticalTarget(1);
         else if (gamepad2.b) {
-            l.setHorizontalPower(2);
+            l.setHorizontalTargetManual(5);
             l.retract();
             int direction = sign(-turret.getCurrentPosition());
-            turret.setPower(0.4 * direction);
-            while (opModeIsActive() && !(Math.abs(turret.getCurrentPosition()) <= 20 && l.isSatisfiedHorizontally())) {
+            turret.setPower(0.25 * direction);
+            l.setVerticalTarget(0);
+            runtime.reset();
+            while (opModeIsActive() && !(Math.abs(turret.getCurrentPosition()) <= 20)) {
                 if (Math.abs(turret.getCurrentPosition()) <= 10) {
                     turret.setPower(0);
                 }
-                l.update();
+                if(runtime.seconds()>0.5)
+                    l.update();
             }
-            l.setVerticalTarget(0);
+            turret.setPower(0);
+
         } else if (gamepad2.a)
             l.setVerticalTarget(1); //2
 
             //l.setVerticalTarget(1);
-        else if (gamepad2.x){
+        else if (gamepad2.y){
             //while(liftVertical1.getCurrentPosition()<4500){
                 l.setVerticalTarget(3); //2
                 l.update();
@@ -182,17 +192,24 @@ public class Teleop extends LinearOpMode {
         last2DpadUp = gamepad2.dpad_up;
         last2DpadDown = gamepad2.dpad_down;
         if (gamepad2.right_bumper) {
-            l.setHorizontalPower(2);
-            l.moveHorizontal(-35);
+            runtime.reset();
+            while(liftHorizontal.getCurrentPosition()>20 && runtime.seconds()<2) {
+                liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                liftHorizontal.setPower(-0.4);
+            }
+            liftHorizontal.setPower(0);
         } else if (gamepad2.left_bumper) {
-            l.setHorizontalPower(2);
-            l.moveHorizontal(35);
+            liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftHorizontal.setPower(0.8);
         } else if (gamepad2.right_trigger > 0.2) {
-            l.setHorizontalPower(1);
-            l.moveHorizontal(-25);
-        } else if (gamepad2.left_trigger > 0.2) {
-            l.setHorizontalPower(1);
-            l.moveHorizontal(25);
+            liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftHorizontal.setPower(-0.2);
+        } else if (gamepad2.left_trigger > 0.2 ) {
+
+            liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftHorizontal.setPower(0.2);
+        }else{
+            liftHorizontal.setPower(0);
         }
 
 
@@ -229,8 +246,12 @@ public class Teleop extends LinearOpMode {
         turret.setPower(speed);
 
 
-        if (gamepad1.x) {
-            l.setVerticalTargetManual(Lift.inEnc(19));
+        if (gamepad1.b) {
+            if(l.liftVertical1.getCurrentPosition()<Lift.inEnc(14))
+                l.setVerticalTargetManual(Lift.inEnc(14));
+            else{
+                l.setVerticalTargetManual(l.liftVertical1.getCurrentPosition());
+            }
             l.waitLift(this);
             while (io.distSensorM.getDistance(DistanceUnit.MM) > 300 && Math.abs(turret.getCurrentPosition()) < 1200) {
                 turret.setPower(0.35);
@@ -238,8 +259,12 @@ public class Teleop extends LinearOpMode {
                 telemetry.update();
             }
             turret.setPower(0);
-        } else if (gamepad1.b) {
-            l.setVerticalTargetManual(Lift.inEnc(19));
+        } else if (gamepad1.x) {
+            if(l.liftVertical1.getCurrentPosition()<Lift.inEnc(14))
+                l.setVerticalTargetManual(Lift.inEnc(14));
+            else{
+                l.setVerticalTargetManual(l.liftVertical1.getCurrentPosition());
+            }
             l.waitLift(this);
             while (io.distSensorM.getDistance(DistanceUnit.MM) > 300 && Math.abs(turret.getCurrentPosition()) < 1200) {
                 turret.setPower(-0.35);

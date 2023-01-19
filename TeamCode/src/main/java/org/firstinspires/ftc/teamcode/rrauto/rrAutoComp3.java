@@ -1,14 +1,18 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
+import static org.firstinspires.ftc.teamcode.SharedHardware.liftVertical1;
+
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
+import static org.firstinspires.ftc.teamcode.SharedHardware.runtime;
 import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
+
 
 import android.annotation.SuppressLint;
 
@@ -34,8 +38,10 @@ import java.util.ArrayList;
 
 @Autonomous(name = "RR AUTO", group = "GearUp")
 public class rrAutoComp3 extends LinearOpMode {
-    public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 3100};
-    public DcMotor liftVertical1 = null;
+    public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 4500};
+    public static DcMotor liftVertical1;
+
+    //public DcMotor liftVertical1 = null;
     public DcMotor liftVertical2 = null;
 
     double fx = 578.272;
@@ -72,6 +78,10 @@ public class rrAutoComp3 extends LinearOpMode {
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tagsize, fx, fy, cx, cy);
 
+        liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
+        liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         camera.setPipeline(aprilTagDetectionPipeline);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
@@ -150,10 +160,7 @@ public class rrAutoComp3 extends LinearOpMode {
 //             TrajectorySequenceBuilder is better tbh -Miles TODO uncomment
             
 
-            l.closeClaw();
-            sleep(500);
-            l.setVerticalTargetManual(850);
-            l.update();
+
 
             /*
             ArrayList<Trajectory> trags = new ArrayList<>();
@@ -173,17 +180,21 @@ public class rrAutoComp3 extends LinearOpMode {
                 telemetry.update();
 
             }*/
-            straight(0.5,54); //function for driving straight 
-
-            sleep(250);
             int polePos = -370;
-            l.verticalLift(1500, this);
-            sleep(100);
+
+            l.closeClaw();
+            sleep(500);
+            runtime.reset();
+            while(runtime.seconds()<2.5) {
+                l.verticalLift(2700, this); //is now going to close to the pole at the top because the lift seems pretty stable and it reduces time
+                l.update();
+            }
+            //straight(0.5,54); //function for driving straight
 
 
 
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
-                turret.setPower(-0.2); //.35
+                turret.setPower(-0.35); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
             }
@@ -194,8 +205,11 @@ public class rrAutoComp3 extends LinearOpMode {
 
             telemetry.addData("polepos:", polePos);
             telemetry.update();
-
-            l.verticalLift(VERTICAL_TARGETS[3], this);
+            runtime.reset();
+            while(runtime.seconds()<1.8) {
+                l.verticalLift(VERTICAL_TARGETS[3], this);
+                l.update();
+            }
 
             l.setHorizontalTargetManual(215);//225
             while (!l.isSatisfiedHorizontally()) l.update();
@@ -204,28 +218,31 @@ public class rrAutoComp3 extends LinearOpMode {
             l.openClaw();
             sleep(300);
             l.setHorizontalTarget(0);
-            l.update();  // intentional
+            //l.update();  // intentional
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 1; i++) {
                 turret.setTargetPosition(740); //750
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
                 turret.setPower(0.8); //0.3
 
                 sleep(500);
-                l.verticalLift(740 - (i * 50), this);
+                runtime.reset();
+                while(runtime.seconds()<2)
+                l.verticalLift(1100 - (i * 90), this);
+                //while (!l.isSatisfiedVertically()) l.update();
 
                 l.setHorizontalTargetManual(850);
                 sleep(500); //1000
                 l.closeClaw();
                 sleep(300);
-                l.verticalLift(700 - (i * 50) + 100, this);
-
-                l.update();
-                sleep(600);
+                l.setVerticalTargetManual(1100 - (i * 50) + 250);
+                while (!l.isSatisfiedVertically()) l.update();
+                //sleep(600);
                 l.setHorizontalTargetManual(0);
                 sleep(300);
-                l.verticalLift(VERTICAL_TARGETS[3], this);
+                l.setVerticalTargetManual(VERTICAL_TARGETS[3]);
+                while (!l.isSatisfiedVertically()) l.update();
 
                 turret.setTargetPosition(polePos + 27);
                 turret.setPower(-0.5); //0.3
@@ -238,24 +255,18 @@ public class rrAutoComp3 extends LinearOpMode {
                 sleep(300);
                 l.setHorizontalTarget(0);
             }
-
+/*
             turret.setTargetPosition(0);
             turret.setPower(1); //0.3
 
             sleep(500);
-            //l.setVerticalTarget(0);
             l.verticalLift(VERTICAL_TARGETS[0], this);
-
-            ArrayList<Trajectory> park = new ArrayList<>();
-
+            */
+            a =2;
             if (a == 1) {
                 strafe(0.6, 'l', 18);
             } else if (a == 3) {
                 strafe(0.6, 'r', 18);
-            }
-
-            for (Trajectory t : park) {
-                drive.followTrajectory(t);
             }
 
  
@@ -303,6 +314,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 rearLeft.setPower(speed);
                 rearRight.setPower(speed);
             }
+            l.update();
 
 
         }

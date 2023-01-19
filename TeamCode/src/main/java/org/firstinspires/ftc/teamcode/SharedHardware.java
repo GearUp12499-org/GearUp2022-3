@@ -18,7 +18,7 @@ public class SharedHardware {
     public static DcMotor turret;
     public static DcMotor liftVertical1;
 
-
+    public static DcMotor liftHorizontal;
     public static Encoder encoderLeft;
     public static Encoder encoderRight;
     public static Encoder encoderRear;
@@ -73,10 +73,10 @@ public class SharedHardware {
         } catch (IllegalArgumentException ignore) {
         }
         try {
-            liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
-            liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            liftHorizontal = hardwareMap.get(DcMotor.class, "liftHorizontal");
+            liftHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftHorizontal.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } catch (IllegalArgumentException ignore) {
         }
         //copy motors over to encoders

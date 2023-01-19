@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift {
-    public static final int[] VERTICAL_TARGETS = {40, inEnc(14), inEnc(26), 4500};
+    public static final int[] VERTICAL_TARGETS = {40, inEnc(14), inEnc(26), 4650};
     public static final int[] HORIZONTAL_TARGETS = {30, 220};
     public static final double[] HORIZONTAL_POWER_LEVEL = {0, 0.65, 0.8, 1};
     public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 4600;  // 3500
@@ -205,7 +205,7 @@ public class Lift {
     }
 
     public boolean isSatisfiedHorizontally() {
-        final int MAX_FUDGERY = 100;
+        final int MAX_FUDGERY = 80;
         return Math.abs(targetHorizontalCount - liftHorizontal.getCurrentPosition()) < MAX_FUDGERY;
     }
 
