@@ -143,56 +143,21 @@ public class rrAutoComp3 extends LinearOpMode {
                 telemetry.update();
                 sleep(20);
             }
-            l.closeClaw();
-            sleep(250);
-            //l.speedVlift(1500);
-            l.setVerticalTargetManual(2000); // look, APIs exist for a reason (btw this one is new)
-            sleep(600);
-//            while (!l.isSatisfiedVertically()) {
-//                telemetry.addLine("Waiting for lift...");
-//                telemetry.addData("Current Position", l.liftVertical1.getCurrentPosition());
-//                telemetry.addData("Goal", l.targetVerticalCount);
-//                telemetry.update();
-//                l.update();
-//            }
 */
-
-//             TrajectorySequenceBuilder is better tbh -Miles TODO uncomment
-            
-
-
-
-            /*
-            ArrayList<Trajectory> trags = new ArrayList<>();
-            //batt 2 65, batt 3, 75
-            trags.add(drive.trajectoryBuilder(new Pose2d())
-                    .forward(52,
-                            SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build());
-
-
-            for (Trajectory t : trags) {
-                drive.followTrajectory(t);
-                Pose2d poseEstimate = drive.getPoseEstimate();
-                telemetry.addData("finalX", poseEstimate.getX());
-                telemetry.addData("finalY", poseEstimate.getY());
-                telemetry.update();
-
-            }*/
             int polePos = -370;
 
+            //grabs pre-loaded
             l.closeClaw();
             sleep(500);
-            runtime.reset();
-            while(runtime.seconds()<2.5) {
+
+            //raises preloaded and drives to second tile, ready to drop off cone on pole
+            while(l.liftVertical1.getCurrentPosition()<2700) { //this while loop will no longer be needed after testing, since update is within straight
                 l.verticalLift(2700, this); //is now going to close to the pole at the top because the lift seems pretty stable and it reduces time
                 l.update();
             }
             //straight(0.5,54); //function for driving straight
 
-
-
+            //pole detect
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
                 turret.setPower(-0.35); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
@@ -205,50 +170,54 @@ public class rrAutoComp3 extends LinearOpMode {
 
             telemetry.addData("polepos:", polePos);
             telemetry.update();
-            runtime.reset();
-            while(runtime.seconds()<1.8) {
+
+            //raises v lift to proper height above the pole
+            while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3]) { //1.8 seconds
                 l.verticalLift(VERTICAL_TARGETS[3], this);
                 l.update();
             }
 
+            //drops off cone into the stack
             l.setHorizontalTargetManual(215);//225
             while (!l.isSatisfiedHorizontally()) l.update();
-
             sleep(100);
             l.openClaw();
             sleep(300);
             l.setHorizontalTarget(0);
-            //l.update();  // intentional
 
             for (int i = 0; i < 1; i++) {
+                //turns from pole to stack
                 turret.setTargetPosition(740); //750
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
                 turret.setPower(0.8); //0.3
-
                 sleep(500);
-                runtime.reset();
-                while(runtime.seconds()<2)
-                l.verticalLift(1100 - (i * 90), this);
-                //while (!l.isSatisfiedVertically()) l.update();
 
+                //lowers vertical lift to cone stack and extends out horizontal lift to stack
+                l.setVerticalTargetManual(1100-i*90);
+                while(l.liftVertical1.getCurrentPosition()<(1100-(i*90)))
+                    l.update();
                 l.setHorizontalTargetManual(850);
                 sleep(500); //1000
                 l.closeClaw();
                 sleep(300);
-                l.setVerticalTargetManual(1100 - (i * 50) + 250);
-                while (!l.isSatisfiedVertically()) l.update();
-                //sleep(600);
+
+                //lifts cone off of stack and retracts h lift
+                l.setVerticalTargetManual(1100 - (i * 90) + 250);
+                while(l.liftVertical1.getCurrentPosition()<(1100-(i*90)+200))
+                    l.update();
                 l.setHorizontalTargetManual(0);
                 sleep(300);
-                l.setVerticalTargetManual(VERTICAL_TARGETS[3]);
-                while (!l.isSatisfiedVertically()) l.update();
 
+                //extends v lift to height above the tall pole and rotates to it
+                l.setVerticalTargetManual(VERTICAL_TARGETS[3]);
+                while(l.liftVertical1.getCurrentPosition()<VERTICAL_TARGETS[3])
+                    l.update();
                 turret.setTargetPosition(polePos + 27);
                 turret.setPower(-0.5); //0.3
 
+                //drops off cone onto pole
                 sleep(2250);
-                l.update();
+                //l.update();
                 l.setHorizontalTargetManual(225); //225
                 sleep(350); //650
                 l.openClaw();
@@ -256,22 +225,21 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.setHorizontalTarget(0);
             }
 /*
+            //resets turret and lift to home position, ready to be used in teleop
             turret.setTargetPosition(0);
             turret.setPower(1); //0.3
 
             sleep(500);
             l.verticalLift(VERTICAL_TARGETS[0], this);
             */
+            //strafes to correct parking position based on what april tag position was detected
             a =2;
             if (a == 1) {
-                strafe(0.6, 'l', 18);
+                strafe(0.6, 'l', 17);
             } else if (a == 3) {
-                strafe(0.6, 'r', 18);
+                strafe(0.6, 'r', 17);
             }
-
- 
-
-            // while (opModeIsActive()) ; // wait for the match to end
+             // while (opModeIsActive()) ; // wait for the match to end
         }
     }
 
@@ -287,7 +255,7 @@ public class rrAutoComp3 extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
     void straight(double speed, double distance) { // distance is in inches
-        //2500 encoder counts to 1 inch.
+        //1700 encoder counts to 1 inch.
         double adjust = 0.05;
         while ((encoderLeft.getCurrentPosition())/ (1700.0) <= distance) {
             if(encoderLeft.getCurrentPosition()/1700>45){
@@ -327,8 +295,8 @@ public class rrAutoComp3 extends LinearOpMode {
 
     }
     void strafe(double speed, char direction, double distance) { // distance is in inches
-        //2500 encoder counts to 1 inch.
-        while (encoderRear.getCurrentPosition() / 2500.0 <= distance) {
+        //1700 encoder counts to 1 inch.
+        while (encoderRear.getCurrentPosition() / 1700.0 <= distance) {
             if (direction == 'l') {
                 frontLeft.setPower(-speed);
                 frontRight.setPower(speed);
