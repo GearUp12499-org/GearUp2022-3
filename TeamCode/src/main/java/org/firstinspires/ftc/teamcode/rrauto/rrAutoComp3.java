@@ -210,13 +210,17 @@ public class rrAutoComp3 extends LinearOpMode {
 
                 //extends v lift to height above the tall pole and rotates to it
                 l.setVerticalTargetManual(VERTICAL_TARGETS[3]);
-                while(l.liftVertical1.getCurrentPosition()<VERTICAL_TARGETS[3])
+                turr(-0.5, polePos + 27);
+               /*
+               //this code will lift up first then turn turret, commented out because wanted to do this simultaneously
+               while(l.liftVertical1.getCurrentPosition()<VERTICAL_TARGETS[3])
                     l.update();
                 turret.setTargetPosition(polePos + 27);
                 turret.setPower(-0.5); //0.3
-
+                */
                 //drops off cone onto pole
-                sleep(2250);
+
+                //sleep(2250);
                 //l.update();
                 l.setHorizontalTargetManual(225); //225
                 sleep(350); //650
@@ -253,6 +257,31 @@ public class rrAutoComp3 extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", Math.toDegrees(detection.pose.yaw)));
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
+    }
+    void turr(double speed, double position){
+        int a;
+        runtime.reset();
+        if (position>0){
+            while(turret.getCurrentPosition()<position){
+                if(turret.getCurrentPosition()>position-150){
+                    turret.setPower(0.2);
+                }
+                else
+                    turret.setPower(speed);
+                l.update();
+            }
+        }
+        else{
+            while(turret.getCurrentPosition()>position){
+                if(turret.getCurrentPosition()<position+150){
+                    turret.setPower(-0.2);
+                }
+                else
+                    turret.setPower(speed);
+                l.update();
+            }
+        }
+        turret.setPower(0);
     }
     void straight(double speed, double distance) { // distance is in inches
         //1700 encoder counts to 1 inch.

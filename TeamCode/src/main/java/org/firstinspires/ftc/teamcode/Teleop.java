@@ -147,7 +147,7 @@ public class Teleop extends LinearOpMode {
                 l.setVerticalTarget(2); //2
                 l.update();
         }
-            //l.setVerticalTarget(1);
+
         else if (gamepad2.b) {
             l.setHorizontalTargetManual(5);
             l.retract();
@@ -207,7 +207,6 @@ public class Teleop extends LinearOpMode {
             liftHorizontal.setPower(-0.2);
             l.update();
         } else if (gamepad2.left_trigger > 0.2 ) {
-
             liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             liftHorizontal.setPower(0.2);
             l.update();
