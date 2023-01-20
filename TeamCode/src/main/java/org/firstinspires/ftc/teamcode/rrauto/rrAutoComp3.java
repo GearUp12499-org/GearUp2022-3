@@ -99,7 +99,7 @@ public class rrAutoComp3 extends LinearOpMode {
         waitForStart();
         if (position.equals("rrautotest")) {  // set by extending classes
             int a = 2; //counter for where to go
-            /*
+
             runtime.reset();
             while (runtime.seconds()<0.5) {
                 ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -141,9 +141,9 @@ public class rrAutoComp3 extends LinearOpMode {
                     }
                 }
                 telemetry.update();
-                sleep(20);
+                sleep(500);
             }
-*/
+
             int polePos = -370;
 
             //grabs pre-loaded
@@ -151,19 +151,23 @@ public class rrAutoComp3 extends LinearOpMode {
             sleep(500);
 
             //raises preloaded and drives to second tile, ready to drop off cone on pole
-            while(l.liftVertical1.getCurrentPosition()<2700) { //this while loop will no longer be needed after testing, since update is within straight
+            /*while(l.liftVertical1.getCurrentPosition()<2700-100) { //this while loop will no longer be needed after testing, since update is within straight
                 l.verticalLift(2700, this); //is now going to close to the pole at the top because the lift seems pretty stable and it reduces time
                 l.update();
-            }
-            //straight(0.5,54); //function for driving straight
+            }*/
+
+            l.verticalLift(2700, this);
+            straight(0.5,54); //function for driving straight
 
             //pole detect
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
-                turret.setPower(-0.35); //.35
+                turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                turret.setPower(-0.25); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
             }
             turret.setPower(0);
+            sleep(300);
 
             if (Math.abs(turret.getCurrentPosition()) < 700)
                 polePos = turret.getCurrentPosition();
@@ -172,8 +176,9 @@ public class rrAutoComp3 extends LinearOpMode {
             telemetry.update();
 
             //raises v lift to proper height above the pole
-            while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3]) { //1.8 seconds
-                l.verticalLift(VERTICAL_TARGETS[3], this);
+            runtime.reset();
+            l.verticalLift(VERTICAL_TARGETS[3], this);
+            while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3] && runtime.seconds()<1.5) { //1.8 seconds
                 l.update();
             }
 
@@ -181,21 +186,33 @@ public class rrAutoComp3 extends LinearOpMode {
             l.setHorizontalTargetManual(215);//225
             while (!l.isSatisfiedHorizontally()) l.update();
             sleep(100);
+            while(l.liftVertical1.getCurrentPosition()>3800){
+                l.liftVertical1.setPower(-0.4);
+                l.liftVertical2.setPower(-0.4);
+            }
+
+            l.liftVertical1.setPower(0);
+            l.liftVertical2.setPower(0);
             l.openClaw();
             sleep(300);
             l.setHorizontalTarget(0);
 
-            for (int i = 0; i < 1; i++) {
+            for (int i = 0; i < 3; i++) {
                 //turns from pole to stack
-                turret.setTargetPosition(740); //750
+                turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                turret.setTargetPosition(780); //750
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.8); //0.3
                 sleep(500);
 
                 //lowers vertical lift to cone stack and extends out horizontal lift to stack
                 l.setVerticalTargetManual(1100-i*90);
-                while(l.liftVertical1.getCurrentPosition()<(1100-(i*90)))
-                    l.update();
+                while(l.liftVertical1.getCurrentPosition()>(1100-(i*90))){
+                    l.liftVertical1.setPower(-0.6);
+                    l.liftVertical2.setPower(-0.6);
+                }
+                l.liftVertical1.setPower(0);
+                l.liftVertical2.setPower(0);
                 l.setHorizontalTargetManual(850);
                 sleep(500); //1000
                 l.closeClaw();
@@ -203,45 +220,100 @@ public class rrAutoComp3 extends LinearOpMode {
 
                 //lifts cone off of stack and retracts h lift
                 l.setVerticalTargetManual(1100 - (i * 90) + 250);
-                while(l.liftVertical1.getCurrentPosition()<(1100-(i*90)+200))
-                    l.update();
+                runtime.reset();
+                while(runtime.seconds()<0.5){
+                    l.liftVertical1.setPower(1);
+                    l.liftVertical2.setPower(1);
+                }
+                l.liftVertical1.setPower(0);
+                l.liftVertical2.setPower(0);
+
+                sleep(250);
                 l.setHorizontalTargetManual(0);
                 sleep(300);
 
                 //extends v lift to height above the tall pole and rotates to it
-                l.setVerticalTargetManual(VERTICAL_TARGETS[3]);
-                turr(-0.5, polePos + 27);
-               /*
-               //this code will lift up first then turn turret, commented out because wanted to do this simultaneously
-               while(l.liftVertical1.getCurrentPosition()<VERTICAL_TARGETS[3])
-                    l.update();
-                turret.setTargetPosition(polePos + 27);
-                turret.setPower(-0.5); //0.3
-                */
-                //drops off cone onto pole
+                l.setVerticalTargetManual(VERTICAL_TARGETS[3]-150);
 
-                //sleep(2250);
-                //l.update();
-                l.setHorizontalTargetManual(225); //225
-                sleep(350); //650
+                turr(-0.5, polePos + 41); //27
+                runtime.reset();
+                while(runtime.seconds()<0.5+ 0.15*i){
+                    l.liftVertical1.setPower(1);
+                    l.liftVertical2.setPower(1);
+                }
+                l.liftVertical1.setPower(0);
+                l.liftVertical2.setPower(0);
+                l.setHorizontalTargetManual(200); //225
+                int c = 0;
+                if(i ==2)
+                    c =200;
+                sleep(600 + c);
+                while(l.liftVertical1.getCurrentPosition()>3800){
+                    l.liftVertical1.setPower(-0.4);
+                    l.liftVertical2.setPower(-0.4);
+                }
+
+                l.liftVertical1.setPower(0);
+                l.liftVertical2.setPower(0);
                 l.openClaw();
-                sleep(300);
                 l.setHorizontalTarget(0);
             }
-/*
-            //resets turret and lift to home position, ready to be used in teleop
-            turret.setTargetPosition(0);
-            turret.setPower(1); //0.3
 
-            sleep(500);
-            l.verticalLift(VERTICAL_TARGETS[0], this);
-            */
+            //resets turret and lift to home position, ready to be used in teleop
+
+
             //strafes to correct parking position based on what april tag position was detected
-            a =2;
+            //a =2;
+            turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             if (a == 1) {
-                strafe(0.6, 'l', 17);
+                turret.setTargetPosition(0);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(0.3);
+                sleep(800);
+                strafe(0.6, 'l', 18);
+                //sleep(1500);
+                while(l.liftVertical1.getCurrentPosition()>40) {
+                    l.liftVertical1.setPower(-0.5);
+                    l.liftVertical2.setPower(-0.5);
+                }
+                l.liftVertical1.setPower(0);
+                l.liftVertical2.setPower(0);
             } else if (a == 3) {
-                strafe(0.6, 'r', 17);
+                turret.setTargetPosition(0);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(0.3);
+                sleep(800);
+                strafe(0.6, 'r', 20.5);
+                //sleep(1500);
+                while(l.liftVertical1.getCurrentPosition()>40) {
+                    l.liftVertical1.setPower(-0.5);
+                    l.liftVertical2.setPower(-0.5);
+                }
+                l.liftVertical1.setPower(0);
+                l.liftVertical2.setPower(0);
+            }
+            else{
+                turret.setTargetPosition(0);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(0.3);
+                sleep(800);
+                runtime.reset();
+                while(runtime.seconds() < 0.8){
+                    frontLeft.setPower(-0.4);
+                    frontRight.setPower(-0.4);
+                    rearLeft.setPower(-0.4);
+                    rearRight.setPower(-0.4);
+                }
+                frontLeft.setPower(0);
+                frontRight.setPower(0);
+                rearLeft.setPower(0);
+                rearRight.setPower(0);
+                while(l.liftVertical1.getCurrentPosition()>40) {
+                    l.liftVertical1.setPower(-0.5);
+                    l.liftVertical2.setPower(-0.5);
+                }
+                l.liftVertical1.setPower(0);
+                l.liftVertical2.setPower(0);
             }
              // while (opModeIsActive()) ; // wait for the match to end
         }
@@ -260,6 +332,7 @@ public class rrAutoComp3 extends LinearOpMode {
     }
     void turr(double speed, double position){
         int a;
+        turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         runtime.reset();
         if (position>0){
             while(turret.getCurrentPosition()<position){
@@ -337,8 +410,11 @@ public class rrAutoComp3 extends LinearOpMode {
                 rearLeft.setPower(-speed);
                 rearRight.setPower(speed);
             }
-
         }
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        rearLeft.setPower(0);
+        rearRight.setPower(0);
     }
 
     public void driveStraight(double lf, double lb,
