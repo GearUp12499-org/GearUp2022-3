@@ -46,8 +46,7 @@ public class Lift {
         return Math.max(min, Math.min(max, value));
     }
 
-    public Lift(HardwareMap hardwareMap) {
-        liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
+    public void initLiftMotors() {
         liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftVertical1.setPower(POWER_UP);
         liftVertical1.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -55,20 +54,26 @@ public class Lift {
         liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftVertical1.setPower(0);
 
-        liftVertical2 = hardwareMap.get(DcMotor.class, "lift2");
         liftVertical2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         liftVertical2.setPower(0);
 
-        liftHorizontal = hardwareMap.get(DcMotor.class, "liftHorizontal");
         liftHorizontal.setPower(POWER_H);
         liftHorizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftHorizontal.setTargetPosition(0);
         liftHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftHorizontal.setDirection(DcMotorSimple.Direction.REVERSE);
         liftHorizontal.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
 
+    public Lift(HardwareMap hardwareMap) {
+        liftVertical1 = hardwareMap.get(DcMotor.class, "lift1");
+
+        liftVertical2 = hardwareMap.get(DcMotor.class, "lift2");
+
+        liftHorizontal = hardwareMap.get(DcMotor.class, "liftHorizontal");
+        initLiftMotors();
         servo = hardwareMap.get(Servo.class, "servo");
         servo.setPosition(0.25);
     }
