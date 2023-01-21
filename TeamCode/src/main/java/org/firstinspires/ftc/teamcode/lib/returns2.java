@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.lib;
 
-public final class Triad<A, B, C> {
+public final class returns2<A, B> {
     private final A a;
     private final B b;
-    private final C c;
-    public Triad(A a, B b, C c) {
+    public returns2(A a, B b) {
         this.a = a;
         this.b = b;
-        this.c = c;
     }
 
     public A getA() {
@@ -16,9 +14,5 @@ public final class Triad<A, B, C> {
 
     public B getB() {
         return b;
-    }
-
-    public C getC() {
-        return c;
     }
 }
