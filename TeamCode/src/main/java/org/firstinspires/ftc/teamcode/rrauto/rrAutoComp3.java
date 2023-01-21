@@ -24,7 +24,6 @@ import org.firstinspires.ftc.teamcode.DetectPoleV2;
 import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.lib.Supplier;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -302,7 +301,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
                 sleep(800);
-                strafe(0.6, 'l', 18);
+                strafe(0.6, -18);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
@@ -316,7 +315,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
                 sleep(800);
-                strafe(0.6, 'r', 20.5);
+                strafe(0.6, 20.5);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
@@ -530,7 +529,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(-0.3);
                 sleep(800);
-                strafe(0.6, 'l', 18);
+                strafe(0.6, -18);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
@@ -544,7 +543,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(-0.3);
                 sleep(800);
-                strafe(0.6, 'r', 20.5);
+                strafe(0.6, 20.5);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
@@ -664,28 +663,36 @@ public class rrAutoComp3 extends LinearOpMode {
         rearRight.setPower(0);
 
     }
-    void strafe(double speed, char direction, double distance) { // distance is in inches
-        int initial = encoderRear.getCurrentPosition();
-        //1700 encoder counts to 1 inch.
+    void strafe(double speed, double distance) { // distance is in inches
+        // 1700 encoder counts to 1 inch.
         // left = negative. checks distance in the correct direction.
-        while ((encoderRear.getCurrentPosition() - initial) * (direction == 'l' ? -1.0 : 1.0) / 1700.0 <= distance) {
-            stopMaybe();
-            telemetry.addData("current data",
-                    ((encoderRear.getCurrentPosition() - initial) * (direction == 'l' ? -1.0 : 1.0) / 1700.0));
-            telemetry.addData("distance provided", distance);
-            telemetry.update();
-            if (direction == 'l') {
+        if(distance > 0){
+            while ((encoderRear.getCurrentPosition() / 1700.0 <= distance)){
+                stopMaybe();
+                telemetry.addData("current data", encoderRear.getCurrentPosition()/ 1700.0);
+                telemetry.addData("distance provided", distance);
+                telemetry.update();
+
                 frontLeft.setPower(-speed);
                 frontRight.setPower(speed);
                 rearLeft.setPower(speed);
                 rearRight.setPower(-speed);
-            } else {
+            }
+        }
+        else if(distance < 0){
+            while ((encoderRear.getCurrentPosition() / 1700.0 >= distance)){
+                stopMaybe();
+                telemetry.addData("current data", encoderRear.getCurrentPosition()/ 1700.0);
+                telemetry.addData("distance provided", distance);
+                telemetry.update();
+
                 frontLeft.setPower(speed);
                 frontRight.setPower(-speed);
                 rearLeft.setPower(-speed);
                 rearRight.setPower(speed);
             }
         }
+
         frontLeft.setPower(0);
         frontRight.setPower(0);
         rearLeft.setPower(0);
