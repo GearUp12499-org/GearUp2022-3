@@ -16,7 +16,6 @@ public class SharedHardware {
     public static DcMotorEx rearRight;
 
     public static DcMotor turret;
-    public static DcMotor liftVertical1;
 
     public static DcMotor liftHorizontal;
     public static Encoder encoderLeft;

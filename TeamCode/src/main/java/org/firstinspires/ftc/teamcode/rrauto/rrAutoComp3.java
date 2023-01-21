@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
-import static org.firstinspires.ftc.teamcode.SharedHardware.liftVertical1;
-
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
@@ -10,14 +10,9 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.runtime;
 import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
-import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
-import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
-
 
 import android.annotation.SuppressLint;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -27,7 +22,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.DetectPoleV2;
 import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
-import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
