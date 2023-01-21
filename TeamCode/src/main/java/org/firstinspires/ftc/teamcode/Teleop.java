@@ -164,7 +164,8 @@ public class Teleop extends LinearOpMode {
             l.update();
             int direction = sign(-turret.getCurrentPosition());
             turret.setPower(0.25 * direction);
-            l.setVerticalTarget(0);
+            //l.setVerticalTarget(0);
+            l.setVerticalTargetManual(175);
             runtime.reset();
             while (opModeIsActive() && !(Math.abs(turret.getCurrentPosition()) <= 20)) {
                 if (Math.abs(turret.getCurrentPosition()) <= 10) {
@@ -261,7 +262,8 @@ public class Teleop extends LinearOpMode {
         if (gamepad1.b) {
             l.setVerticalTargetManual(Math.max(l.liftVertical1.getCurrentPosition(), Lift.inEnc(14)));
             l.waitLift(this);
-            while (io.distSensorM.getDistance(DistanceUnit.MM) > 300 && Math.abs(turret.getCurrentPosition()) < 1200) {
+            runtime.reset();
+            while (io.distSensorM.getDistance(DistanceUnit.MM) > 300 && Math.abs(turret.getCurrentPosition()) < 1200 && runtime.seconds()<2) {
                 turret.setPower(0.35);
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
@@ -270,7 +272,8 @@ public class Teleop extends LinearOpMode {
         } else if (gamepad1.x) {
             l.setVerticalTargetManual(Math.max(l.liftVertical1.getCurrentPosition(), Lift.inEnc(14)));
             l.waitLift(this);
-            while (io.distSensorM.getDistance(DistanceUnit.MM) > 300 && Math.abs(turret.getCurrentPosition()) < 1200) {
+            runtime.reset();
+            while (io.distSensorM.getDistance(DistanceUnit.MM) > 300 && Math.abs(turret.getCurrentPosition()) < 1200 && runtime.seconds()<2) {
                 turret.setPower(-0.35);
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
