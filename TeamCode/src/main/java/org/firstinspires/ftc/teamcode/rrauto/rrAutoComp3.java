@@ -16,6 +16,7 @@ import android.annotation.SuppressLint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -23,6 +24,7 @@ import org.firstinspires.ftc.teamcode.DetectPoleV2;
 import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.lib.Supplier;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -32,11 +34,10 @@ import java.util.ArrayList;
 
 @Autonomous(name = "RR AUTO", group = "GearUp")
 public class rrAutoComp3 extends LinearOpMode {
+    static class Abort extends RuntimeException {}
+
     public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 4500};
     public static DcMotor liftVertical1;
-
-    //public DcMotor liftVertical1 = null;
-    public DcMotor liftVertical2 = null;
 
     double fx = 578.272;
     double fy = 578.272;
@@ -60,6 +61,39 @@ public class rrAutoComp3 extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        try {
+            safeRunOpMode();
+        } catch (Exception e) {
+            if (!(e instanceof Abort)) {
+                RobotLog.e("(rrautocomp3) crashing pretty bad with %s", e.toString());
+                e.fillInStackTrace().printStackTrace();
+            }
+        } finally {
+            RobotLog.i("(rrautocomp3) cleanup...");
+            if (frontLeft != null) {
+                frontLeft.setPower(0);
+                frontRight.setPower(0);
+                rearLeft.setPower(0);
+                rearRight.setPower(0);
+            }
+            if (turret != null) {
+                turret.setPower(0);
+            }
+            if (l != null && l.liftVertical1 != null) {
+                l.liftVertical1.setPower(0);
+                l.liftVertical2.setPower(0);
+                l.liftHorizontal.setPower(0);
+            }
+
+            RobotLog.i("(rrautocomp3) stopped good");
+        }
+    }
+
+    private void stopMaybe() {
+        if (isStopRequested()) throw new Abort();
+    }
+
+    public void safeRunOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         // expose the hardware to the rest of the code (mainly 'turret' for now)
@@ -95,7 +129,7 @@ public class rrAutoComp3 extends LinearOpMode {
             int a = 2; //counter for where to go
 
             runtime.reset();
-            while (runtime.seconds()<0.5) {
+            while (runtime.seconds()<0.5 && opModeIsActive()) {
                 ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
                 if (currentDetections.size() != 0) {
                     boolean tagFound = false;
@@ -137,6 +171,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 telemetry.update();
                 sleep(500);
             }
+            stopMaybe();
 
             int polePos = -370;
 
@@ -150,6 +185,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             //pole detect
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
+                stopMaybe();
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 turret.setPower(-0.25); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
@@ -168,14 +204,19 @@ public class rrAutoComp3 extends LinearOpMode {
             runtime.reset();
             l.verticalLift(VERTICAL_TARGETS[3], this);
             while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3] && runtime.seconds()<1.5) { //1.8 seconds
+                stopMaybe();
                 l.update();
             }
 
             //drops off cone into the stack
             l.setHorizontalTargetManual(215);//225
-            while (!l.isSatisfiedHorizontally()) l.update();
+            while (!l.isSatisfiedHorizontally()) {
+                stopMaybe();
+                l.update();
+            }
             sleep(100);
             while(l.liftVertical1.getCurrentPosition()>3800){
+                stopMaybe();
                 l.liftVertical1.setPower(-0.4);
                 l.liftVertical2.setPower(-0.4);
             }
@@ -197,6 +238,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 //lowers vertical lift to cone stack and extends out horizontal lift to stack
                 l.setVerticalTargetManual(1100-i*90);
                 while(l.liftVertical1.getCurrentPosition()>(1100-(i*90))){
+                    stopMaybe();
                     l.liftVertical1.setPower(-0.6);
                     l.liftVertical2.setPower(-0.6);
                 }
@@ -211,6 +253,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.setVerticalTargetManual(1100 - (i * 90) + 250);
                 runtime.reset();
                 while(runtime.seconds()<0.5){
+                    stopMaybe();
                     l.liftVertical1.setPower(1);
                     l.liftVertical2.setPower(1);
                 }
@@ -228,6 +271,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 //needs a little more juice at the top of pole to make it
                 runtime.reset();
                 while(runtime.seconds()<0.5+ 0.15*i){
+                    stopMaybe();
                     l.liftVertical1.setPower(1);
                     l.liftVertical2.setPower(1);
                 }
@@ -241,6 +285,7 @@ public class rrAutoComp3 extends LinearOpMode {
                     c =200;
                 sleep(600 + c);
                 while(l.liftVertical1.getCurrentPosition()>3800){
+                    stopMaybe();
                     l.liftVertical1.setPower(-0.4);
                     l.liftVertical2.setPower(-0.4);
                 }
@@ -260,6 +305,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 strafe(0.6, 'l', 18);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
+                    stopMaybe();
                     l.liftVertical1.setPower(-0.5);
                     l.liftVertical2.setPower(-0.5);
                 }
@@ -273,6 +319,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 strafe(0.6, 'r', 20.5);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
+                    stopMaybe();
                     l.liftVertical1.setPower(-0.5);
                     l.liftVertical2.setPower(-0.5);
                 }
@@ -286,6 +333,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 sleep(800);
                 runtime.reset();
                 while(runtime.seconds() < 0.8){
+                    stopMaybe();
                     frontLeft.setPower(-0.4);
                     frontRight.setPower(-0.4);
                     rearLeft.setPower(-0.4);
@@ -296,6 +344,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 rearLeft.setPower(0);
                 rearRight.setPower(0);
                 while(l.liftVertical1.getCurrentPosition()>40) {
+                    stopMaybe();
                     l.liftVertical1.setPower(-0.5);
                     l.liftVertical2.setPower(-0.5);
                 }
@@ -309,6 +358,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             runtime.reset();
             while (runtime.seconds()<0.5) {
+                stopMaybe();
                 ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
                 if (currentDetections.size() != 0) {
                     boolean tagFound = false;
@@ -363,6 +413,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             //pole detect
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
+                stopMaybe();
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 turret.setPower(0.25); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
@@ -381,14 +432,19 @@ public class rrAutoComp3 extends LinearOpMode {
             runtime.reset();
             l.verticalLift(VERTICAL_TARGETS[3], this);
             while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3] && runtime.seconds()<1.5) { //1.8 seconds
+                stopMaybe();
                 l.update();
             }
 
             //drops off cone into the stack
             l.setHorizontalTargetManual(215);//225
-            while (!l.isSatisfiedHorizontally()) l.update();
+            while (!l.isSatisfiedHorizontally()) {
+                stopMaybe();
+                l.update();
+            }
             sleep(100);
             while(l.liftVertical1.getCurrentPosition()>3800){
+                stopMaybe();
                 l.liftVertical1.setPower(-0.4);
                 l.liftVertical2.setPower(-0.4);
             }
@@ -410,6 +466,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 //lowers vertical lift to cone stack and extends out horizontal lift to stack
                 l.setVerticalTargetManual(1100-i*90);
                 while(l.liftVertical1.getCurrentPosition()>(1100-(i*90))){
+                    stopMaybe();
                     l.liftVertical1.setPower(-0.6);
                     l.liftVertical2.setPower(-0.6);
                 }
@@ -424,6 +481,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.setVerticalTargetManual(1100 - (i * 90) + 250);
                 runtime.reset();
                 while(runtime.seconds()<0.5){
+                    stopMaybe();
                     l.liftVertical1.setPower(1);
                     l.liftVertical2.setPower(1);
                 }
@@ -441,6 +499,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 //needs a little more juice at the top of pole to make it
                 runtime.reset();
                 while(runtime.seconds()<0.5+ 0.15*i){
+                    stopMaybe();
                     l.liftVertical1.setPower(1);
                     l.liftVertical2.setPower(1);
                 }
@@ -454,6 +513,7 @@ public class rrAutoComp3 extends LinearOpMode {
                     c =200;
                 sleep(600 + c);
                 while(l.liftVertical1.getCurrentPosition()>3800){
+                    stopMaybe();
                     l.liftVertical1.setPower(-0.4);
                     l.liftVertical2.setPower(-0.4);
                 }
@@ -473,6 +533,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 strafe(0.6, 'l', 18);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
+                    stopMaybe();
                     l.liftVertical1.setPower(-0.5);
                     l.liftVertical2.setPower(-0.5);
                 }
@@ -486,6 +547,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 strafe(0.6, 'r', 20.5);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
+                    stopMaybe();
                     l.liftVertical1.setPower(-0.5);
                     l.liftVertical2.setPower(-0.5);
                 }
@@ -499,6 +561,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 sleep(800);
                 runtime.reset();
                 while(runtime.seconds() < 0.8){
+                    stopMaybe();
                     frontLeft.setPower(-0.4);
                     frontRight.setPower(-0.4);
                     rearLeft.setPower(-0.4);
@@ -509,6 +572,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 rearLeft.setPower(0);
                 rearRight.setPower(0);
                 while(l.liftVertical1.getCurrentPosition()>40) {
+                    stopMaybe();
                     l.liftVertical1.setPower(-0.5);
                     l.liftVertical2.setPower(-0.5);
                 }
@@ -537,6 +601,7 @@ public class rrAutoComp3 extends LinearOpMode {
         runtime.reset();
         if (position>0){
             while(turret.getCurrentPosition()<position){
+                stopMaybe();
                 if(turret.getCurrentPosition()>position-150){
                     turret.setPower(0.2);
                 }
@@ -547,6 +612,7 @@ public class rrAutoComp3 extends LinearOpMode {
         }
         else{
             while(turret.getCurrentPosition()>position){
+                stopMaybe();
                 if(turret.getCurrentPosition()<position+150){
                     turret.setPower(-0.2);
                 }
@@ -561,6 +627,7 @@ public class rrAutoComp3 extends LinearOpMode {
         //1700 encoder counts to 1 inch.
         double adjust = 0.05;
         while ((encoderLeft.getCurrentPosition())/ (1700.0) <= distance) {
+            stopMaybe();
             if(encoderLeft.getCurrentPosition()/1700>45){
                 frontLeft.setPower(0.2);
                 frontRight.setPower(0.2);
@@ -598,14 +665,21 @@ public class rrAutoComp3 extends LinearOpMode {
 
     }
     void strafe(double speed, char direction, double distance) { // distance is in inches
+        int initial = encoderRear.getCurrentPosition();
         //1700 encoder counts to 1 inch.
-        while (encoderRear.getCurrentPosition() / 1700.0 <= distance) {
+        // left = negative. checks distance in the correct direction.
+        while ((encoderRear.getCurrentPosition() - initial) * (direction == 'l' ? -1.0 : 1.0) / 1700.0 <= distance) {
+            stopMaybe();
+            telemetry.addData("current data",
+                    ((encoderRear.getCurrentPosition() - initial) * (direction == 'l' ? -1.0 : 1.0) / 1700.0));
+            telemetry.addData("distance provided", distance);
+            telemetry.update();
             if (direction == 'l') {
                 frontLeft.setPower(-speed);
                 frontRight.setPower(speed);
                 rearLeft.setPower(speed);
                 rearRight.setPower(-speed);
-            } else if (direction == 'r') {
+            } else {
                 frontLeft.setPower(speed);
                 frontRight.setPower(-speed);
                 rearLeft.setPower(-speed);
@@ -633,6 +707,7 @@ public class rrAutoComp3 extends LinearOpMode {
         //robot.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //robot.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         while (Math.abs((posR + posL) / 2) < Math.abs(distance)) {
+            stopMaybe();
             posR = encoderRight.getCurrentPosition();
             posL = encoderLeft.getCurrentPosition();
             frontLeft.setPower(lf);

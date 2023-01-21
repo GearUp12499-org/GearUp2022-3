@@ -151,6 +151,8 @@ public class Teleop extends LinearOpMode {
         }
         last2Back = gamepad2.back;
 
+        if (gamepad2.back) return;
+
         if (gamepad2.x){
                 l.setVerticalTarget(2); //2
                 l.update();
@@ -159,6 +161,7 @@ public class Teleop extends LinearOpMode {
         else if (gamepad2.b) {
             l.setHorizontalTargetManual(5);
             l.retract();
+            l.update();
             int direction = sign(-turret.getCurrentPosition());
             turret.setPower(0.25 * direction);
             l.setVerticalTarget(0);
@@ -203,7 +206,7 @@ public class Teleop extends LinearOpMode {
             runtime.reset();
             while(liftHorizontal.getCurrentPosition()>20 && runtime.seconds()<2) {
                 liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                liftHorizontal.setPower(-0.4);
+                liftHorizontal.setPower(-0.8);
             }
             liftHorizontal.setPower(0);
         } else if (gamepad2.left_bumper) {
