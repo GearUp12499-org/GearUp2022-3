@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.lib;
 
 
 /**
- * Drop in replacement for java.lang.function's Consumer.
+ * Drop in replacement for java.util.function's Consumer.
  * Because the accept(...) method isn't in my Android SDK version.
  *
  * @param <A> input type
