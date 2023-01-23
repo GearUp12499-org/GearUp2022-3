@@ -172,7 +172,7 @@ public class rrAutoComp3 extends LinearOpMode {
             }
             stopMaybe();
 
-            int polePos = -370;
+            int polePos = -400;
 
             //grabs pre-loaded
             l.closeClaw();
@@ -180,20 +180,28 @@ public class rrAutoComp3 extends LinearOpMode {
 
             //raises preloaded and drives to second tile, ready to drop off cone on pole
             l.verticalLift(2700, this);
-            straight(0.5,54); //function for driving straight
+            straight(0.5,53); // 54 function for driving straight
 
             //pole detect
-            while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
+            while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
                 stopMaybe();
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 turret.setPower(-0.25); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
             }
+            /*if(turret.getCurrentPosition()> -200){
+                polePos = -415;
+                turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                turret.setTargetPosition(-415);
+                turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                turret.setPower(-0.3);
+            }*/
+
             turret.setPower(0);
             sleep(300);
 
-            if (Math.abs(turret.getCurrentPosition()) < 700)
+            if (Math.abs(turret.getCurrentPosition()) < -200)
                 polePos = turret.getCurrentPosition();
 
             telemetry.addData("polepos:", polePos);
@@ -208,7 +216,7 @@ public class rrAutoComp3 extends LinearOpMode {
             }
 
             //drops off cone into the stack
-            l.setHorizontalTargetManual(215);//225
+            l.setHorizontalTargetManual(208);//225
             while (!l.isSatisfiedHorizontally()) {
                 stopMaybe();
                 l.update();
@@ -243,7 +251,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
-                l.setHorizontalTargetManual(850);
+                l.setHorizontalTargetManual(825);
                 sleep(500); //1000
                 l.closeClaw();
                 sleep(300);
@@ -301,7 +309,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
                 sleep(800);
-                strafe(0.6, -18);
+                strafe(0.6, -20.5);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
@@ -543,7 +551,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(-0.3);
                 sleep(800);
-                strafe(0.6, 20.5);
+                strafe(0.6, 17);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
@@ -673,10 +681,10 @@ public class rrAutoComp3 extends LinearOpMode {
                 telemetry.addData("distance provided", distance);
                 telemetry.update();
 
-                frontLeft.setPower(-speed);
-                frontRight.setPower(speed);
-                rearLeft.setPower(speed);
-                rearRight.setPower(-speed);
+                frontLeft.setPower(speed);
+                frontRight.setPower(-speed);
+                rearLeft.setPower(-speed);
+                rearRight.setPower(speed);
             }
         }
         else if(distance < 0){
@@ -686,10 +694,10 @@ public class rrAutoComp3 extends LinearOpMode {
                 telemetry.addData("distance provided", distance);
                 telemetry.update();
 
-                frontLeft.setPower(speed);
-                frontRight.setPower(-speed);
-                rearLeft.setPower(-speed);
-                rearRight.setPower(speed);
+                frontLeft.setPower(-speed);
+                frontRight.setPower(speed);
+                rearLeft.setPower(speed);
+                rearRight.setPower(-speed);
             }
         }
 
