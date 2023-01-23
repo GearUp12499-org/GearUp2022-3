@@ -146,6 +146,11 @@ public class Job {
         return continuation;
     }
 
+    public Job andThen(Runnable oneShotFunc) {
+        Job cont = new Job(manager, null, oneShotFunc, null, null, null);
+        return andThen(cont);
+    }
+
     /**
      * If this job is already active or complete, abort.
      * Otherwise, start this job's dependencies, if there are any, or else start this job.
