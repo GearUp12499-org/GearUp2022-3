@@ -3,12 +3,13 @@ package org.firstinspires.ftc.teamcode.rrauto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 
-@Autonomous(name = "left_side", group = "Pushbot")
+@Autonomous(name = "left_side (med. pole)", group = "Pushbot")
 //@Disabled
-public class rrautotest extends rrAutoComp3 {
+public class left_side_short extends rrAutoComp3 {
 
     // Constructor
-    public rrautotest() {
+    public left_side_short() {
         position = "left_side";
+        skipPolesConf = 1;
     }
 }

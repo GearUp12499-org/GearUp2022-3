@@ -6,10 +6,12 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "When the debugging", group = "!!!!!!!!!")
+@Disabled
 public class Turr extends LinearOpMode {
 
     public static final double SEC_PER_IN = (double) 1 / 25;

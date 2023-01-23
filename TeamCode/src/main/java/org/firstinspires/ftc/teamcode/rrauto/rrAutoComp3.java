@@ -51,6 +51,7 @@ public class rrAutoComp3 extends LinearOpMode {
     int CENTER = 2;
     int RIGHT = 3;
     String position = "";
+    int skipPolesConf = 0;
     AprilTagDetection tagOfInterest = null;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
@@ -183,12 +184,20 @@ public class rrAutoComp3 extends LinearOpMode {
             straight(0.5,53); // 54 function for driving straight
 
             //pole detect
-            while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
-                stopMaybe();
-                turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                turret.setPower(-0.25); //.35
-                telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
-                telemetry.update();
+            for (int poles = 0; poles <= skipPolesConf; poles++) {
+                while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000 && Math.abs(turret.getCurrentPosition()) < 1400) {
+                    stopMaybe();
+                    turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    turret.setPower(-0.25); //.35
+                    telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
+                    telemetry.update();
+                }
+                if (poles == skipPolesConf) break;
+                while (!(io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000) && Math.abs(turret.getTargetPosition()) < 1400) {
+                    stopMaybe();
+                    telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
+                    telemetry.update();
+                }
             }
             /*if(turret.getCurrentPosition()> -200){
                 polePos = -415;
@@ -201,8 +210,8 @@ public class rrAutoComp3 extends LinearOpMode {
             turret.setPower(0);
             sleep(300);
 
-            if (Math.abs(turret.getCurrentPosition()) < -200)
-                polePos = turret.getCurrentPosition();
+//            if (Math.abs(turret.getCurrentPosition()) < -200) // What???
+            polePos = turret.getCurrentPosition();
 
             telemetry.addData("polepos:", polePos);
             telemetry.update();
@@ -234,7 +243,7 @@ public class rrAutoComp3 extends LinearOpMode {
             sleep(300);
             l.setHorizontalTarget(0);
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3 - skipPolesConf; i++) {
                 //turns from pole to stack
                 turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 turret.setTargetPosition(780); //750
@@ -419,18 +428,26 @@ public class rrAutoComp3 extends LinearOpMode {
             straight(0.5,54); //function for driving straight
 
             //pole detect
-            while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 700) {
-                stopMaybe();
-                turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                turret.setPower(0.25); //.35
-                telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
-                telemetry.update();
+            for (int poles = 0; poles <= skipPolesConf; poles++) {
+                while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && Math.abs(turret.getCurrentPosition()) < 1400) {
+                    stopMaybe();
+                    turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    turret.setPower(0.25); //.35
+                    telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
+                    telemetry.update();
+                }
+                if (poles == skipPolesConf) break;
+                while (!(io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000) && Math.abs(turret.getTargetPosition()) < 1400) {
+                    stopMaybe();
+                    telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
+                    telemetry.update();
+                }
             }
             turret.setPower(0);
             sleep(300);
 
-            if (Math.abs(turret.getCurrentPosition()) > - 700)
-                polePos = turret.getCurrentPosition();
+//            if (Math.abs(turret.getCurrentPosition()) > - 700)
+            polePos = turret.getCurrentPosition();
 
             telemetry.addData("polepos:", polePos);
             telemetry.update();
@@ -462,7 +479,7 @@ public class rrAutoComp3 extends LinearOpMode {
             sleep(300);
             l.setHorizontalTarget(0);
 
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3 - skipPolesConf; i++) {
                 //turns from pole to stack
                 turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 turret.setTargetPosition(-780); //750
