@@ -104,7 +104,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
             telemetry.update();
             safeSleep(500);
         }
-        jobManager.delayJob(1000).andThen(jobManager.delayJob(500)).andThen(jobManager.delayJob(500));
+
     }
 
     @Override

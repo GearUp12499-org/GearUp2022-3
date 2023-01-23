@@ -8,6 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
+/**
+ * Represents a job that can be run in a JobManager.
+ */
 public class Job {
     public final int id;
     private final JobManager manager;
@@ -20,9 +23,9 @@ public class Job {
      */
     private final ArrayList<Integer> dependentJobs = new ArrayList<>();
     /**
-     * Number of dependencies that must complete before this job starts.
+     * List of jobs that this job is waiting for.
      */
-    public int numDeps;
+    private final ArrayList<Integer> dependencyJobs = new ArrayList<>();
     /**
      * Whether the job is complete.
      */
@@ -63,19 +66,18 @@ public class Job {
         this.id = mgr.addJob(this);
         this.manager = mgr;
         if (dependencies != null && dependencies.length > 0) {
-            numDeps = dependencies.length;
+            dependencyJobs.clear();
             for (int dependency : dependencies) {
+                dependencyJobs.add(dependency);
                 mgr.getJob(dependency).addDependent(this);
             }
-        } else {
-            begin(); // Start immediately if there are no dependencies.
         }
     }
 
     /**
-     * Start the job.
+     * (internal) Start the job.
      */
-    public void begin() {
+    private void startHandler() {
         this.onStart.run();
         this.active = true;
     }
@@ -84,23 +86,23 @@ public class Job {
      * Complete appropriate actions based on the state.
      */
     public void tick() {
-        if (active) {
+        if (isActive()) {
             this.task.run();
             if (completeCondition.get()) {
-                end();
+                completeHandler();
             }
         }
     }
 
     /**
-     * Finish the job, and start any dependent jobs in the process.
+     * (internal) Finish the job, and start any dependent jobs in the process.
      */
-    public void end() {
+    private void completeHandler() {
         this.onComplete.run();
         for (int job : dependentJobs) {
-            manager.getJob(job).numDeps--;
-            if (manager.getJob(job).numDeps <= 0) {
-                manager.getJob(job).begin();
+            manager.getJob(job).dependencyJobs.remove(Integer.valueOf(job));
+            if (manager.getJob(job).dependencyJobs.size() <= 0) {
+                manager.getJob(job).startHandler();
             }
         }
         this.complete = true;
@@ -115,8 +117,8 @@ public class Job {
         if (dependency.hasDependent(id)) {
             return; // already a dependency
         }
+        dependencyJobs.add(dependency.id);
         dependency.addDependency(this);
-        numDeps++;
     }
 
     private boolean hasDependent(int id) {
@@ -142,5 +144,22 @@ public class Job {
     public Job andThen(Job continuation) {
         continuation.addDependency(this);
         return continuation;
+    }
+
+    /**
+     * If this job is already active or complete, abort.
+     * Otherwise, start this job's dependencies, if there are any, or else start this job.
+     */
+    public void start() {
+        if (isActive() || isComplete()) {
+            return;
+        }
+        if (dependencyJobs.size() <= 0) {
+            startHandler();
+        } else {
+            for (int dependency : dependentJobs) {
+                manager.getJob(dependency).start();
+            }
+        }
     }
 }

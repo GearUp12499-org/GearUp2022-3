@@ -54,4 +54,12 @@ public class JobManager {
         ElapsedTime timer = new ElapsedTime();
         return predicateJob(() -> timer.milliseconds() >= millis);
     }
+
+    public Job autoLambda(Supplier<Boolean> taskAndCondition) {
+        return new Job(this, null, null, taskAndCondition, null, null);
+    }
+
+    public Job autoLambda(Runnable task, Supplier<Boolean> condition) {
+        return new Job(this, null, task, condition, null, null);
+    }
 }
