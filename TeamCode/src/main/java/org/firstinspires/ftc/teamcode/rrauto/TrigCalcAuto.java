@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @Autonomous(name = "TrigCalcAuto", group = "GearUp")
 public class TrigCalcAuto extends LinearOpMode {
-    int DRIVE_ENCODER_PER_IN = 2500;
+    int DRIVE_ENCODER_PER_IN = 1700;
     double TURRET_ENCODER_PER_DEG = 750 / 90.0;
     double HORIZONTAL_LIFT_ENCODER_PER_IN = 0;
     Lift lift;
