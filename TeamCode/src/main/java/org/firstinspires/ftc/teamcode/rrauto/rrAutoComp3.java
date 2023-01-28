@@ -183,6 +183,7 @@ public class rrAutoComp3 extends LinearOpMode {
             straight(0.6,52); // 54 function for driving straight
 
             //pole detect
+            
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
                 stopMaybe();
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -408,8 +409,15 @@ public class rrAutoComp3 extends LinearOpMode {
             straight(0.6,52); // 54 function for driving straight
 
             //pole detect
-            while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
+            boolean a = true;
+            while (a && io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
                 stopMaybe();
+                if (io.distanceSensorM.getDistance(DistanceUnit.CM)<250 && (turret.getCurrentPosition()<-380 && turret.getCurrentPosition()>-500){
+                    a = false;
+                }
+                else if (turret.getCurrentPosition()<-480){
+                    a = false;
+                }
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 turret.setPower(-0.25); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
@@ -515,6 +523,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.liftVertical2.setPower(0);
                 l.openClaw();
                 l.setHorizontalTarget(0);
+                sleep(100);
             }
 
             //resets turret and lift to home position, ready to be used in teleop, strafes to correct parking position based on what april tag position was detected
