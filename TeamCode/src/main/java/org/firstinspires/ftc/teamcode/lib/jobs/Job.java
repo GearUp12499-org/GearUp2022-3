@@ -188,21 +188,32 @@ public class Job {
     }
 
     /**
-     * If this job is already active or complete, abort.
-     * Otherwise, start this job's dependencies, if there are any, or else start this job.
+     * Find all jobs that we depend on and have no other dependencies, and start them.
      */
     public void start() {
-        if (isActive() || isComplete()) {
-            return;
-        }
-        if (dependencyJobs.size() <= 0) {
-            RobotLog.i("Starting job " + id + " (no dependencies)");
-            startHandler();
-        } else {
-            for (int dependency : dependencyJobs) {
-                RobotLog.i("Propagate start to " + dependency);
-                manager.getJob(dependency).start();
+        List<Integer> frontier = new ArrayList<>();
+        List<Integer> done = new ArrayList<>();
+        frontier.add(id);
+        int i = 0;
+        while (frontier.size() != 0) {
+            i++;
+            Job current = manager.getJob(frontier.get(0));
+            frontier.remove(0);
+            done.add(current.id);
+            if (current.isComplete() || current.isActive()) {
+                continue;
             }
+            ArrayList<Integer> dependencies = current.getDependencies();
+            if (dependencies.size() == 0) {
+                current.startHandler();
+                continue;
+            }
+            for (int dependency : dependencies) {
+                if (!done.contains(dependency)) {
+                    frontier.add(dependency);
+                }
+            }
+            if (i > 1000) throw new RuntimeException("Infinite loop detected in start(), aborting");
         }
     }
 
