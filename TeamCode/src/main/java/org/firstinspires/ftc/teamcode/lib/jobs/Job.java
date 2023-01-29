@@ -171,7 +171,7 @@ public class Job {
             return; // already a dependency
         }
         dependencyJobs.add(dependency.id);
-        dependency.addDependency(this);
+        dependency.addDependent(this);
     }
 
     private boolean hasDependent(int id) {
