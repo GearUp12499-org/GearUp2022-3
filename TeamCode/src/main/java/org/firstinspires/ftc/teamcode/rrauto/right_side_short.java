@@ -10,6 +10,5 @@ public class right_side_short extends rrAutoComp3 {
     // Constructor
     public right_side_short() {
         position = "right_side";
-        skipPolesConf = 1;
     }
 }
