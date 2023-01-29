@@ -188,7 +188,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                 }
             }
             telemetry.addLine("Waiting: " + waiting.size());
-            for (Integer jobidx : running) {
+            for (Integer jobidx : waiting) {
                 Job job = jobManager.getJob(jobidx);
                 ArrayList<Integer> deps = job.getDependencies();
                 if (deps.size() == 0) {

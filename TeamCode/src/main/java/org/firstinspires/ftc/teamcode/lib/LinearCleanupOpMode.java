@@ -20,7 +20,7 @@ public abstract class LinearCleanupOpMode extends LinearOpMode {
                     NullTools.withDefault(e.getMessage(), "<message was null>"),
                     e
             );
-            throw e;
+            e.printStackTrace();
         } finally {
             RobotLog.i("OpMode cleanup: " + this.getClass().getName());
             cleanup();

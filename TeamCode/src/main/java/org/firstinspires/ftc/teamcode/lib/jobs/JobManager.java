@@ -1,11 +1,15 @@
 package org.firstinspires.ftc.teamcode.lib.jobs;
 
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.lib.Supplier;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JobManager {
     private int next = 0;
@@ -26,8 +30,9 @@ public class JobManager {
     }
 
     public void gc() {
-        for (Job job : jobs.values()) {
+        for (Job job : new ArrayList<>(jobs.values())) {
             if (job.isComplete()) {
+                RobotLog.i("Clearing job " + job.id);
                 jobs.remove(job.id);
             }
         }

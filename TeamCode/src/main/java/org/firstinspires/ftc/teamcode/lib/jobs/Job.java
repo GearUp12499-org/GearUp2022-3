@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode.lib.jobs;
 
 import androidx.annotation.Nullable;
 
+import com.qualcomm.robotcore.robot.Robot;
+import com.qualcomm.robotcore.util.RobotLog;
+
 import org.firstinspires.ftc.teamcode.lib.NullTools;
 import org.firstinspires.ftc.teamcode.lib.Supplier;
 import org.jetbrains.annotations.NotNull;
@@ -152,9 +155,16 @@ public class Job {
      */
     private void completeHandler() {
         this.onComplete.run();
+        RobotLog.i("Completed job " + id + ", so checking " + dependentJobs.size() + " dependents");
         for (int job : dependentJobs) {
-            manager.getJob(job).dependencyJobs.remove(Integer.valueOf(job));
+            Integer x = manager.getJob(job).dependencyJobs.remove(job);
+            if (x == null) {
+                RobotLog.w("remove fail");
+            }
+            RobotLog.i("Removed " + id + " from dependencies of " + job);
+
             if (manager.getJob(job).dependencyJobs.size() <= 0) {
+                RobotLog.i("Starting " + job);
                 manager.getJob(job).startHandler();
             }
         }
@@ -213,9 +223,11 @@ public class Job {
             return;
         }
         if (dependencyJobs.size() <= 0) {
+            RobotLog.i("Starting job " + id + " (no dependencies)");
             startHandler();
         } else {
-            for (int dependency : dependentJobs) {
+            for (int dependency : dependencyJobs) {
+                RobotLog.i("Propagate start to " + dependency);
                 manager.getJob(dependency).start();
             }
         }
