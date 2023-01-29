@@ -456,7 +456,7 @@ public class rrAutoComp3 extends LinearOpMode {
             l.liftVertical1.setPower(0);
             l.liftVertical2.setPower(0);
             l.openClaw();
-            //sleep(300);
+            sleep(300);
             l.setHorizontalTarget(0);
 
             for (int i = 0; i < 4; i++) {
@@ -521,6 +521,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
                 l.openClaw();
+                sleep(300);
                 l.setHorizontalTarget(0);
                 sleep(100);
             }
