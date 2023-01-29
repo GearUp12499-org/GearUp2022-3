@@ -17,17 +17,28 @@ public class JobManager {
     public JobManager() {
     }
 
+    /**
+     * INTERNAL USE ONLY!! If you call this method on a job, it will be registered twice.
+     * @param job Job to register.
+     * @return new ID of the job.
+     */
     public int addJob(Job job) {
         jobs.put(next, job);
         return next++;
     }
 
+    /**
+     * Run all jobs.
+     */
     public void invokeAll() {
         for (Job job : jobs.values()) {
             job.tick();
         }
     }
 
+    /**
+     * Remove all jobs that are complete.
+     */
     public void gc() {
         for (Job job : new ArrayList<>(jobs.values())) {
             if (job.isComplete()) {
@@ -37,6 +48,10 @@ public class JobManager {
         }
     }
 
+    /**
+     * Check if all jobs are done.
+     * @return True if all jobs are done, false otherwise.
+     */
     public boolean isDone() {
         for (Job job : jobs.values()) {
             if (!job.isComplete()) {
@@ -46,6 +61,11 @@ public class JobManager {
         return true;
     }
 
+    /**
+     * Get a job by ID.
+     * @param id ID of the job.
+     * @return Job with the specified ID, or null.
+     */
     public Job getJob(int id) {
         return jobs.get(id);
     }

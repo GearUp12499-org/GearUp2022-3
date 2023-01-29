@@ -6,6 +6,10 @@ import androidx.annotation.Nullable;
 import org.firstinspires.ftc.teamcode.lib.Consumer;
 import org.firstinspires.ftc.teamcode.lib.Function;
 
+/**
+ * Job that returns a value.
+ * @param <T> The type of the value.
+ */
 public class ResultJob<T> extends Job{
     private T value;
 
