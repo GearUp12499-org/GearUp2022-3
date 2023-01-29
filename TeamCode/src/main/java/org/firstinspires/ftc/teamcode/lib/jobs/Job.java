@@ -4,11 +4,13 @@ import androidx.annotation.Nullable;
 
 import com.qualcomm.robotcore.util.RobotLog;
 
+import org.firstinspires.ftc.teamcode.lib.Consumer;
+import org.firstinspires.ftc.teamcode.lib.Function;
 import org.firstinspires.ftc.teamcode.lib.NullTools;
-import org.firstinspires.ftc.teamcode.lib.Supplier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a job that can be run in a JobManager.
@@ -16,10 +18,10 @@ import java.util.ArrayList;
 public class Job {
     public final int id;
     private final JobManager manager;
-    private final Runnable onStart;
-    private final Runnable task;
-    private final Supplier<Boolean> completeCondition;
-    private final Runnable onComplete;
+    private final Consumer<Job> onStart;
+    private final Consumer<Job> task;
+    private final Function<Job, Boolean> completeCondition;
+    private final Consumer<Job> onComplete;
     /**
      * List of jobs that are waiting for this job to complete.
      */
@@ -41,59 +43,6 @@ public class Job {
      * Create a new job, for running things "concurrently" with other jobs.<br>
      * Notes: "concurrently" is in quotes because the jobs are actually run in a loop, so no actual
      * concurrency is possible. DO NOT BLOCK IN TASKS, as this will cause the entire program
-     * to wait.    
-     * @param mgr               Job manager to add this job to.
-     * @param completeCondition Supplier to check if the job is complete.
-     */
-    public Job(
-            @NotNull JobManager mgr,
-            @Nullable Supplier<Boolean> completeCondition
-    ) {
-        this(mgr, null, completeCondition);
-    }
-
-    /**
-     * Create a new job, for running things "concurrently" with other jobs.<br>
-     * Notes: "concurrently" is in quotes because the jobs are actually run in a loop, so no actual
-     * concurrency is possible. DO NOT BLOCK IN TASKS, as this will cause the entire program
-     * to wait.   
-     * @param mgr               Job manager to add this job to.
-     * @param task              Runnable to run every tick.
-     * @param completeCondition Supplier to check if the job is complete.
-     */
-    public Job(
-            @NotNull JobManager mgr,
-            @Nullable Runnable task,
-            @Nullable Supplier<Boolean> completeCondition
-    ) {
-        this(mgr, null, task, completeCondition, null);
-    }
-
-    /**
-     * Create a new job, for running things "concurrently" with other jobs.<br>
-     * Notes: "concurrently" is in quotes because the jobs are actually run in a loop, so no actual
-     * concurrency is possible. DO NOT BLOCK IN TASKS, as this will cause the entire program
-     * to wait.
-     *  @param mgr               Job manager to add this job to.
-     * @param onStart           Runnable to run when the job starts.
-     * @param task              Runnable to run every tick.
-     * @param completeCondition Supplier to check if the job is complete.
-     * @param onComplete        Runnable to run when the job is complete.    
-     */
-    public Job(
-            @NotNull JobManager mgr,
-            @Nullable Runnable onStart,
-            @Nullable Runnable task,
-            @Nullable Supplier<Boolean> completeCondition,
-            @Nullable Runnable onComplete
-    ) {
-        this(mgr, onStart, task, completeCondition, onComplete, null);
-    }
-
-    /**
-     * Create a new job, for running things "concurrently" with other jobs.<br>
-     * Notes: "concurrently" is in quotes because the jobs are actually run in a loop, so no actual
-     * concurrency is possible. DO NOT BLOCK IN TASKS, as this will cause the entire program
      * to wait.
      *
      * @param mgr               Job manager to add this job to.
@@ -105,18 +54,18 @@ public class Job {
      */
     public Job(
             @NotNull JobManager mgr,
-            @Nullable Runnable onStart,
-            @Nullable Runnable task,
-            @Nullable Supplier<Boolean> completeCondition,
-            @Nullable Runnable onComplete,
+            @Nullable Consumer<Job> onStart,
+            @Nullable Consumer<Job> task,
+            @Nullable Function<Job, Boolean> completeCondition,
+            @Nullable Consumer<Job> onComplete,
             @Nullable int[] dependencies
     ) {
-        this.onStart = NullTools.withDefault(onStart, () -> {
+        this.onStart = NullTools.withDefault(onStart, ignore -> {
         });
-        this.task = NullTools.withDefault(task, () -> {
+        this.task = NullTools.withDefault(task, ignore -> {
         });
-        this.completeCondition = NullTools.withDefault(completeCondition, () -> true);
-        this.onComplete = NullTools.withDefault(onComplete, () -> {
+        this.completeCondition = NullTools.withDefault(completeCondition, throwaway -> true);
+        this.onComplete = NullTools.withDefault(onComplete, ignore -> {
         });
         this.id = mgr.addJob(this);
         this.manager = mgr;
@@ -133,7 +82,7 @@ public class Job {
      * (internal) Start the job.
      */
     private void startHandler() {
-        this.onStart.run();
+        this.onStart.accept(this);
         this.active = true;
     }
 
@@ -142,8 +91,8 @@ public class Job {
      */
     public void tick() {
         if (isActive()) {
-            this.task.run();
-            if (completeCondition.get()) {
+            this.task.accept(this);
+            if (completeCondition.apply(this)) {
                 completeHandler();
             }
         }
@@ -153,7 +102,7 @@ public class Job {
      * (internal) Finish the job, and start any dependent jobs in the process.
      */
     private void completeHandler() {
-        this.onComplete.run();
+        this.onComplete.accept(this);
         RobotLog.i("Completed job " + id + ", so checking " + dependentJobs.size() + " dependents");
         for (int job : dependentJobs) {
             boolean x = manager.getJob(job).dependencyJobs.remove(Integer.valueOf(id));
@@ -208,8 +157,33 @@ public class Job {
         return continuation;
     }
 
+    /**
+     * Run multiple jobs in parallel.
+     * @param continuations Jobs to run in parallel after this one.
+     * @return A wrapper job that will complete when all of the passed jobs complete.
+     */
+    public Job andThen(Job... continuations) {
+        List<Integer> newDependencies = new ArrayList<>();
+        for (Job continuation : continuations) {
+            andThen(continuation);
+            newDependencies.add(continuation.id);
+        }
+        int[] newDependenciesArray = new int[newDependencies.size()];
+        for (int i = 0; i < newDependencies.size(); i++) {
+            newDependenciesArray[i] = newDependencies.get(i);
+        }
+
+        // Wrapper for dependency support
+        return new Job(manager, null, null, null, null, newDependenciesArray);
+    }
+
+    /**
+     * Run a one-shot function after this job.
+     * @param oneShotFunc Function to run after this job.
+     * @return The new job that will run the function.
+     */
     public Job andThen(Runnable oneShotFunc) {
-        Job cont = new Job(manager, null, oneShotFunc, null, null, null);
+        Job cont = new Job(manager, null, ignore -> oneShotFunc.run(), null, null, null);
         return andThen(cont);
     }
 
@@ -234,5 +208,12 @@ public class Job {
 
     public ArrayList<Integer> getDependencies() {
         return dependencyJobs;
+    }
+
+    public void markComplete() {
+        if (isComplete() || !isActive()) {
+            return;
+        }
+        completeHandler();
     }
 }

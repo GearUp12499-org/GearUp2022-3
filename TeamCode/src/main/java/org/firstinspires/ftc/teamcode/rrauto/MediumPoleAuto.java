@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.METER;
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.CM;
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM;
+import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
@@ -14,12 +18,15 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
 import org.firstinspires.ftc.teamcode.lib.AutoLogTelemetry;
 import org.firstinspires.ftc.teamcode.lib.LinearCleanupOpMode;
 import org.firstinspires.ftc.teamcode.lib.VirtualTelemetryLog;
 import org.firstinspires.ftc.teamcode.lib.jobs.Job;
 import org.firstinspires.ftc.teamcode.lib.jobs.JobManager;
+import org.firstinspires.ftc.teamcode.lib.jobs.ResultJob;
+import org.firstinspires.ftc.teamcode.lib.jobs.ResultJobFactory;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -49,6 +56,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
     public static final boolean LOGGING = true;
 
     private JobManager jobManager;
+    private IOControl io;
 
     @Override
     public void main() {
@@ -56,6 +64,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
         telemetry.update();
         prepareHardware(hardwareMap);
         l = new Lift(hardwareMap);
+        io = new IOControl(hardwareMap);
         jobManager = new JobManager();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -63,19 +72,39 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
         AprilTagDetectionPipeline aprilTagDetectionPipeline = new AprilTagDetectionPipeline(tag_size, fx, fy, cx, cy);
         camera.setPipeline(aprilTagDetectionPipeline);
 
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
-                telemetry.addLine("Camera is live.");
+        final boolean[] isCameraRunning = {false};
+        final int[] cameraLoadAttempts = {1};
+        final int warnAfter = 5;
+        while (!isCameraRunning[0] && opModeInInit()) {
+            stopMaybe();
+
+            final boolean[] cameraFailed = {false};
+            camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+                @Override
+                public void onOpened() {
+                    camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
+                    isCameraRunning[0] = true;
+                    telemetry.addLine("Camera is live.");
+                    telemetry.update();
+                }
+                @Override
+                public void onError(int errorCode) {
+                    cameraFailed[0] = true;
+                    cameraLoadAttempts[0]++;
+                }
+            });
+
+            while (!(cameraFailed[0] || isCameraRunning[0]) && opModeInInit()) {
+                stopMaybe();
+                telemetry.addLine("Starting up camera: att " + cameraLoadAttempts[0]);
+                if (cameraLoadAttempts[0] > warnAfter) {
+                    telemetry.addLine("The robot is having trouble connecting");
+                    telemetry.addLine("to the camera. Try restarting the OpMode,");
+                    telemetry.addLine("or, if that doesn't work, restart the robot.");
+                }
                 telemetry.update();
             }
-
-            @Override
-            public void onError(int errorCode) {
-                throw new RuntimeException("Camera failed to open, code " + errorCode);
-            }
-        });
+        }
 
         AprilTagDetection tagOfInterest = null;
         int targetLocation = 2;
@@ -122,89 +151,114 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
         waitForStart();
         VirtualTelemetryLog log = new VirtualTelemetryLog(10);
         telemetry = new AutoLogTelemetry(telemetry, log);
+
+        // Can't create this in the job chain because we need to be able to get the result later
+        ResultJob<Integer> poleDetect1 = poleDetect(-430);
         jobManager
-                .autoLambda(l::closeClaw)
-                .andThen(jobManager.delayJob(500))
-                .andThen(() -> { /* Ends immediately */
+                .autoLambda(l::closeClaw)                   // Close the claw
+                .andThen(jobManager.delayJob(500))    // Wait 500ms
+                .andThen(() -> { /* Ends immediately */     // Lift...
                     try {
-                        l.closeClaw();
                         l.verticalLift(2700, this);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 })
-                .andThen(straight(0.6, 52)).start();
+                .andThen(straight(0.6, 52))   // Move forward to the pole
+                .andThen(poleDetect1).start();
 
         // Main event loop
-        runJobsUntilDone();
+        runJobsUntilDone(() -> telemetry.addLine("== part 1 =="));
     }
 
     /**
      * The main job loop.
      */
     void runJobsUntilDone() {
+        runJobsUntilDone(() -> {});
+    }
+
+    /**
+     * The main job loop.
+     */
+    void runJobsUntilDone(Runnable extraLogging) {
         while (!jobManager.isDone()) {
             stopMaybe();
             jobManager.invokeAll();
+            extraLogging.run();
 
-            if (!LOGGING) continue;
-
-            List<Integer> finished = new ArrayList<>();
-            List<Integer> running = new ArrayList<>();
-            List<Integer> waiting = new ArrayList<>();
-            for (Map.Entry<Integer, Job> jobPair : jobManager.getJobs().entrySet()) {
-                if (jobPair.getValue().isComplete()) {
-                    finished.add(jobPair.getKey());
-                } else if (jobPair.getValue().isActive()) {
-                    running.add(jobPair.getKey());
-                } else {
-                    waiting.add(jobPair.getKey());
-                }
-            }
-
-            int maxPerLine = 5;
-            int i = 0;
-            StringBuilder b = new StringBuilder();
-            b.append("  ");
-            telemetry.addLine("Finished: " + finished.size());
-            for (Integer job : finished) {
-                b.append(job).append(" ");
-                if (++i % maxPerLine == 0) {
-                    telemetry.addLine(b.toString());
-                    b = new StringBuilder();
-                    b.append("  ");
-                }
-            }
-
-            b = new StringBuilder();
-            b.append("  ");
-            i = 0;
-            telemetry.addLine("Running: " + running.size());
-            for (Integer job : running) {
-                b.append(job).append(" ");
-                if (++i % maxPerLine == 0) {
-                    telemetry.addLine(b.toString());
-                    b = new StringBuilder();
-                    b.append("  ");
-                }
-            }
-            telemetry.addLine("Waiting: " + waiting.size());
-            for (Integer jobidx : waiting) {
-                Job job = jobManager.getJob(jobidx);
-                ArrayList<Integer> deps = job.getDependencies();
-                if (deps.size() == 0) {
-                    telemetry.addLine("  " + jobidx + " not started");
-                } else {
-                    StringBuilder b2 = new StringBuilder();
-                    b2.append("  ").append(jobidx).append(" waiting on ");
-                    for (Integer dep : deps) {
-                        b2.append(dep).append(" ");
+            if (LOGGING) {
+                List<Integer> finished = new ArrayList<>();
+                List<Integer> running = new ArrayList<>();
+                List<Integer> waiting = new ArrayList<>();
+                for (Map.Entry<Integer, Job> jobPair : jobManager.getJobs().entrySet()) {
+                    if (jobPair.getValue().isComplete()) {
+                        finished.add(jobPair.getKey());
+                    } else if (jobPair.getValue().isActive()) {
+                        running.add(jobPair.getKey());
+                    } else {
+                        waiting.add(jobPair.getKey());
                     }
-                    telemetry.addLine(b2.toString());
                 }
+
+                int maxPerLine = 5;
+                int i = 0;
+                StringBuilder b = new StringBuilder();
+                b.append("  ");
+                telemetry.addLine("Finished: " + finished.size());
+                for (Integer job : finished) {
+                    b.append(job).append(" ");
+                    if (++i % maxPerLine == 0) {
+                        telemetry.addLine(b.toString());
+                        b = new StringBuilder();
+                        b.append("  ");
+                    }
+                }
+
+                b = new StringBuilder();
+                b.append("  ");
+                i = 0;
+                telemetry.addLine("Running: " + running.size());
+                for (Integer job : running) {
+                    b.append(job).append(" ");
+                    if (++i % maxPerLine == 0) {
+                        telemetry.addLine(b.toString());
+                        b = new StringBuilder();
+                        b.append("  ");
+                    }
+                }
+                telemetry.addLine("Waiting: " + waiting.size());
+                for (Integer jobidx : waiting) {
+                    Job job = jobManager.getJob(jobidx);
+                    ArrayList<Integer> deps = job.getDependencies();
+                    if (deps.size() == 0) {
+                        telemetry.addLine("  " + jobidx + " not started");
+                    } else {
+                        StringBuilder b2 = new StringBuilder();
+                        b2.append("  ").append(jobidx).append(" waiting on ");
+                        for (Integer dep : deps) {
+                            b2.append(dep).append(" ");
+                        }
+                        telemetry.addLine(b2.toString());
+                    }
+                }
+
+                double percentage = 100.0 * (double)finished.size() / (double)(finished.size() + running.size() + waiting.size());
+                // 20 segments
+                int segments = (int)(percentage / 5.0);
+                StringBuilder b3 = new StringBuilder();
+                b3.append("  [");
+                for (int j = 0; j < segments; j++) {
+                    b3.append("=");
+                }
+                for (int j = segments; j < 20; j++) {
+                    b3.append("]");
+                }
+                telemetry.addLine(b3.toString());
             }
             telemetry.update();
         }
+        jobManager.gc();  // Clean up any completed jobs, freeing one-shots and such
         RobotLog.i("runJobsUntilDone: all done");
     }
 
@@ -229,14 +283,58 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
         }
     }
 
+    // Pole detection; defaultPolePos = -430
+    ResultJob<Integer> poleDetect(int defaultPolePos) {
+        return poleDetect(defaultPolePos, 1);
+    }
+
+    // Pole detection; defaultPolePos = -430
+    ResultJob<Integer> poleDetect(int defaultPolePos, int poleCount) {
+        AtomicInteger poleCountDown = new AtomicInteger(poleCount);
+        return new ResultJobFactory<Integer>()
+                .manager(jobManager)
+                .onStart(rawJob -> {
+                    //noinspection unchecked
+                    ((ResultJob<Integer>) rawJob).setResult(defaultPolePos);
+                    turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                    turret.setPower(-0.25);
+                })
+                .task(rawJob -> {
+                    if (!(rawJob instanceof ResultJob))
+                        throw new ClassCastException("Expected ResultJob, got " + rawJob.getClass().getName() + " instead");
+                    @SuppressWarnings("unchecked")
+                    ResultJob<Integer> job = (ResultJob<Integer>) rawJob; // This is always true
+
+                    if (io.distSensorM.getDistance(MM) < 250
+                            && turret.getCurrentPosition() < -380 /* from */
+                            && turret.getCurrentPosition() > -500 /* to */
+                    ) {
+                        job.setResult(turret.getCurrentPosition());
+                        int counter = poleCountDown.decrementAndGet();
+                        if (counter == 0) job.markComplete();
+                        return;
+                    } else if (turret.getCurrentPosition() < -480) {
+                        job.setResult(defaultPolePos);
+                        job.markComplete();
+                        return;
+                    }
+
+                    telemetry.addLine("poleDetect " + job.id + ":");
+                    telemetry.addData("  distance", io.distSensorM.getDistance(CM) + "cm");
+                })
+                .completeCondition(() -> Math.abs(turret.getCurrentPosition()) < 700)
+                .onComplete(() -> turret.setPower(0))
+                .build();
+    }
+
     // JJogger reimplementation
-    public Job moveTurretTo(double speed, int position) {
+    Job moveTurretTo(double speed, int position) {
         // Dummy class to support get/set of data in the Job.
         AtomicBoolean data = new AtomicBoolean(false);
 
-        return new Job(
-                jobManager,
-                () -> { /* onStart */
+        return jobManager.factory
+                .manager(jobManager)
+                .onStart(() -> { /* onStart */
                     data.set(turret.getCurrentPosition() < position);
                     turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     turret.setTargetPosition(position);
@@ -247,29 +345,31 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                     else {
                         turret.setPower(0);
                     }
-                },
-                () -> { /* task */
+                })
+                .task(() -> { /* task */
                     if (Math.abs(turret.getCurrentPosition()-position) < 150) {
                         turret.setPower(0.2 * (data.get() ? 1 : -1));
                     }
-                },
-                () -> { /* completeCondition */
+                })
+                .completeCondition(() -> { /* completeCondition */
                     return data.get() ? turret.getCurrentPosition() >= position : turret.getCurrentPosition() <= position;
-                },
-                () -> turret.setPower(0)
-        );
+                })
+                .onComplete(() -> turret.setPower(0))
+                .build();
     }
 
-    public Job straight(double speed, double distance) {
+    Job straight(double speed, double distance) {
         // 1700 ec approx. 1 in
 
         double adjust = 0.05;
         AtomicInteger targetEncoderCounts = new AtomicInteger((int) (distance * 1700.0));
 
-        return new Job(
-                jobManager,
-                () -> targetEncoderCounts.set((int) (distance * 1700.0) + encoderLeft.getCurrentPosition()), /* onStart */
-                () -> { /* task */
+        return jobManager.factory
+                .manager(jobManager)
+                .onStart(
+                    () -> targetEncoderCounts.set((int) (distance * 1700.0) + encoderLeft.getCurrentPosition())
+                )
+                .task(() -> {
                     double realSpeed = speed;
                     if (encoderLeft.getCurrentPosition() / 1700.0 > 41) {
                         realSpeed = 0.2;
@@ -290,14 +390,14 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                         rearLeft.setPower(realSpeed);
                         rearRight.setPower(realSpeed);
                     }
-                },
-                () -> encoderLeft.getCurrentPosition() > targetEncoderCounts.get(), /* completeCondition */
-                () -> { /* onComplete */
+                })
+                .completeCondition(() -> encoderLeft.getCurrentPosition() > targetEncoderCounts.get())
+                .onComplete(() -> { /* onComplete */
                     frontLeft.setPower(0);
                     frontRight.setPower(0);
                     rearLeft.setPower(0);
                     rearRight.setPower(0);
-                }
-        );
+                })
+                .build();
     }
 }

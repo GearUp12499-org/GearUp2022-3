@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.lib.jobs;
 
-import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -9,11 +8,11 @@ import org.firstinspires.ftc.teamcode.lib.Supplier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class JobManager {
     private int next = 0;
     private final HashMap<Integer, Job> jobs = new HashMap<>();
+    public final JobFactory factory = new JobFactory();
 
     public JobManager() {
     }
@@ -39,8 +38,12 @@ public class JobManager {
     }
 
     public boolean isDone() {
-        gc();
-        return jobs.isEmpty();
+        for (Job job : jobs.values()) {
+            if (!job.isComplete()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Job getJob(int id) {
@@ -53,7 +56,7 @@ public class JobManager {
      * @return Job that finishes when the condition is true.
      */
     public Job predicateJob(Supplier<Boolean> condition) {
-        return new Job(this, null, null, condition, null, null);
+        return factory.completeCondition(condition).build();
     }
 
     /**
@@ -67,15 +70,15 @@ public class JobManager {
     }
 
     public Job autoLambda(Supplier<Boolean> taskAndCondition) {
-        return new Job(this, null, null, taskAndCondition, null, null);
+        return factory.completeCondition(taskAndCondition).build();
     }
 
     public Job autoLambda(Runnable task, Supplier<Boolean> condition) {
-        return new Job(this, null, task, condition, null, null);
+        return factory.task(task).completeCondition(condition).build();
     }
 
     public Job autoLambda(Runnable task) {
-        return new Job(this, null, task, null, null, null);
+        return factory.task(task).build();
     }
 
     public Map<Integer, Job> getJobs() {
