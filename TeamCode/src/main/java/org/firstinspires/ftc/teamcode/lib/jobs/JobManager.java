@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.lib.Supplier;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class JobManager {
     private int next = 0;
@@ -30,6 +31,11 @@ public class JobManager {
                 jobs.remove(job.id);
             }
         }
+    }
+
+    public boolean isDone() {
+        gc();
+        return jobs.isEmpty();
     }
 
     public Job getJob(int id) {
@@ -61,5 +67,13 @@ public class JobManager {
 
     public Job autoLambda(Runnable task, Supplier<Boolean> condition) {
         return new Job(this, null, task, condition, null, null);
+    }
+
+    public Job autoLambda(Runnable task) {
+        return new Job(this, null, task, null, null, null);
+    }
+
+    public Map<Integer, Job> getJobs() {
+        return jobs;
     }
 }

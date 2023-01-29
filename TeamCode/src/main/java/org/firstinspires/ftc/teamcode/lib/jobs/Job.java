@@ -36,7 +36,60 @@ public class Job {
     private boolean active = false;
 
     /**
-     * Create a new job, for running things "concurrently" with other jobs.<br/>
+     * Create a new job, for running things "concurrently" with other jobs.<br>
+     * Notes: "concurrently" is in quotes because the jobs are actually run in a loop, so no actual
+     * concurrency is possible. DO NOT BLOCK IN TASKS, as this will cause the entire program
+     * to wait.    
+     * @param mgr               Job manager to add this job to.
+     * @param completeCondition Supplier to check if the job is complete.
+     */
+    public Job(
+            @NotNull JobManager mgr,
+            @Nullable Supplier<Boolean> completeCondition
+    ) {
+        this(mgr, null, completeCondition);
+    }
+
+    /**
+     * Create a new job, for running things "concurrently" with other jobs.<br>
+     * Notes: "concurrently" is in quotes because the jobs are actually run in a loop, so no actual
+     * concurrency is possible. DO NOT BLOCK IN TASKS, as this will cause the entire program
+     * to wait.   
+     * @param mgr               Job manager to add this job to.
+     * @param task              Runnable to run every tick.
+     * @param completeCondition Supplier to check if the job is complete.
+     */
+    public Job(
+            @NotNull JobManager mgr,
+            @Nullable Runnable task,
+            @Nullable Supplier<Boolean> completeCondition
+    ) {
+        this(mgr, null, task, completeCondition, null);
+    }
+
+    /**
+     * Create a new job, for running things "concurrently" with other jobs.<br>
+     * Notes: "concurrently" is in quotes because the jobs are actually run in a loop, so no actual
+     * concurrency is possible. DO NOT BLOCK IN TASKS, as this will cause the entire program
+     * to wait.
+     *  @param mgr               Job manager to add this job to.
+     * @param onStart           Runnable to run when the job starts.
+     * @param task              Runnable to run every tick.
+     * @param completeCondition Supplier to check if the job is complete.
+     * @param onComplete        Runnable to run when the job is complete.    
+     */
+    public Job(
+            @NotNull JobManager mgr,
+            @Nullable Runnable onStart,
+            @Nullable Runnable task,
+            @Nullable Supplier<Boolean> completeCondition,
+            @Nullable Runnable onComplete
+    ) {
+        this(mgr, onStart, task, completeCondition, onComplete, null);
+    }
+
+    /**
+     * Create a new job, for running things "concurrently" with other jobs.<br>
      * Notes: "concurrently" is in quotes because the jobs are actually run in a loop, so no actual
      * concurrency is possible. DO NOT BLOCK IN TASKS, as this will cause the entire program
      * to wait.
@@ -166,5 +219,9 @@ public class Job {
                 manager.getJob(dependency).start();
             }
         }
+    }
+
+    public ArrayList<Integer> getDependencies() {
+        return dependencyJobs;
     }
 }

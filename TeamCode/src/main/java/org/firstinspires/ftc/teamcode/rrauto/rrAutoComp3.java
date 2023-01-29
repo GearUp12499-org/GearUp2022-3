@@ -827,7 +827,6 @@ public class rrAutoComp3 extends LinearOpMode {
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
     void turr(double speed, double position){
-        int a;
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         runtime.reset();
         if (position>0){
