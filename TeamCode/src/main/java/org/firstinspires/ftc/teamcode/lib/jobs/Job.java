@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.lib.jobs;
 
 import androidx.annotation.Nullable;
 
-import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.lib.NullTools;
@@ -157,8 +156,8 @@ public class Job {
         this.onComplete.run();
         RobotLog.i("Completed job " + id + ", so checking " + dependentJobs.size() + " dependents");
         for (int job : dependentJobs) {
-            Integer x = manager.getJob(job).dependencyJobs.remove(job);
-            if (x == null) {
+            boolean x = manager.getJob(job).dependencyJobs.remove(Integer.valueOf(id));
+            if (!x) {
                 RobotLog.w("remove fail");
             }
             RobotLog.i("Removed " + id + " from dependencies of " + job);

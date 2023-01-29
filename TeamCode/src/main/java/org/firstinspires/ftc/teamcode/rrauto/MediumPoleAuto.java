@@ -11,6 +11,7 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Lift;
@@ -204,6 +205,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
             }
             telemetry.update();
         }
+        RobotLog.i("runJobsUntilDone: all done");
     }
 
     @Override
@@ -289,7 +291,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                         rearRight.setPower(realSpeed);
                     }
                 },
-                () -> frontLeft.getCurrentPosition() > targetEncoderCounts.get(), /* completeCondition */
+                () -> encoderLeft.getCurrentPosition() > targetEncoderCounts.get(), /* completeCondition */
                 () -> { /* onComplete */
                     frontLeft.setPower(0);
                     frontRight.setPower(0);
