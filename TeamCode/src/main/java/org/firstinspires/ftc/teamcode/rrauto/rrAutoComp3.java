@@ -183,7 +183,7 @@ public class rrAutoComp3 extends LinearOpMode {
             straight(0.6,52); // 54 function for driving straight
 
             //pole detect
-            
+
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
                 stopMaybe();
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -409,14 +409,16 @@ public class rrAutoComp3 extends LinearOpMode {
             straight(0.6,52); // 54 function for driving straight
 
             //pole detect
-            boolean stop_pole_detect = true;
-            while (stop_pole_detect && io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
+            while (Math.abs(turret.getCurrentPosition()) < 700) {
                 stopMaybe();
-                if (io.distSensorM.getDistance(DistanceUnit.CM)<250 && turret.getCurrentPosition() < -380 && turret.getCurrentPosition() > -500) {
-                    stop_pole_detect = false;
+                if (io.distSensorM.getDistance(DistanceUnit.MM) <250 &&
+                        turret.getCurrentPosition() < -380 && turret.getCurrentPosition() > -500) {
+                    polePos = turret.getCurrentPosition();
+                    break;
                 }
                 else if (turret.getCurrentPosition() < -480){
-                    stop_pole_detect = false;
+                    polePos = -430;
+                    break;
                 }
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 turret.setPower(-0.25); //.35
@@ -426,9 +428,6 @@ public class rrAutoComp3 extends LinearOpMode {
 
             turret.setPower(0);
             //sleep(300);
-
-            if (Math.abs(turret.getCurrentPosition()) < -200)
-                polePos = turret.getCurrentPosition();
 
             telemetry.addData("polepos:", polePos);
             telemetry.update();
