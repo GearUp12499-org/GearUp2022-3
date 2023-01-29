@@ -183,7 +183,7 @@ public class rrAutoComp3 extends LinearOpMode {
             straight(0.6,52); // 54 function for driving straight
 
             //pole detect
-            
+
             while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
                 stopMaybe();
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -409,14 +409,14 @@ public class rrAutoComp3 extends LinearOpMode {
             straight(0.6,52); // 54 function for driving straight
 
             //pole detect
-            boolean a = true;
-            while (a && io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
+            boolean stop_pole_detect = true;
+            while (stop_pole_detect && io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
                 stopMaybe();
-                if (io.distanceSensorM.getDistance(DistanceUnit.CM)<250 && (turret.getCurrentPosition()<-380 && turret.getCurrentPosition()>-500){
-                    a = false;
+                if (io.distSensorM.getDistance(DistanceUnit.CM)<250 && turret.getCurrentPosition() < -380 && turret.getCurrentPosition() > -500) {
+                    stop_pole_detect = false;
                 }
-                else if (turret.getCurrentPosition()<-480){
-                    a = false;
+                else if (turret.getCurrentPosition() < -480){
+                    stop_pole_detect = false;
                 }
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 turret.setPower(-0.25); //.35
