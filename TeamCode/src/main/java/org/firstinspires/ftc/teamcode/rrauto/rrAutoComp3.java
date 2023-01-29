@@ -409,19 +409,16 @@ public class rrAutoComp3 extends LinearOpMode {
             straight(0.6,52); // 54 function for driving straight
 
             //pole detect
-            boolean continue_pole_detect = true;
-            while (continue_pole_detect && io.distSensorM.getDistance(DistanceUnit.MM) > 250
-                    && io.distSensorM.getDistance(DistanceUnit.MM) < 2000
-                    && Math.abs(turret.getCurrentPosition()) < 700) {
+            while (Math.abs(turret.getCurrentPosition()) < 700) {
                 stopMaybe();
                 if (io.distSensorM.getDistance(DistanceUnit.MM) <250 &&
                         turret.getCurrentPosition() < -380 && turret.getCurrentPosition() > -500) {
-                    continue_pole_detect = false;
                     polePos = turret.getCurrentPosition();
+                    break;
                 }
                 else if (turret.getCurrentPosition() < -480){
-                    continue_pole_detect = false;
-                    polePos = -415;
+                    polePos = -430;
+                    break;
                 }
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 turret.setPower(-0.25); //.35
