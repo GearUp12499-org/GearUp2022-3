@@ -14,7 +14,20 @@ public class JobManager {
     private final HashMap<Integer, Job> jobs = new HashMap<>();
     public final JobFactory factory = new JobFactory();
 
+    public static final boolean DEBUG_JOB_SOURCES = true;
+
+
     public JobManager() {
+    }
+
+    private static StackTraceElement getCallSource() {
+        Thread thread = Thread.currentThread();
+        // Get first stack frame that is *not* in this class
+        for (StackTraceElement stackElement : thread.getStackTrace()) {
+            if (stackElement.getClassName().contains("lib.jobs")) continue;
+            return stackElement;
+        }
+        return new StackTraceElement("unknown", "", "", -1);
     }
 
     /**
@@ -24,6 +37,11 @@ public class JobManager {
      */
     public int addJob(Job job) {
         jobs.put(next, job);
+        if (DEBUG_JOB_SOURCES) {
+            StackTraceElement source = getCallSource();
+            String sourceStr = source.getClassName() + "." + source.getMethodName() + ":" + source.getLineNumber();
+            RobotLog.ii("JobManager", "job " + job.toString() + " from " + getCallSource());
+        }
         return next++;
     }
 
@@ -42,7 +60,7 @@ public class JobManager {
     public void gc() {
         for (Job job : new ArrayList<>(jobs.values())) {
             if (job.isComplete()) {
-                RobotLog.i("Clearing job " + job.id);
+                RobotLog.ii("JobManager", "Clearing job " + job.id);
                 jobs.remove(job.id);
             }
         }
@@ -77,6 +95,7 @@ public class JobManager {
      */
     public Job delayJob(long millis) {
         ElapsedTime timer = new ElapsedTime();
+        // Watch out - the job doesn't necessarily happen immediately, so reset in the onStart handler.
         timer.reset();
         Job j = factory.manager(this)
                 .onStart(timer::reset)
@@ -86,15 +105,15 @@ public class JobManager {
         return j;
     }
 
-    public Job autoLambda(Supplier<Boolean> taskAndCondition) {
+    public Job fromLambda(Supplier<Boolean> taskAndCondition) {
         return factory.manager(this).completeCondition(taskAndCondition).build();
     }
 
-    public Job autoLambda(Runnable task, Supplier<Boolean> condition) {
+    public Job fromLambda(Runnable task, Supplier<Boolean> condition) {
         return factory.manager(this).task(task).completeCondition(condition).build();
     }
 
-    public Job autoLambda(Runnable task) {
+    public Job fromLambda(Runnable task) {
         return factory.manager(this).task(task).build();
     }
 

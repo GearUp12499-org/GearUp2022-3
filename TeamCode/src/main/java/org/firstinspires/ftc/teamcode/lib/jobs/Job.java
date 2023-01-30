@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.lib.jobs;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.qualcomm.robotcore.util.RobotLog;
@@ -197,6 +198,16 @@ public class Job {
     }
 
     /**
+     * Run another Job after this Job, but don't return that one and keep working on this one.
+     * @param b
+     * @return
+     */
+    public Job andThenAsync(Job b) {
+        andThen(b);
+        return this;
+    }
+
+    /**
      * Find all jobs that we depend on and have no other dependencies, and start them.
      */
     public void start() {
@@ -235,5 +246,11 @@ public class Job {
             return;
         }
         completeHandler();
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "[job #"+id+" " + (isActive() ? "running" : isComplete() ? "complete" : "waiting") +"]";
     }
 }

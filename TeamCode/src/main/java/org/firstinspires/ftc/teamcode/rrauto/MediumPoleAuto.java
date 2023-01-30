@@ -153,14 +153,15 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
         telemetry = new AutoLogTelemetry(telemetry, log);
 
         // MAIN SECTION
-        Job lift1 = jobManager
-                .autoLambda(l::closeClaw)                   // Close the claw
-                .andThen(jobManager.delayJob(500))    // Wait 500ms
-                .andThen(() -> l.setVerticalTargetManual(1800));
-        lift1.andThen(liftUntilVertStop());
         // Can't create this in the job chain because we need to be able to get the result later
         ResultJob<Integer> poleDetect1 = poleDetect(-1200, () -> Math.abs(turret.getCurrentPosition()) > 1000);
-        lift1/*.andThen(straight(0.6, 52))*/   // Move forward to the pole
+
+        jobManager
+                .fromLambda(l::closeClaw)                   // Close the claw
+                .andThen(jobManager.delayJob(500))    // Wait 500ms
+                .andThen(() -> l.setVerticalTargetManual(1800))
+                .andThenAsync(liftUntilVertStop())          // Keep updating the lift
+                /*.andThen(straight(0.6, 52))*/             // Move forward to the pole
                 .andThen(poleDetect1)
                 .chainSupplier(this::scoreCone).start();
 
@@ -251,18 +252,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                 }
 
                 double percentage = 100.0 * (double)finished.size() / (double)(finished.size() + running.size() + waiting.size());
-                // 20 segments
-                int segments = (int)(percentage / 5.0);
-                StringBuilder b3 = new StringBuilder();
-                b3.append("  [");
-                for (int j = 0; j < segments; j++) {
-                    b3.append("|");
-                }
-                for (int j = segments; j < 20; j++) {
-                    b3.append("  ");
-                }
-                b3.append("]");
-                telemetry.addLine(b3.toString());
+                telemetry.addLine(String.format("> %.2f%% done", percentage));
             }
             telemetry.update();
         }
