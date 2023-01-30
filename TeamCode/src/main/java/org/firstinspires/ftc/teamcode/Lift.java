@@ -193,7 +193,7 @@ public class Lift {
 
 
     public void closeClaw() {
-        servo.setPosition(0.52);
+        servo.setPosition(0.62);
     }
 
     public void openClaw() {

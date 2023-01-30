@@ -129,6 +129,8 @@ public class rrAutoComp3 extends LinearOpMode {
 
             runtime.reset();
             while (runtime.seconds()<0.5 && opModeIsActive()) {
+                //grabs preloaded while reading
+                l.closeClaw();
                 ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
                 if (currentDetections.size() != 0) {
                     boolean tagFound = false;
@@ -174,18 +176,22 @@ public class rrAutoComp3 extends LinearOpMode {
 
             int polePos = -400;
 
-            //grabs pre-loaded
-            l.closeClaw();
-            sleep(500);
-
             //raises preloaded and drives to second tile, ready to drop off cone on pole
             l.verticalLift(2700, this);
             straight(0.6,52); // 54 function for driving straight
 
             //pole detect
-
-            while (io.distSensorM.getDistance(DistanceUnit.CM) > 250 && io.distSensorM.getDistance(DistanceUnit.CM) < 2000&& Math.abs(turret.getCurrentPosition()) < 700) {
+            while (Math.abs(turret.getCurrentPosition()) < 700) {
                 stopMaybe();
+                if (io.distSensorM.getDistance(DistanceUnit.MM) <250 &&
+                        turret.getCurrentPosition() < -380 && turret.getCurrentPosition() > -500) {
+                    polePos = turret.getCurrentPosition();
+                    break;
+                }
+                else if (turret.getCurrentPosition() < -480){
+                    polePos = -420;
+                    break;
+                }
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 turret.setPower(-0.25); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
@@ -194,9 +200,6 @@ public class rrAutoComp3 extends LinearOpMode {
 
             turret.setPower(0);
             //sleep(300);
-
-            if (Math.abs(turret.getCurrentPosition()) < -200)
-                polePos = turret.getCurrentPosition();
 
             telemetry.addData("polepos:", polePos);
             telemetry.update();
@@ -225,20 +228,25 @@ public class rrAutoComp3 extends LinearOpMode {
             l.liftVertical1.setPower(0);
             l.liftVertical2.setPower(0);
             l.openClaw();
-            //sleep(300);
+            sleep(150);
             l.setHorizontalTarget(0);
+            telemetry.addData("robot x pos:", encoderLeft.getCurrentPosition());
+            telemetry.addData("robot y pos:", encoderRear.getCurrentPosition());
 
+            telemetry.update();
+            int ang = (int)TrigCalculations.stackAngle((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
+            int dist = (int)TrigCalculations.distToStack((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
             for (int i = 0; i < 4; i++) {
                 //turns from pole to stack
                 turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                turret.setTargetPosition(780); //750
+                turret.setTargetPosition(ang); //750
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.8); //0.3
                 sleep(500);
 
                 //lowers vertical lift to cone stack and extends out horizontal lift to stack
                 l.setVerticalTargetManual(1180-i*150);
-                l.setHorizontalTargetManual(825);
+                l.setHorizontalTargetManual(dist); //825
                 while(l.liftVertical1.getCurrentPosition()>(1180-(i*150))){
                     stopMaybe();
                     l.liftVertical1.setPower(-0.6);
@@ -290,17 +298,21 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
                 l.openClaw();
+                sleep(150);
                 l.setHorizontalTarget(0);
+                sleep(100);
             }
 
             //resets turret and lift to home position, ready to be used in teleop, strafes to correct parking position based on what april tag position was detected
             turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             if (a == 1) {
+                l.setHorizontalTargetManual(0);
+
                 turret.setTargetPosition(0);
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
                 sleep(800);
-                strafe(0.6, -20.5);
+                strafe(0.6, -21.5);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
@@ -310,11 +322,13 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
             } else if (a == 3) {
+                l.setHorizontalTargetManual(0);
+
                 turret.setTargetPosition(0);
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
                 sleep(800);
-                strafe(0.6, 20.5);
+                strafe(0.6, 21.5);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
@@ -325,6 +339,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.liftVertical2.setPower(0);
             }
             else{
+                l.setHorizontalTargetManual(0);
                 turret.setTargetPosition(0);
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
@@ -355,6 +370,8 @@ public class rrAutoComp3 extends LinearOpMode {
 
             runtime.reset();
             while (runtime.seconds()<0.5 && opModeIsActive()) {
+                //grabs preloaded while reading
+                l.closeClaw();
                 ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
                 if (currentDetections.size() != 0) {
                     boolean tagFound = false;
@@ -400,10 +417,6 @@ public class rrAutoComp3 extends LinearOpMode {
 
             int polePos = -400;
 
-            //grabs pre-loaded
-            l.closeClaw();
-            sleep(500);
-
             //raises preloaded and drives to second tile, ready to drop off cone on pole
             l.verticalLift(2700, this);
             straight(0.6,52); // 54 function for driving straight
@@ -417,7 +430,7 @@ public class rrAutoComp3 extends LinearOpMode {
                     break;
                 }
                 else if (turret.getCurrentPosition() < -480){
-                    polePos = -430;
+                    polePos = -420;
                     break;
                 }
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -533,7 +546,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
                 sleep(800);
-                strafe(0.6, -20.5);
+                strafe(0.6, -21.5);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
@@ -547,7 +560,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
                 sleep(800);
-                strafe(0.6, 20.5);
+                strafe(0.6, 21.5);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
@@ -582,7 +595,6 @@ public class rrAutoComp3 extends LinearOpMode {
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
             }
-             // while (opModeIsActive()) ; // wait for the match to end
         }
         else if (position.equals("right_side")) {  // set by extending classes
             int a = 2; //counter for where to go
