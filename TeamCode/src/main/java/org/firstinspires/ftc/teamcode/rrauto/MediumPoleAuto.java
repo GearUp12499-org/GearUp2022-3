@@ -294,8 +294,11 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
         return new ResultJobFactory<Integer>()
                 .manager(jobManager)
                 .onStart(rawJob -> {
-                    //noinspection unchecked
-                    ((ResultJob<Integer>) rawJob).setResult(defaultPolePos);
+                    if (!(rawJob instanceof ResultJob))
+                        throw new ClassCastException("Expected ResultJob, got " + rawJob.getClass().getName() + " instead");
+                    @SuppressWarnings("unchecked")
+                    ResultJob<Integer> job = (ResultJob<Integer>) rawJob;
+                    job.setResult(defaultPolePos);
                     turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                     turret.setPower(-0.25);
                 })
