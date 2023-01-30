@@ -71,34 +71,31 @@ public class JobManager {
     }
 
     /**
-     * Job that finishes when a condition is true, and does nothing otherwise.
-     * @param condition Condition to check.
-     * @return Job that finishes when the condition is true.
-     */
-    public Job predicateJob(Supplier<Boolean> condition) {
-        return factory.completeCondition(condition).build();
-    }
-
-    /**
      * Job that finishes after a certain amount of time.
      * @param millis Time in milliseconds.
      * @return Job that finishes after the specified time.
      */
     public Job delayJob(long millis) {
         ElapsedTime timer = new ElapsedTime();
-        return predicateJob(() -> timer.milliseconds() >= millis);
+        timer.reset();
+        Job j = factory.manager(this)
+                .onStart(timer::reset)
+                .completeCondition(() -> timer.milliseconds() > millis)
+                .build();
+        RobotLog.ii("JobManager", "job " + j.id + " is delay("+millis+")");
+        return j;
     }
 
     public Job autoLambda(Supplier<Boolean> taskAndCondition) {
-        return factory.completeCondition(taskAndCondition).build();
+        return factory.manager(this).completeCondition(taskAndCondition).build();
     }
 
     public Job autoLambda(Runnable task, Supplier<Boolean> condition) {
-        return factory.task(task).completeCondition(condition).build();
+        return factory.manager(this).task(task).completeCondition(condition).build();
     }
 
     public Job autoLambda(Runnable task) {
-        return factory.task(task).build();
+        return factory.manager(this).task(task).build();
     }
 
     public Map<Integer, Job> getJobs() {

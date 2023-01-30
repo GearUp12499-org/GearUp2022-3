@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.METER;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.CM;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM;
-import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
@@ -22,6 +20,7 @@ import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
 import org.firstinspires.ftc.teamcode.lib.AutoLogTelemetry;
 import org.firstinspires.ftc.teamcode.lib.LinearCleanupOpMode;
+import org.firstinspires.ftc.teamcode.lib.Supplier;
 import org.firstinspires.ftc.teamcode.lib.VirtualTelemetryLog;
 import org.firstinspires.ftc.teamcode.lib.jobs.Job;
 import org.firstinspires.ftc.teamcode.lib.jobs.JobManager;
@@ -149,26 +148,31 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
 
         stopMaybe();
         waitForStart();
+        telemetry.setMsTransmissionInterval(50);
         VirtualTelemetryLog log = new VirtualTelemetryLog(10);
         telemetry = new AutoLogTelemetry(telemetry, log);
 
-        // Can't create this in the job chain because we need to be able to get the result later
-        ResultJob<Integer> poleDetect1 = poleDetect(-430);
-        jobManager
+        // MAIN SECTION
+        Job lift1 = jobManager
                 .autoLambda(l::closeClaw)                   // Close the claw
                 .andThen(jobManager.delayJob(500))    // Wait 500ms
-                .andThen(() -> { /* Ends immediately */     // Lift...
-                    try {
-                        l.verticalLift(2700, this);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .andThen(straight(0.6, 52))   // Move forward to the pole
-                .andThen(poleDetect1).start();
+                .andThen(() -> l.setVerticalTargetManual(1800));
+        lift1.andThen(liftUntilVertStop());
+        // Can't create this in the job chain because we need to be able to get the result later
+        ResultJob<Integer> poleDetect1 = poleDetect(-1200, () -> Math.abs(turret.getCurrentPosition()) > 1000);
+        lift1/*.andThen(straight(0.6, 52))*/   // Move forward to the pole
+                .andThen(poleDetect1)
+                .chainSupplier(this::scoreCone).start();
 
         // Main event loop
-        runJobsUntilDone(() -> telemetry.addLine("== part 1 =="));
+        runJobsUntilDone(() -> telemetry.addLine("== running =="));
+        while (opModeIsActive()) {
+            telemetry.addLine("Waiting...");
+            telemetry.addLine("pole pos " + poleDetect1.getResult());
+            telemetry.addLine("current tur pos " + turret.getCurrentPosition());
+            telemetry.update();
+            l.update();
+        }
     }
 
     /**
@@ -214,6 +218,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                         b.append("  ");
                     }
                 }
+                telemetry.addLine(b.toString());
 
                 b = new StringBuilder();
                 b.append("  ");
@@ -227,6 +232,8 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                         b.append("  ");
                     }
                 }
+                telemetry.addLine(b.toString());
+
                 telemetry.addLine("Waiting: " + waiting.size());
                 for (Integer jobidx : waiting) {
                     Job job = jobManager.getJob(jobidx);
@@ -235,7 +242,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                         telemetry.addLine("  " + jobidx + " not started");
                     } else {
                         StringBuilder b2 = new StringBuilder();
-                        b2.append("  ").append(jobidx).append(" waiting on ");
+                        b2.append("  ").append(jobidx).append(" depends on ");
                         for (Integer dep : deps) {
                             b2.append(dep).append(" ");
                         }
@@ -249,11 +256,12 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                 StringBuilder b3 = new StringBuilder();
                 b3.append("  [");
                 for (int j = 0; j < segments; j++) {
-                    b3.append("=");
+                    b3.append("|");
                 }
                 for (int j = segments; j < 20; j++) {
-                    b3.append("]");
+                    b3.append("  ");
                 }
+                b3.append("]");
                 telemetry.addLine(b3.toString());
             }
             telemetry.update();
@@ -283,14 +291,37 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
         }
     }
 
-    // Pole detection; defaultPolePos = -430
-    ResultJob<Integer> poleDetect(int defaultPolePos) {
-        return poleDetect(defaultPolePos, 1);
+    Job scoreCone(Job before) {
+        return before.andThen(() -> l.setVerticalTargetManual(3300))
+                .andThen(liftUntilVertStop())
+                .andThen(liftHorizontal(344))
+                .andThen(jobManager.delayJob(100))
+                .andThen(jobManager.factory.manager(jobManager)
+                        .onStart(() -> {
+                            l.liftVertical1.setPower(-0.4);
+                            l.liftVertical2.setPower(-0.4);
+                        })
+                        .completeCondition(() ->
+                                l.liftVertical1.getCurrentPosition() <= 2600)
+                        .onComplete(() -> {
+                            l.liftVertical1.setPower(0);
+                            l.liftVertical2.setPower(0);
+                        })
+                        .build()) // Slowly lower...
+                .andThen(() -> l.openClaw())
+                .andThen(jobManager.delayJob(250))
+                .andThen(liftHorizontal(0));
+
     }
 
     // Pole detection; defaultPolePos = -430
-    ResultJob<Integer> poleDetect(int defaultPolePos, int poleCount) {
-        AtomicInteger poleCountDown = new AtomicInteger(poleCount);
+    ResultJob<Integer> poleDetect(int defaultPolePos) {
+        return poleDetect(defaultPolePos, () -> turret.getCurrentPosition() < -300 && turret.getCurrentPosition() > -500);
+    }
+
+    // Pole detection; defaultPolePos = -430
+    ResultJob<Integer> poleDetect(int defaultPolePos, Supplier<Boolean> validWhen) {
+
         return new ResultJobFactory<Integer>()
                 .manager(jobManager)
                 .onStart(rawJob -> {
@@ -307,26 +338,43 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                         throw new ClassCastException("Expected ResultJob, got " + rawJob.getClass().getName() + " instead");
                     @SuppressWarnings("unchecked")
                     ResultJob<Integer> job = (ResultJob<Integer>) rawJob; // This is always true
+                    int now = (int) io.distSensorM.getDistance(MM);
 
-                    if (io.distSensorM.getDistance(MM) < 250
-                            && turret.getCurrentPosition() < -380 /* from */
-                            && turret.getCurrentPosition() > -500 /* to */
+                    if (now < 350
+                            && validWhen.get()
                     ) {
                         job.setResult(turret.getCurrentPosition());
-                        int counter = poleCountDown.decrementAndGet();
-                        if (counter == 0) job.markComplete();
-                        return;
-                    } else if (turret.getCurrentPosition() < -480) {
-                        job.setResult(defaultPolePos);
                         job.markComplete();
                         return;
                     }
 
-                    telemetry.addLine("poleDetect " + job.id + ":");
+                    telemetry.addLine("poleDetect (" + job.id + "):");
                     telemetry.addData("  distance", io.distSensorM.getDistance(CM) + "cm");
                 })
-                .completeCondition(() -> Math.abs(turret.getCurrentPosition()) < 700)
+                .completeCondition(() -> Math.abs(turret.getCurrentPosition()) > 1300)
                 .onComplete(() -> turret.setPower(0))
+                .build();
+    }
+
+    Job liftHorizontal(int target) {
+        return jobManager.factory
+                .manager(jobManager)
+                .onStart(() -> l.setHorizontalTargetManual(target))
+                .task(l::update)
+                .completeCondition(l::isSatisfiedHorizontally)
+                .build();
+    }
+
+    Job liftUntilVertStop() {
+        return jobManager.factory
+                .manager(jobManager)
+                .task(job -> {
+                    l.update();
+                    telemetry.addLine("liftUntilStopped (" + job.id + "):");
+                    telemetry.addLine("  vertical1 " + l.liftVertical1.getPower());
+                    telemetry.addLine("  vertical2 " + l.liftVertical2.getPower());
+                })
+                .completeCondition(() -> !l.inMotion)
                 .build();
     }
 

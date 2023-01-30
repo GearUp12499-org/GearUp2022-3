@@ -158,6 +158,15 @@ public class Job {
     }
 
     /**
+     * Invoke a Function in a way that looks nice
+     * @param supplier function adding additional jobs in a chain
+     * @return next job
+     */
+    public Job chainSupplier(Function<Job, Job> supplier) {
+        return supplier.apply(this);
+    }
+
+    /**
      * Run multiple jobs in parallel.
      * @param continuations Jobs to run in parallel after this one.
      * @return A wrapper job that will complete when all of the passed jobs complete.

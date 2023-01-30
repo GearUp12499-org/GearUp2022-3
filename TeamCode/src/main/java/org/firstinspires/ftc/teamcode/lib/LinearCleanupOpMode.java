@@ -5,6 +5,9 @@ import com.qualcomm.robotcore.util.RobotLog;
 
 import org.jetbrains.annotations.Contract;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class LinearCleanupOpMode extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -21,6 +24,39 @@ public abstract class LinearCleanupOpMode extends LinearOpMode {
                     e
             );
             e.printStackTrace();
+            if (!isStopRequested()) {
+                RobotLog.i("OpMode early cleanup: " + this.getClass().getName());
+                cleanup();
+                RobotLog.i("OpMode early cleanup done: " + this.getClass().getName());
+                StackTraceElement[] elements = e.getStackTrace();
+                List<String> stackData = new ArrayList<>();
+                stackData.add(e.toString());
+                int hiddenCount = 0;
+                for (StackTraceElement element : elements) {
+                    if (element.getClassName().contains("teamcode")) {
+                        if (hiddenCount > 0) {
+                            stackData.add(" [ " + hiddenCount + " non-team calls ]");
+                            hiddenCount = 0;
+                        }
+                        String b = " -> " +
+                                element.getClassName() + '.' + element.getMethodName() +
+                                " @ " + element.getFileName() + ':' + element.getLineNumber();
+                        stackData.add(b);
+                    } else {
+                        hiddenCount++;
+                    }
+                }
+                if (hiddenCount > 0) {
+                    stackData.add(" [ " + hiddenCount + " non-team calls ]");
+                }
+                while (!isStopRequested()) {
+                    telemetry.addLine("!! An error occurred !!");
+                    for (String line : stackData) {
+                        telemetry.addLine(line);
+                    }
+                    telemetry.update();
+                }
+            }
         } finally {
             RobotLog.i("OpMode cleanup: " + this.getClass().getName());
             cleanup();
