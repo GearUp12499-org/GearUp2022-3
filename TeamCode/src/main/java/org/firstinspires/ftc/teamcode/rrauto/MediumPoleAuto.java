@@ -163,7 +163,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                 .andThenAsync(liftUntilVertStop())          // Keep updating the lift
                 /*.andThen(straight(0.6, 52))*/             // Move forward to the pole
                 .andThen(poleDetect1)
-                .chainSupplier(this::scoreCone).start();
+                .jobSequence(this::scoreCone).start();
 
         // Main event loop
         runJobsUntilDone(() -> telemetry.addLine("== running =="));

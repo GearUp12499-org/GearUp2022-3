@@ -163,7 +163,7 @@ public class Job {
      * @param supplier function adding additional jobs in a chain
      * @return next job
      */
-    public Job chainSupplier(Function<Job, Job> supplier) {
+    public Job jobSequence(Function<Job, Job> supplier) {
         return supplier.apply(this);
     }
 
@@ -199,8 +199,8 @@ public class Job {
 
     /**
      * Run another Job after this Job, but don't return that one and keep working on this one.
-     * @param b
-     * @return
+     * @param b Job to run after this one.
+     * @return This job
      */
     public Job andThenAsync(Job b) {
         andThen(b);
