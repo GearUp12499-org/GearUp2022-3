@@ -55,7 +55,12 @@ public class TrigCalculations {
 
         return (90+ Math.toDegrees(Math.atan2(deltaX, deltaY)))*encToAngle;
     }
+    public static double stackAngleR(double x, double y) { //for right side
+        double deltaX = x/encToDist - stackDiffX;
+        double deltaY = (stackDiffY+ 0.5) + y/encToDist;
 
+        return (90+ Math.toDegrees(Math.atan2(deltaX, deltaY)))*encToAngle;
+    }
     public static double sumDeltaAngle(double x, double y) {
         // account for negative values from poleAngle()
         return Math.abs(poleAngle(x, y)) + Math.abs(stackAngle(x, y));
@@ -76,4 +81,5 @@ public class TrigCalculations {
         double dist = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
         return dist*163/5.25;
     }
+
 }
