@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.rrauto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 
-@Autonomous(name = "right_side", group = "Pushbot")
+//@Autonomous(name = "right_side", group = "Pushbot")
 //@Disabled
 public class right_side extends rrAutoComp3 {
 
