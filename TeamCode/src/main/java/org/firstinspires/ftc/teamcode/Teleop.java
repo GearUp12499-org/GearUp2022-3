@@ -206,8 +206,14 @@ public class Teleop extends LinearOpMode {
         if (gamepad2.right_bumper) {
             runtime.reset();
             while(liftHorizontal.getCurrentPosition()>20 && runtime.seconds()<2) {
-                liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                liftHorizontal.setPower(-0.4);
+                if(liftHorizontal.getCurrentPosition()<80){
+                    liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    liftHorizontal.setPower(-0.005*liftHorizontal.getCurrentPosition);
+                }
+                else{
+                    liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    liftHorizontal.setPower(-0.8);
+                }
             }
             liftHorizontal.setPower(0);
         } else if (gamepad2.left_bumper) {
