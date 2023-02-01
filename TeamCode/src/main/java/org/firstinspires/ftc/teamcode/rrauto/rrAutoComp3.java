@@ -312,12 +312,12 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
                 sleep(800);
-                strafe(0.6, -21.5);
-                //sleep(1500);
+                l.setVerticalTargetManual(0);
+                strafe(0.6, -22.5);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
-                    l.liftVertical1.setPower(-0.8);
-                    l.liftVertical2.setPower(-0.8);
+                    l.liftVertical1.setPower(-0.3);
+                    l.liftVertical2.setPower(-0.3);
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
@@ -328,12 +328,12 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
                 sleep(800);
+                l.setVerticalTargetManual(0);
                 strafe(0.65, 22);
-                //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
-                    l.liftVertical1.setPower(-0.8);
-                    l.liftVertical2.setPower(-0.8);
+                    l.liftVertical1.setPower(-0.3);
+                    l.liftVertical2.setPower(-0.3);
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
@@ -551,12 +551,13 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(-0.3);
                 sleep(800);
+                l.setVerticalTargetManual(0);
                 strafe(0.6, -21.5);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
-                    l.liftVertical1.setPower(-0.8);
-                    l.liftVertical2.setPower(-0.8);
+                    l.liftVertical1.setPower(-0.3);
+                    l.liftVertical2.setPower(-0.3);
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
@@ -567,12 +568,13 @@ public class rrAutoComp3 extends LinearOpMode {
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(-0.3);
                 sleep(800);
+                l.setVerticalTargetManual(0);
                 strafe(0.65, 22);
                 //sleep(1500);
                 while(l.liftVertical1.getCurrentPosition()>40) {
                     stopMaybe();
-                    l.liftVertical1.setPower(-0.8);
-                    l.liftVertical2.setPower(-0.8);
+                    l.liftVertical1.setPower(-0.3);
+                    l.liftVertical2.setPower(-0.3);
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
@@ -1158,6 +1160,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 frontRight.setPower(-speed);
                 rearLeft.setPower(-speed);
                 rearRight.setPower(speed);
+                l.update();
             }
         }
         else if(distance < 0){
@@ -1171,6 +1174,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 frontRight.setPower(speed);
                 rearLeft.setPower(speed);
                 rearRight.setPower(-speed);
+                l.update();
             }
         }
 
