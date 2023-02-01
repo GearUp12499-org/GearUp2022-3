@@ -206,8 +206,14 @@ public class Teleop extends LinearOpMode {
         if (gamepad2.right_bumper) {
             runtime.reset();
             while(liftHorizontal.getCurrentPosition()>20 && runtime.seconds()<2) {
-                liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                liftHorizontal.setPower(-0.4);
+                if(liftHorizontal.getCurrentPosition()<80){
+                    liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    liftHorizontal.setPower(-0.005*liftHorizontal.getCurrentPosition);
+                }
+                else{
+                    liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    liftHorizontal.setPower(-0.8);
+                }
             }
             liftHorizontal.setPower(0);
         } else if (gamepad2.left_bumper) {
@@ -219,10 +225,15 @@ public class Teleop extends LinearOpMode {
             liftHorizontal.setPower(-0.4);
             l.update();
         } else if (gamepad2.left_trigger > 0.2 ) {
+            double x = liftHorizontal.getCurrentPosition();
+            double vLiftEti = 759/5.25;//encoder count to inch
+            int targ = 0;
+            liftHorizontal.setPower(0.2);
             if(l.liftVertical1.getCurrentPosition()<500){
-                double h = (4.93 - 3.4 - 0.000658*(liftHorizontal.getCurrentPosition()*163/5.5));
-                int targ = (int)((1.5-h)*(5.25/759));
+                double h = (4.93 - 3.4 - 0.000658*(x)-0.00000324*(x)*(x));
+                targ = (int)((1.9-h)*vLiftEti);
                 l.setVerticalTargetManual(targ);
+
             }
             liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             liftHorizontal.setPower(0.2);
