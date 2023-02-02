@@ -208,7 +208,7 @@ public class Teleop extends LinearOpMode {
             while(liftHorizontal.getCurrentPosition()>20 && runtime.seconds()<2) {
                 if(liftHorizontal.getCurrentPosition()<80){
                     liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    liftHorizontal.setPower(-0.005*liftHorizontal.getCurrentPosition);
+                    liftHorizontal.setPower(-0.005*liftHorizontal.getCurrentPosition());
                 }
                 else{
                     liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
