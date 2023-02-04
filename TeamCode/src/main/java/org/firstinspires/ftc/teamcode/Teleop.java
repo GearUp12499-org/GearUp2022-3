@@ -40,6 +40,7 @@ public class Teleop extends LinearOpMode {
             drive();
             lift();
             turret();
+            autoScore();
 
             telemetry.addLine("Distance sensor:");
             telemetry.addData("Distance (mm)", io.distSensorM.getDistance(DistanceUnit.MM));
@@ -163,7 +164,7 @@ public class Teleop extends LinearOpMode {
             l.retract();
             l.update();
             int direction = sign(-turret.getCurrentPosition());
-            turret.setPower(0.25 * direction);
+            turret.setPower(0.5 * direction);
             //l.setVerticalTarget(0);
             l.setVerticalTargetManual(175);
             runtime.reset();
@@ -208,7 +209,7 @@ public class Teleop extends LinearOpMode {
             while(liftHorizontal.getCurrentPosition()>20 && runtime.seconds()<2) {
                 if(liftHorizontal.getCurrentPosition()<80){
                     liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    liftHorizontal.setPower(-0.005*liftHorizontal.getCurrentPosition);
+                    liftHorizontal.setPower(-0.005*liftHorizontal.getCurrentPosition());
                 }
                 else{
                     liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -217,6 +218,16 @@ public class Teleop extends LinearOpMode {
             }
             liftHorizontal.setPower(0);
         } else if (gamepad2.left_bumper) {
+            double x = liftHorizontal.getCurrentPosition();
+            double vLiftEti = 759/5.25;//encoder count to inch
+            int targ = 0;
+            liftHorizontal.setPower(0.2);
+            if(l.liftVertical1.getCurrentPosition()<500){
+                double h = (4.93 - 3.4 - 0.000658*(x)-0.00000324*(x)*(x));
+                targ = (int)((1.9-h)*vLiftEti);
+                l.setVerticalTargetManual(targ);
+
+            }
             liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             liftHorizontal.setPower(0.8);
             l.update();
@@ -264,7 +275,91 @@ public class Teleop extends LinearOpMode {
     }
 
     ////////////////////////////////////////////////////////////////////
+    public void autoScore(){ //automating scoring
+        /*
+        basically the way this is going to work is the following
+        1. drivers score one manually
+            a. when ready to grab cup from stack, driver 1 hits gamepad1.start
+            b. when right above the pole ready to deliver, driver 1 hits gamepad1.back
+        2. driver 1 can hit y, and it will reset the robots position that is ready to pick up cup
+        3. driver 1 will manually close claw
+        4. driver 1 will then hit a, which will go from grabbing cone position, to right above pole position
+        This cycle repeats on an on, this will probably be revised/optimized as we practice it
+        --JJ
+         */
+        int turrStackPos =0;
+        int hLiftStackPos= 0;
+        int turrPolePos = 0;
+        int hLiftPolePos = 0;
+        int a = 0;
 
+        //setting encoder count values
+        if(gamepad1.start){
+            turrStackPos = turret.getCurrentPosition();
+            hLiftStackPos = liftHorizontal.getCurrentPosition();
+        }
+        else if(gamepad1.back){
+            turrPolePos = turret.getCurrentPosition();
+            hLiftPolePos = liftHorizontal.getCurrentPosition();
+            if(turrPolePos>0) //this means that you are dropping off to a pole to the left of your robot, if turret side is considered front
+                a = 1;
+            else if(turrPolePos<0)
+                a = -1; // this means that you are dropping off to a pole to the right of your robot
+        }
+
+        //getting to cone stack
+        if(gamepad1.y){
+            double vLiftEti = 759/5.25;//encoder count to inch
+            if(l.liftVertical1.getCurrentPosition()>2000){
+                if(a == 1) {
+                    turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    turret.setTargetPosition(turrStackPos); //750
+                    turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    turret.setPower(-0.8); //0.3
+                    sleep(500);
+
+                    //lowers vertical lift to cone stack and extends out horizontal lift to stack
+                    l.setVerticalTargetManual(100);
+                    l.setHorizontalTargetManual(825);
+                    while (l.liftVertical1.getCurrentPosition() > (100)) {
+                        l.liftVertical1.setPower(-0.6);
+                        l.liftVertical2.setPower(-0.6);
+                    }
+                }
+                else if(a == -1){
+                    turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    turret.setTargetPosition(turrStackPos); //750
+                    turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    turret.setPower(0.8); //0.3
+                    sleep(500);
+
+                    //lowers vertical lift to cone stack and extends out horizontal lift to stack
+                    l.setVerticalTargetManual(100);
+                    l.setHorizontalTargetManual(825);
+                    while (l.liftVertical1.getCurrentPosition() > (100)) {
+                        l.liftVertical1.setPower(-0.6);
+                        l.liftVertical2.setPower(-0.6);
+                    }
+                    double h = (4.93 - 3.4 - 0.000658*(hLiftStackPos)-0.00000324*(hLiftStackPos)*(hLiftStackPos));
+                    int targ = (int)((1.9-h)*vLiftEti);
+                    l.setVerticalTargetManual(targ);
+                    while(liftHorizontal.getCurrentPosition()<hLiftStackPos){
+                        liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                        liftHorizontal.setPower(0.2);
+                        l.update();
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    public void turretAuto(){
+
+    }
+
+    //------------------------------------------------------
     public void turret() throws InterruptedException {
         int b = 0;
         if (l.liftVertical1.getCurrentPosition() < 100)//TURRET_THRESHOLD)
@@ -279,7 +374,7 @@ public class Teleop extends LinearOpMode {
             l.setVerticalTargetManual(Math.max(l.liftVertical1.getCurrentPosition(), Lift.inEnc(14)));
             runtime.reset();
             while (io.distSensorM.getDistance(DistanceUnit.MM) > 200 && Math.abs(turret.getCurrentPosition()) < 1200 && runtime.seconds()<2) {
-                turret.setPower(0.35);
+                turret.setPower(0.45); //0.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
                 l.update();
@@ -289,7 +384,7 @@ public class Teleop extends LinearOpMode {
             l.setVerticalTargetManual(Math.max(l.liftVertical1.getCurrentPosition(), Lift.inEnc(14)));
             runtime.reset();
             while (io.distSensorM.getDistance(DistanceUnit.MM) > 200 && Math.abs(turret.getCurrentPosition()) < 1200 && runtime.seconds()<2) {
-                turret.setPower(-0.35);
+                turret.setPower(-0.45); //0.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
                 l.update();
