@@ -164,7 +164,7 @@ public class Teleop extends LinearOpMode {
             l.retract();
             l.update();
             int direction = sign(-turret.getCurrentPosition());
-            turret.setPower(0.25 * direction);
+            turret.setPower(0.5 * direction);
             //l.setVerticalTarget(0);
             l.setVerticalTargetManual(175);
             runtime.reset();
@@ -218,6 +218,16 @@ public class Teleop extends LinearOpMode {
             }
             liftHorizontal.setPower(0);
         } else if (gamepad2.left_bumper) {
+            double x = liftHorizontal.getCurrentPosition();
+            double vLiftEti = 759/5.25;//encoder count to inch
+            int targ = 0;
+            liftHorizontal.setPower(0.2);
+            if(l.liftVertical1.getCurrentPosition()<500){
+                double h = (4.93 - 3.4 - 0.000658*(x)-0.00000324*(x)*(x));
+                targ = (int)((1.9-h)*vLiftEti);
+                l.setVerticalTargetManual(targ);
+
+            }
             liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             liftHorizontal.setPower(0.8);
             l.update();
@@ -364,7 +374,7 @@ public class Teleop extends LinearOpMode {
             l.setVerticalTargetManual(Math.max(l.liftVertical1.getCurrentPosition(), Lift.inEnc(14)));
             runtime.reset();
             while (io.distSensorM.getDistance(DistanceUnit.MM) > 200 && Math.abs(turret.getCurrentPosition()) < 1200 && runtime.seconds()<2) {
-                turret.setPower(0.35);
+                turret.setPower(0.45); //0.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
                 l.update();
@@ -374,7 +384,7 @@ public class Teleop extends LinearOpMode {
             l.setVerticalTargetManual(Math.max(l.liftVertical1.getCurrentPosition(), Lift.inEnc(14)));
             runtime.reset();
             while (io.distSensorM.getDistance(DistanceUnit.MM) > 200 && Math.abs(turret.getCurrentPosition()) < 1200 && runtime.seconds()<2) {
-                turret.setPower(-0.35);
+                turret.setPower(-0.45); //0.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
                 l.update();
