@@ -133,6 +133,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
 
         AprilTagDetection tagOfInterest = null;
         int targetLocation = 2;
+        l.closeClaw();
 
         while (opModeInInit()) {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
