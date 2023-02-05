@@ -20,7 +20,7 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
  * */
 
 public class TrigCalculations {
-    private static final double encToDist = 1800; //encoder counts per inch odometry wheels
+    private static final double encToDist = 1900; //encoder counts per inch odometry wheels
     private static final double encToAngle = 750/90; //encoder counts per degree turret
 
     //ALL DISTANCES MEASURED FROM ORIGIN which is in center of turret
