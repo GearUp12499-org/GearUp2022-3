@@ -133,7 +133,6 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
 
         AprilTagDetection tagOfInterest = null;
         int targetLocation = 2;
-        l.closeClaw();
 
         while (opModeInInit()) {
             ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
@@ -174,6 +173,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
         }
 
         waitForStart();
+        l.closeClaw();
         if(position.equals("trig_left_side")){
             runtime.reset();
             int polePos = -400;
