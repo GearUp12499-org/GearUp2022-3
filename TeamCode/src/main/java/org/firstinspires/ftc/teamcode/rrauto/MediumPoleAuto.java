@@ -88,6 +88,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                     telemetry.addLine("Camera is live.");
                     telemetry.update();
                 }
+
                 @Override
                 public void onError(int errorCode) {
                     cameraFailed[0] = true;
@@ -158,14 +159,45 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
         // Can't create this in the job chain because we need to be able to get the result later
         ResultJob<Integer> poleDetect1 = poleDetect(-1200, () -> Math.abs(turret.getCurrentPosition()) > 1000);
 
-        jobManager
+        Job suffix = jobManager
                 .fromLambda(l::closeClaw)                   // Close the claw
                 .andThen(jobManager.delayJob(500))    // Wait 500ms
                 .andThen(() -> l.setVerticalTargetManual(1800))
                 .andThenAsync(liftUntilVertStop())          // Keep updating the lift
-                /*.andThen(straight(0.6, 52))*/             // Move forward to the pole
+                .andThen(straight(0.6, 58))             // Move forward to the pole
                 .andThen(poleDetect1)
-                .jobSequence(this::scoreCone).start();
+                .jobSequence(this::scoreCone);
+
+        for (int i = 0; i < 3; i++) {
+            int finalI = i;
+            suffix = suffix.andThenAsync(moveTurretTo(0.8, 780))
+                    .andThen(jobManager.delayJob(500))
+                    .andThen(() -> {
+                        l.setHorizontalTargetManual(825);
+                        l.setVerticalTargetManual(1180 - finalI * 150);
+                    })
+                    .andThenAsync(liftUntilVertStop())
+                    .andThen(controlledLowerLift(-0.6, 1180 - i * 150))
+                    .andThen(l::closeClaw)
+                    .andThen(jobManager.delayJob(300))
+                    .andThen(() -> {
+                        l.setVerticalTargetManual(1180 - (finalI * 150) + 2050);
+                        l.liftVertical1.setPower(1);
+                        l.liftVertical2.setPower(1);
+                    })
+                    .andThenAsync(liftUntilVertStop())  // ensure lift keeps running
+                    .andThen(jobManager.delayJob(500))
+                    .andThen(() -> {
+                        l.liftVertical1.setPower(0);
+                        l.liftVertical2.setPower(0);
+                        l.setHorizontalTargetManual(0);
+                    })
+                    .andThen(jobManager.delayJob(300))
+                    .andThen(() -> l.setVerticalTargetManual(3500))
+                    .andThen(moveTurretTo(0.5, () -> poleDetect1.getResult() + 37))
+                    .jobSequence(this::scoreCone);
+        }
+        suffix.start();  // DFS time ;)
 
         // Main event loop
         runJobsUntilDone(() -> telemetry.addLine("== running =="));
@@ -182,7 +214,8 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
      * The main job loop.
      */
     void runJobsUntilDone() {
-        runJobsUntilDone(() -> {});
+        runJobsUntilDone(() -> {
+        });
     }
 
     /**
@@ -211,6 +244,9 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
 
                 // running, waiting, finished
                 telemetry.addLine(String.format("Jobs: %d running, %d waiting, %d finished", running.size(), waiting.size(), finished.size()));
+
+                double percentage = 100.0 * (double) finished.size() / (double) (finished.size() + running.size() + waiting.size());
+                telemetry.addLine(String.format("> %.2f%% done", percentage));
                 telemetry.addLine("  Running:");
                 for (int id : running) {
                     Job job = jobManager.getJob(id);
@@ -219,16 +255,13 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                 telemetry.addLine("  Waiting:");
                 for (int id : waiting) {
                     Job job = jobManager.getJob(id);
-                    telemetry.addLine(String.format("    (%s) %s", job.getDependencies().size() == 0 ? "idle" : job.getDependencies().size(), job.toString()));
+                    telemetry.addLine(String.format("    (%s) %s", job.getDependencies().size() == 0 ? "idle" : job.getDependencies().size(), job));
                 }
                 telemetry.addLine("  Finished:");
                 for (int id : finished) {
                     Job job = jobManager.getJob(id);
                     telemetry.addLine(String.format("    %s", job.toString()));
                 }
-
-                double percentage = 100.0 * (double)finished.size() / (double)(finished.size() + running.size() + waiting.size());
-                telemetry.addLine(String.format("> %.2f%% done", percentage));
             }
             telemetry.update();
         }
@@ -258,26 +291,30 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
     }
 
     Job scoreCone(Job before) {
-        return before.andThen(() -> l.setVerticalTargetManual(3300))
+        return before.andThen(() -> l.setVerticalTargetManual(3500))
                 .andThen(liftUntilVertStop())
                 .andThen(liftHorizontal(344))
                 .andThen(jobManager.delayJob(100))
-                .andThen(jobManager.factory.manager(jobManager)
-                        .onStart(() -> {
-                            l.liftVertical1.setPower(-0.4);
-                            l.liftVertical2.setPower(-0.4);
-                        })
-                        .completeCondition(() ->
-                                l.liftVertical1.getCurrentPosition() <= 2600)
-                        .onComplete(() -> {
-                            l.liftVertical1.setPower(0);
-                            l.liftVertical2.setPower(0);
-                        })
-                        .build()) // Slowly lower...
+                .andThen(controlledLowerLift(-0.4, 2600)) // Slowly lower...
                 .andThen(() -> l.openClaw())
                 .andThen(jobManager.delayJob(250))
                 .andThen(liftHorizontal(0));
 
+    }
+
+    Job controlledLowerLift(double speed, int target) {
+        return jobManager.factory.manager(jobManager)
+                .onStart(() -> {
+                    l.liftVertical1.setPower(speed);
+                    l.liftVertical2.setPower(speed);
+                })
+                .completeCondition(() ->
+                        l.liftVertical1.getCurrentPosition() <= target)
+                .onComplete(() -> {
+                    l.liftVertical1.setPower(0);
+                    l.liftVertical2.setPower(0);
+                })
+                .build();
     }
 
     // Pole detection; defaultPolePos = -430
@@ -345,31 +382,36 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
     }
 
     // JJogger reimplementation
-    Job moveTurretTo(double speed, int position) {
+    Job moveTurretTo(double speed, int target) {
+        return moveTurretTo(speed, () -> target);
+    }
+
+    // JJogger reimplementation
+    Job moveTurretTo(double speed, Supplier<Integer> integerSupplier) {
         // Dummy class to support get/set of data in the Job.
         AtomicBoolean data = new AtomicBoolean(false);
 
         return jobManager.factory
                 .manager(jobManager)
                 .onStart(() -> { /* onStart */
-                    data.set(turret.getCurrentPosition() < position);
+                    data.set(turret.getCurrentPosition() < integerSupplier.get());
                     turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    turret.setTargetPosition(position);
-                    if (turret.getCurrentPosition()<position)
+                    turret.setTargetPosition(integerSupplier.get());
+                    if (turret.getCurrentPosition() < integerSupplier.get())
                         turret.setPower(speed);
-                    else if (turret.getCurrentPosition()>position)
+                    else if (turret.getCurrentPosition() > integerSupplier.get())
                         turret.setPower(-speed);
                     else {
                         turret.setPower(0);
                     }
                 })
                 .task(() -> { /* task */
-                    if (Math.abs(turret.getCurrentPosition()-position) < 150) {
+                    if (Math.abs(turret.getCurrentPosition() - integerSupplier.get()) < 150) {
                         turret.setPower(0.2 * (data.get() ? 1 : -1));
                     }
                 })
                 .completeCondition(() -> { /* completeCondition */
-                    return data.get() ? turret.getCurrentPosition() >= position : turret.getCurrentPosition() <= position;
+                    return data.get() ? turret.getCurrentPosition() >= integerSupplier.get() : turret.getCurrentPosition() <= integerSupplier.get();
                 })
                 .onComplete(() -> turret.setPower(0))
                 .build();
@@ -384,7 +426,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
         return jobManager.factory
                 .manager(jobManager)
                 .onStart(
-                    () -> targetEncoderCounts.set((int) (distance * 1700.0) + encoderLeft.getCurrentPosition())
+                        () -> targetEncoderCounts.set((int) (distance * 1700.0) + encoderLeft.getCurrentPosition())
                 )
                 .task(() -> {
                     double realSpeed = speed;
@@ -392,14 +434,14 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                         realSpeed = 0.2;
                     }
                     if (encoderLeft.getCurrentPosition() > encoderRight.getCurrentPosition()) {
-                        frontLeft.setPower(realSpeed-adjust);
+                        frontLeft.setPower(realSpeed - adjust);
                         frontRight.setPower(realSpeed);
-                        rearLeft.setPower(realSpeed-adjust);
+                        rearLeft.setPower(realSpeed - adjust);
                         rearRight.setPower(realSpeed);
                     } else if (encoderLeft.getCurrentPosition() < encoderRight.getCurrentPosition()) {
-                        frontLeft.setPower(realSpeed+adjust);
+                        frontLeft.setPower(realSpeed + adjust);
                         frontRight.setPower(realSpeed);
-                        rearLeft.setPower(realSpeed+adjust);
+                        rearLeft.setPower(realSpeed + adjust);
                         rearRight.setPower(realSpeed);
                     } else if (encoderLeft.getCurrentPosition() == encoderRight.getCurrentPosition()) {
                         frontLeft.setPower(realSpeed);

@@ -8,6 +8,9 @@ import org.firstinspires.ftc.teamcode.lib.Supplier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class JobManager {
     private int next = 0;
@@ -28,14 +31,38 @@ public class JobManager {
     public JobManager() {
     }
 
-    private static StackTraceElement getCallSource() {
+    private static ArrayList<StackTraceElement> getCallSources() {
         Thread thread = Thread.currentThread();
         // Get first stack frame that is *not* in this class
+        boolean inUserSpace = false;
+        ArrayList<StackTraceElement> relevant = new ArrayList<>();
+        String targetClassName = "";
+        Pattern pattern = Pattern.compile("\\.([A-Za-z0-9]+)(?:\\.\\$[A-Za-z0-9$]+)*$");
         for (StackTraceElement stackElement : thread.getStackTrace()) {
-            if (stackElement.getClassName().contains("lib.jobs")) continue;
-            return stackElement;
+            if (!inUserSpace && stackElement.getClassName().contains("lib.jobs")) inUserSpace = true;
+            if (!inUserSpace) continue;
+            if (stackElement.getClassName().contains("lib.jobs")) {
+                if (relevant.isEmpty()) continue;
+                break;
+            }
+            if (stackElement.isNativeMethod()) {
+                if (relevant.isEmpty()) continue;
+                break;
+            }
+            Matcher m = pattern.matcher(stackElement.getClassName());
+            if (!m.find()) {
+                if (relevant.isEmpty()) continue;
+                break;
+            }
+            String currentClassName = m.group(1);
+            if (relevant.isEmpty()) targetClassName = currentClassName;
+            else if (!Objects.equals(currentClassName, targetClassName)) {
+                // done
+                break;
+            }
+            relevant.add(stackElement);
         }
-        return new StackTraceElement("unknown", "", "", -1);
+        return relevant;
     }
 
     /**
@@ -48,9 +75,21 @@ public class JobManager {
         StringBuilder label = new StringBuilder();
         label.append(job.getClass().getSimpleName()).append(" #").append(next);
         if (DEBUG_JOB_SOURCES) {
-            StackTraceElement source = getCallSource();
-            label.append(" @ ").append(source);
-            RobotLog.ii("JobManager", "job " + job.toString() + " from " + getCallSource());
+            ArrayList<StackTraceElement> sources = getCallSources();
+            for (StackTraceElement source : sources) {
+                Pattern pattern = Pattern.compile("\\.([A-Za-z0-9]+(?:\\.\\$[A-Za-z0-9$]+)*)$");
+                Matcher matcher = pattern.matcher(source.getClassName());
+                String simpleClassName;
+                if (matcher.find()) {
+                    simpleClassName = matcher.group(1);
+                } else {
+                    simpleClassName = source.getClassName();
+                }
+                label.append(", ").append(simpleClassName).append(".").append(source.getMethodName())
+                        .append("(").append(source.getFileName()).append(":").append(source.getLineNumber())
+                        .append(")");
+            }
+            RobotLog.ii("JobManager", "job " + next + " " + job + " from " + getCallSources());
         }
         labels.put(next, label.toString());
         return next++;

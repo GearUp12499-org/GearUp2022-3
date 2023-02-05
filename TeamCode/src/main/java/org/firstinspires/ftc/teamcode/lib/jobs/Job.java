@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.lib.jobs;
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -18,14 +20,15 @@ import java.util.List;
  * Represents a job that can be run in a JobManager.
  */
 public class Job {
-    public static final boolean TIMINGS = false;
+    public static final boolean TIMINGS = true;
     // ms, if the <insert variable> is greater than this, the job will be considered "slow"
     // and output warnings when complete
-    public static final double MAX_MEAN_TASK_TIME = 20; // 50 i/s
-    public static final double MAX_95TH_TASK_TIME = 40; // 25 i/s
-    public static final double MAX_MAX_TASK_TIME = 100; // 10 i/s
+    public static final double MAX_MEAN_TASK_TIME = 100; // 10 i/s
+    public static final double MAX_95TH_TASK_TIME = 150; // 6 + 2/3 i/s
+    public static final double MAX_MAX_TASK_TIME = 250; // 4 i/s
 
     public static class Timings {
+        @SuppressLint("DefaultLocale")
         public static String formatDuration(long ms) {
             if (ms < 1000) return ms + "ms";
             double seconds = ms / 1000.0;
@@ -36,6 +39,7 @@ public class Job {
             return String.format("%dh %dm %.2fs", (int) Math.floor(hours), (int) Math.floor(minutes % 60), seconds % 60);
         }
 
+        @SuppressLint("DefaultLocale")
         public static String formatDuration(double ms) {
             if (ms < 1000) return String.format("%.1fms", ms);
             double seconds = ms / 1000.0;
@@ -64,14 +68,6 @@ public class Job {
 
         public long getTotalTimeWaiting() {
             return totalTimeWaiting;
-        }
-
-        public long getLastIdleInvoke() {
-            return lastIdleInvoke;
-        }
-
-        public long getTaskTimeStart() {
-            return taskTimeStart;
         }
 
         public boolean isSealed() {
@@ -139,7 +135,7 @@ public class Job {
             return sorted.get(sorted.size() - 1);
         }
 
-        private long createdAt = -1;
+        private final long createdAt;
         private long startedAt = -1;
         private long completedAt = -1;
 
@@ -150,7 +146,7 @@ public class Job {
         private long taskTimeStart = -1;
 
         private boolean sealed = false;
-        private ArrayList<Long> taskTimes = new ArrayList<>();
+        private final ArrayList<Long> taskTimes = new ArrayList<>();
         private void notWhenSealed() {
             if (sealed) throw new IllegalStateException("Timings sealed");
         }
@@ -180,8 +176,7 @@ public class Job {
 
         public void bump_start_task() {
             notWhenSealed();
-            long now = System.currentTimeMillis();
-            taskTimeStart = now;
+            taskTimeStart = System.currentTimeMillis();
         }
 
         public void bump_end_task() {
@@ -309,17 +304,17 @@ public class Job {
         if (TIMINGS) {
             timings.complete();
             long now = System.currentTimeMillis();
-            RobotLog.ii("Job Timings", manager.labelFor(id) + " timings:");
-            RobotLog.ii("Job Timings", "  Lifecycle time: " + Timings.formatDuration(timings.waitingToStartTime() + timings.runningOverallTime()));
-            RobotLog.ii("Job Timings", "   ┣ Waiting to start: " + Timings.formatDuration(timings.waitingToStartTime()));
-            RobotLog.ii("Job Timings", "   ┗ Running overall : " + Timings.formatDuration(timings.runningOverallTime()));
-            RobotLog.ii("Job Timings", "      ┗ This task    : " + Timings.formatDuration(timings.getTotalTimeRunning()));
-            RobotLog.ii("Job Timings", "  Created " + Timings.formatDuration(now - timings.getCreatedAt()) + " ago");
-            RobotLog.ii("Job Timings", "  Started " + Timings.formatDuration(now - timings.getStartedAt()) + " ago");
-            RobotLog.ii("Job Timings", "  Mean task time: " + Timings.formatDuration(timings.averageTaskMs()));
-            RobotLog.ii("Job Timings", "   ┃ (" + timings.getTaskTimes().size() + " samples)");
-            RobotLog.ii("Job Timings", "   ┣ 95% median : " + Timings.formatDuration(timings.p95TaskMs()));
-            RobotLog.ii("Job Timings", "   ┗ Maximum    : " + Timings.formatDuration(timings.maxTaskMs()));
+            RobotLog.ii("JobTimings", manager.labelFor(id) + " timings:");
+            RobotLog.ii("JobTimings", "  Lifecycle time: " + Timings.formatDuration(timings.waitingToStartTime() + timings.runningOverallTime()));
+            RobotLog.ii("JobTimings", "   ┣ Waiting to start: " + Timings.formatDuration(timings.waitingToStartTime()));
+            RobotLog.ii("JobTimings", "   ┗ Running overall : " + Timings.formatDuration(timings.runningOverallTime()));
+            RobotLog.ii("JobTimings", "      ┗ This task    : " + Timings.formatDuration(timings.getTotalTimeRunning()));
+            RobotLog.ii("JobTimings", "  Created " + Timings.formatDuration(now - timings.getCreatedAt()) + " ago");
+            RobotLog.ii("JobTimings", "  Started " + Timings.formatDuration(now - timings.getStartedAt()) + " ago");
+            RobotLog.ii("JobTimings", "  Mean task time: " + Timings.formatDuration(timings.averageTaskMs()));
+            RobotLog.ii("JobTimings", "   ┃ (" + timings.getTaskTimes().size() + " samples)");
+            RobotLog.ii("JobTimings", "   ┣ 95% median : " + Timings.formatDuration(timings.p95TaskMs()));
+            RobotLog.ii("JobTimings", "   ┗ Maximum    : " + Timings.formatDuration(timings.maxTaskMs()));
             ArrayList<String> problems = new ArrayList<>();
             if (timings.averageTaskMs() > MAX_MEAN_TASK_TIME) {
                 problems.add("Job is too slow on average (mean task time is " + Timings.formatDuration(timings.averageTaskMs()) + ", configured limit is " + Timings.formatDuration(MAX_MEAN_TASK_TIME) + ")");
@@ -331,9 +326,9 @@ public class Job {
                 problems.add("Task ran for " + Timings.formatDuration(timings.maxTaskMs()) + " (max), configured limit is " + Timings.formatDuration(MAX_MAX_TASK_TIME));
             }
             if (!problems.isEmpty()) {
-                RobotLog.ee("Job Timings", "Performance issues detected:");
+                RobotLog.ee("JobTimings", "Performance issues detected:");
                 for (String problem : problems) {
-                    RobotLog.ee("Job Timings", "  " + problem);
+                    RobotLog.ee("JobTimings", "  " + problem);
                 }
             }
         }
@@ -471,6 +466,9 @@ public class Job {
     @NonNull
     @Override
     public String toString() {
+        if (manager == null) {
+            return "[" + (isActive() ? "running" : isComplete() ? "complete" : "waiting") + " " + id + "]";
+        }
         return "[" + (isActive() ? "running" : isComplete() ? "complete" : "waiting") + " " + manager.labelFor(id) + "]";
     }
 }
