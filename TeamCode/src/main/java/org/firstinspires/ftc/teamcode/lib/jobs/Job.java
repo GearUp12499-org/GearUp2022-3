@@ -11,14 +11,186 @@ import org.firstinspires.ftc.teamcode.lib.NullTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * Represents a job that can be run in a JobManager.
  */
 public class Job {
+    public static final boolean TIMINGS = false;
+    public static class Timings {
+        public static String formatDuration(long ms) {
+            if (ms < 1000) return ms + "ms";
+            double seconds = ms / 1000.0;
+            if (seconds < 60) return String.format("%.2fs", seconds);
+            double minutes = seconds / 60.0;
+            if (minutes < 60) return String.format("%dm %.2fs", (int) Math.floor(minutes), seconds % 60);
+            double hours = minutes / 60.0;
+            return String.format("%dh %dm %.2fs", (int) Math.floor(hours), (int) Math.floor(minutes % 60), seconds % 60);
+        }
+
+        public static String formatDuration(double ms) {
+            if (ms < 1000) return String.format("%.1fms", ms);
+            double seconds = ms / 1000.0;
+            if (seconds < 60) return String.format("%.2fs", seconds);
+            double minutes = seconds / 60.0;
+            if (minutes < 60) return String.format("%dm %.2fs", (int) Math.floor(minutes), seconds % 60);
+            double hours = minutes / 60.0;
+            return String.format("%dh %dm %.2fs", (int) Math.floor(hours), (int) Math.floor(minutes % 60), seconds % 60);
+        }
+
+        public long getCreatedAt() {
+            return createdAt;
+        }
+
+        public long getStartedAt() {
+            return startedAt;
+        }
+
+        public long getCompletedAt() {
+            return completedAt;
+        }
+
+        public long getTotalTimeRunning() {
+            return totalTimeRunning;
+        }
+
+        public long getTotalTimeWaiting() {
+            return totalTimeWaiting;
+        }
+
+        public long getLastIdleInvoke() {
+            return lastIdleInvoke;
+        }
+
+        public long getTaskTimeStart() {
+            return taskTimeStart;
+        }
+
+        public boolean isSealed() {
+            return sealed;
+        }
+
+        /**
+         * @return Duration from the creation of the Job to when it is started.
+         */
+        public long waitingToStartTime() {
+            return startedAt - createdAt;
+        }
+
+        /**
+         * @return Duration during which the job has the "running" state.
+         */
+        public long runningOverallTime() {
+            return completedAt - startedAt;
+        }
+
+        /**
+         * @return List of times, in milliseconds, that the job took to complete its task and comparator.
+         */
+        public ArrayList<Long> getTaskTimes() {
+            return taskTimes;
+        }
+
+        public double averageTaskMs() {
+            long sum = 0;
+            for (long taskTime : taskTimes) {
+                sum += taskTime;
+            }
+            if (taskTimes.size() == 0) return 0;
+            return sum / (double) taskTimes.size();
+        }
+
+        private ArrayList<Long> sortedTaskTimes() {
+            ArrayList<Long> sorted = new ArrayList<>(taskTimes);
+            Collections.sort(sorted, Long::compare);
+            return sorted;
+        }
+
+        public double medianTaskMs() {
+            ArrayList<Long> sorted = sortedTaskTimes();
+            if (sorted.size() == 0) return 0;
+            return sorted.get(sorted.size() / 2);
+        }
+
+        /**
+         * 95th percentile task time, in milliseconds.
+         * @return 95th percentile task time, in milliseconds.
+         */
+        public double p95TaskMs() {
+            ArrayList<Long> sorted = sortedTaskTimes();
+            if (sorted.size() == 0) return 0;
+            return sorted.get((int) (sorted.size() * 0.95));
+        }
+
+        /**
+         * Absolute maximum task time, in milliseconds.
+         */
+        public long maxTaskMs() {
+            ArrayList<Long> sorted = sortedTaskTimes();
+            if (sorted.size() == 0) return 0;
+            return sorted.get(sorted.size() - 1);
+        }
+
+        private long createdAt = -1;
+        private long startedAt = -1;
+        private long completedAt = -1;
+
+        private long totalTimeRunning = -1;
+        private long totalTimeWaiting = -1;
+
+        private long lastIdleInvoke = -1;
+        private long taskTimeStart = -1;
+
+        private boolean sealed = false;
+        private ArrayList<Long> taskTimes = new ArrayList<>();
+        private void notWhenSealed() {
+            if (sealed) throw new IllegalStateException("Timings sealed");
+        }
+
+        public Timings() {
+            createdAt = System.currentTimeMillis();
+        }
+
+        public void start() {
+            notWhenSealed();
+            startedAt = System.currentTimeMillis();
+        }
+
+        public void complete() {
+            notWhenSealed();
+            completedAt = System.currentTimeMillis();
+        }
+
+        public void bump_waiting() {
+            notWhenSealed();
+            long now = System.currentTimeMillis();
+            if (lastIdleInvoke != -1) {
+                totalTimeWaiting += now - lastIdleInvoke;
+            }
+            lastIdleInvoke = now;
+        }
+
+        public void bump_start_task() {
+            notWhenSealed();
+            long now = System.currentTimeMillis();
+            taskTimeStart = now;
+        }
+
+        public void bump_end_task() {
+            notWhenSealed();
+            long now = System.currentTimeMillis();
+            if (taskTimeStart != -1) {
+                taskTimes.add(now - taskTimeStart);
+                totalTimeRunning += now - taskTimeStart;
+            }
+        }
+    }
+
     public final int id;
     private final JobManager manager;
+    public Timings timings = new Timings();
     private final Consumer<Job> onStart;
     private final Consumer<Job> task;
     private final Function<Job, Boolean> completeCondition;
@@ -84,6 +256,9 @@ public class Job {
      */
     private void startHandler() {
         this.onStart.accept(this);
+        if (TIMINGS) {
+            timings.start();
+        }
         this.active = true;
     }
 
@@ -92,10 +267,18 @@ public class Job {
      */
     public void tick() {
         if (isActive()) {
+            if (TIMINGS) {
+                timings.bump_start_task();
+            }
             this.task.accept(this);
             if (completeCondition.apply(this)) {
                 completeHandler();
             }
+            if (TIMINGS) {
+                timings.bump_end_task();
+            }
+        } else if (TIMINGS) {
+            timings.bump_waiting();
         }
     }
 
@@ -116,6 +299,20 @@ public class Job {
                 RobotLog.i("Starting " + job);
                 manager.getJob(job).startHandler();
             }
+        }
+        if (TIMINGS) {
+            timings.complete();
+            long now = System.currentTimeMillis();
+            RobotLog.ii("Job Timings", manager.labelFor(id) + " timings:");
+            RobotLog.ii("Job Timings", "  Lifecycle time: " + timings.waitingToStartTime() + timings.runningOverallTime());
+            RobotLog.ii("Job Timings", "   ┣ Waiting to start: " + timings.waitingToStartTime());
+            RobotLog.ii("Job Timings", "   ┗ Running overall: " + timings.runningOverallTime());
+            RobotLog.ii("Job Timings", "  Created " + Timings.formatDuration(now - timings.getCreatedAt()) + " ago");
+            RobotLog.ii("Job Timings", "  Started " + Timings.formatDuration(now - timings.getStartedAt()) + " ago");
+            RobotLog.ii("Job Timings", "  Mean task time: " + Timings.formatDuration(timings.averageTaskMs()));
+            RobotLog.ii("Job Timings", "   ┃ (" + timings.getTaskTimes().size() + " samples)");
+            RobotLog.ii("Job Timings", "   ┣ 95% median : " + Timings.formatDuration(timings.p95TaskMs()));
+            RobotLog.ii("Job Timings", "   ┗ Maximum    : " + Timings.formatDuration(timings.maxTaskMs()));
         }
         this.complete = true;
         this.active = false;
@@ -251,6 +448,6 @@ public class Job {
     @NonNull
     @Override
     public String toString() {
-        return "[job #"+id+" " + (isActive() ? "running" : isComplete() ? "complete" : "waiting") +"]";
+        return "[" + (isActive() ? "running" : isComplete() ? "complete" : "waiting") + " " + manager.labelFor(id) + "]";
     }
 }

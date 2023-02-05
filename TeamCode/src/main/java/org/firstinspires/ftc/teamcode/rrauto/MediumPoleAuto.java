@@ -206,49 +206,22 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                     }
                 }
 
-                int maxPerLine = 5;
-                int i = 0;
-                StringBuilder b = new StringBuilder();
-                b.append("  ");
-                telemetry.addLine("Finished: " + finished.size());
-                for (Integer job : finished) {
-                    b.append(job).append(" ");
-                    if (++i % maxPerLine == 0) {
-                        telemetry.addLine(b.toString());
-                        b = new StringBuilder();
-                        b.append("  ");
-                    }
+                // running, waiting, finished
+                telemetry.addLine(String.format("Jobs: %d running, %d waiting, %d finished", running.size(), waiting.size(), finished.size()));
+                telemetry.addLine("  Running:");
+                for (int id : running) {
+                    Job job = jobManager.getJob(id);
+                    telemetry.addLine(String.format("    %s", job.toString()));
                 }
-                telemetry.addLine(b.toString());
-
-                b = new StringBuilder();
-                b.append("  ");
-                i = 0;
-                telemetry.addLine("Running: " + running.size());
-                for (Integer job : running) {
-                    b.append(job).append(" ");
-                    if (++i % maxPerLine == 0) {
-                        telemetry.addLine(b.toString());
-                        b = new StringBuilder();
-                        b.append("  ");
-                    }
+                telemetry.addLine("  Waiting:");
+                for (int id : waiting) {
+                    Job job = jobManager.getJob(id);
+                    telemetry.addLine(String.format("    (%s) %s", job.getDependencies().size() == 0 ? "idle" : job.getDependencies().size(), job.toString()));
                 }
-                telemetry.addLine(b.toString());
-
-                telemetry.addLine("Waiting: " + waiting.size());
-                for (Integer jobidx : waiting) {
-                    Job job = jobManager.getJob(jobidx);
-                    ArrayList<Integer> deps = job.getDependencies();
-                    if (deps.size() == 0) {
-                        telemetry.addLine("  " + jobidx + " not started");
-                    } else {
-                        StringBuilder b2 = new StringBuilder();
-                        b2.append("  ").append(jobidx).append(" depends on ");
-                        for (Integer dep : deps) {
-                            b2.append(dep).append(" ");
-                        }
-                        telemetry.addLine(b2.toString());
-                    }
+                telemetry.addLine("  Finished:");
+                for (int id : finished) {
+                    Job job = jobManager.getJob(id);
+                    telemetry.addLine(String.format("    %s", job.toString()));
                 }
 
                 double percentage = 100.0 * (double)finished.size() / (double)(finished.size() + running.size() + waiting.size());

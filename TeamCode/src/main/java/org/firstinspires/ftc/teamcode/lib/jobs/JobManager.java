@@ -12,9 +12,17 @@ import java.util.Map;
 public class JobManager {
     private int next = 0;
     private final HashMap<Integer, Job> jobs = new HashMap<>();
+    private final HashMap<Integer, String> labels = new HashMap<>();
     public final JobFactory factory = new JobFactory();
 
+    /**
+     * Capture stack traces for job creation.
+     */
     public static final boolean DEBUG_JOB_SOURCES = true;
+    /**
+     * Whether to persist labels after jobs are complete and gc()'d.
+     */
+    public static final boolean PERSIST_LABELS = true;
 
 
     public JobManager() {
@@ -37,9 +45,11 @@ public class JobManager {
      */
     public int addJob(Job job) {
         jobs.put(next, job);
+        StringBuilder label = new StringBuilder();
+        label.append(job.getClass().getSimpleName()).append(" #").append(next);
         if (DEBUG_JOB_SOURCES) {
             StackTraceElement source = getCallSource();
-            String sourceStr = source.getClassName() + "." + source.getMethodName() + ":" + source.getLineNumber();
+            label.append(" @ ").append(source);
             RobotLog.ii("JobManager", "job " + job.toString() + " from " + getCallSource());
         }
         return next++;
@@ -60,10 +70,15 @@ public class JobManager {
     public void gc() {
         for (Job job : new ArrayList<>(jobs.values())) {
             if (job.isComplete()) {
-                RobotLog.ii("JobManager", "Clearing job " + job.id);
+                RobotLog.ii("JobManager", "Clearing: " + labelFor(job.id));
                 jobs.remove(job.id);
+                if (!PERSIST_LABELS) labels.remove(job.id);
             }
         }
+    }
+
+    public String labelFor(int id) {
+        return labels.get(id);
     }
 
     /**
@@ -101,7 +116,7 @@ public class JobManager {
                 .onStart(timer::reset)
                 .completeCondition(() -> timer.milliseconds() > millis)
                 .build();
-        RobotLog.ii("JobManager", "job " + j.id + " is delay("+millis+")");
+        RobotLog.ii("JobManager", j.id + " is delay("+millis+")");
         return j;
     }
 
