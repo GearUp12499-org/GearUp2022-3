@@ -1,5 +1,5 @@
-![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/GearUp12499-org/FTCRobotController-GearUp/android.yml?branch=master&label=right%20now%20it%20be%20&style=for-the-badge)
-![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/GearUp12499-org/FTCRobotController-GearUp/android.yml?branch=penguinencounter&label=those%20other%20dev%20builds&style=for-the-badge)
+![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/GearUp12499-org/FTCRobotController-GearUp/android.yml?branch=master&label=main&style=for-the-badge)
+![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/GearUp12499-org/FTCRobotController-GearUp/android.yml?branch=penguinencounter&label=penguinencounter&style=for-the-badge)
 
 ## NOTICE NOTICE
 You be looking at a fork of this here repo!
