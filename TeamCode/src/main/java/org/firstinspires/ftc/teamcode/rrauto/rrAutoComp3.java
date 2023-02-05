@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.DetectPoleV2;
 import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.lib.LinearCleanupOpMode;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -32,9 +33,7 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import java.util.ArrayList;
 
 @Autonomous(name = "RR AUTO", group = "GearUp")
-public class rrAutoComp3 extends LinearOpMode {
-    static class Abort extends RuntimeException {}
-
+public class rrAutoComp3 extends LinearCleanupOpMode {
     public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 4500};
     public static DcMotor liftVertical1;
 
@@ -51,7 +50,6 @@ public class rrAutoComp3 extends LinearOpMode {
     int CENTER = 2;
     int RIGHT = 3;
     String position = "";
-    AprilTagDetection tagOfInterest = null;
     OpenCvCamera camera;
     AprilTagDetectionPipeline aprilTagDetectionPipeline;
 
@@ -59,40 +57,24 @@ public class rrAutoComp3 extends LinearOpMode {
     Lift l;
 
     @Override
-    public void runOpMode() throws InterruptedException {
-        try {
-            safeRunOpMode();
-        } catch (Exception e) {
-            if (!(e instanceof Abort)) {
-                RobotLog.e("(rrautocomp3) crashing pretty bad with %s", e.toString());
-                e.fillInStackTrace().printStackTrace();
-            }
-        } finally {
-            RobotLog.i("(rrautocomp3) cleanup...");
-            if (frontLeft != null) {
-                frontLeft.setPower(0);
-                frontRight.setPower(0);
-                rearLeft.setPower(0);
-                rearRight.setPower(0);
-            }
-            if (turret != null) {
-                turret.setPower(0);
-            }
-            if (l != null && l.liftVertical1 != null) {
-                l.liftVertical1.setPower(0);
-                l.liftVertical2.setPower(0);
-                l.liftHorizontal.setPower(0);
-            }
-
-            RobotLog.i("(rrautocomp3) stopped good");
+    public void cleanup() {
+        if (frontLeft != null) {
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            rearLeft.setPower(0);
+            rearRight.setPower(0);
+        }
+        if (turret != null) {
+            turret.setPower(0);
+        }
+        if (l != null && l.liftVertical1 != null) {
+            l.liftVertical1.setPower(0);
+            l.liftVertical2.setPower(0);
+            l.liftHorizontal.setPower(0);
         }
     }
 
-    private void stopMaybe() {
-        if (isStopRequested()) throw new Abort();
-    }
-
-    public void safeRunOpMode() throws InterruptedException {
+    public void main() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         // expose the hardware to the rest of the code (mainly 'turret' for now)
@@ -109,71 +91,90 @@ public class rrAutoComp3 extends LinearOpMode {
         liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        camera.setPipeline(aprilTagDetectionPipeline);
-        camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-            }
-        });
 
         telemetry.setMsTransmissionInterval(50);
         l.openClaw();
-        waitForStart();
-        if(position.equals("trig_left_side")){
-            int a = 2; //counter for where to go
 
-            runtime.reset();
-            while (runtime.seconds()<0.5 && opModeIsActive()) {
-                //grabs preloaded while reading
-                l.closeClaw();
-                ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-                if (currentDetections.size() != 0) {
-                    boolean tagFound = false;
-                    for (AprilTagDetection tag : currentDetections) {
-                        if (tag.id == LEFT || tag.id == CENTER || tag.id == RIGHT) {
-                            if(tag.id == LEFT){
-                                a =1;
-                            }
-                            if(tag.id == CENTER)
-                                a =2;
-                            if(tag.id == RIGHT)
-                                a =3;
-                            tagOfInterest = tag;
-                            tagFound = true;
-                            break;
-                        }
-                    }
-                    if (tagFound) {
-                        telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                        tagToTelemetry(tagOfInterest);
-                    } else {
-                        telemetry.addLine("Don't see tag of interest :(");
-                        if (tagOfInterest == null) {
-                            telemetry.addLine("(The tag has never been seen)");
-                        } else {
-                            telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                            tagToTelemetry(tagOfInterest);
-                        }
-                    }
-                } else {
-                    telemetry.addLine("Don't see tag of interest :(");
-                    if (tagOfInterest == null) {
-                        telemetry.addLine("(The tag has never been seen)");
-                    } else {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-                telemetry.update();
-                sleep(500);
-            }
+        camera.setPipeline(aprilTagDetectionPipeline);
+
+        final boolean[] isCameraRunning = {false};
+        final int[] cameraLoadAttempts = {1};
+        final int warnAfter = 5;
+        while (!isCameraRunning[0] && opModeInInit()) {
             stopMaybe();
 
+            final boolean[] cameraFailed = {false};
+            camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+                @Override
+                public void onOpened() {
+                    camera.startStreaming(800, 448, OpenCvCameraRotation.UPRIGHT);
+                    isCameraRunning[0] = true;
+                    telemetry.addLine("Camera is live.");
+                    telemetry.update();
+                }
+                @Override
+                public void onError(int errorCode) {
+                    cameraFailed[0] = true;
+                    cameraLoadAttempts[0]++;
+                }
+            });
+
+            while (!(cameraFailed[0] || isCameraRunning[0]) && opModeInInit()) {
+                stopMaybe();
+                telemetry.addLine("Starting up camera: att " + cameraLoadAttempts[0]);
+                if (cameraLoadAttempts[0] > warnAfter) {
+                    telemetry.addLine("The robot is having trouble connecting");
+                    telemetry.addLine("to the camera. Try restarting the OpMode,");
+                    telemetry.addLine("or, if that doesn't work, restart the robot.");
+                }
+                telemetry.update();
+            }
+        }
+
+        AprilTagDetection tagOfInterest = null;
+        int targetLocation = 2;
+
+        while (opModeInInit()) {
+            ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
+            if (currentDetections.size() != 0) {
+                boolean tagFound = false;
+                for (AprilTagDetection tag : currentDetections) {
+                    if (tag.id == LEFT || tag.id == CENTER || tag.id == RIGHT) {
+                        if (tag.id == LEFT) {
+                            targetLocation = 1;
+                        }
+                        if (tag.id == CENTER)
+                            targetLocation = 2;
+                        if (tag.id == RIGHT)
+                            targetLocation = 3;
+                        tagOfInterest = tag;
+                        tagFound = true;
+                        break;
+                    }
+                }
+                if (tagFound) {
+                    telemetry.addLine("See a tag; id is " + tagOfInterest.id + " and our target is " + targetLocation);
+                } else {
+                    if (tagOfInterest == null) {
+                        telemetry.addLine("Don't see a matching tag; no history; target is " + targetLocation);
+                    } else {
+                        telemetry.addLine("Don't see a matching tag; historical tag id is " + tagOfInterest.id + " and our target is " + targetLocation);
+                    }
+                }
+            } else {
+                if (tagOfInterest == null) {
+                    telemetry.addLine("Don't see any tag; no history; target is " + targetLocation);
+                } else {
+                    telemetry.addLine("Don't see any tag; historical tag id is " + tagOfInterest.id + " and our target is " + targetLocation);
+                }
+            }
+            telemetry.update();
+            safeSleep(500);
+        }
+
+        waitForStart();
+        if(position.equals("trig_left_side")){
+            runtime.reset();
             int polePos = -400;
 
             //raises preloaded and drives to second tile, ready to drop off cone on pole
@@ -305,7 +306,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             //resets turret and lift to home position, ready to be used in teleop, strafes to correct parking position based on what april tag position was detected
             turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            if (a == 1) {
+            if (targetLocation == 1) {
                 l.setHorizontalTargetManual(0);
 
                 turret.setTargetPosition(0);
@@ -321,7 +322,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
-            } else if (a == 3) {
+            } else if (targetLocation == 3) {
                 l.setHorizontalTargetManual(0);
 
                 turret.setTargetPosition(0);
@@ -366,54 +367,7 @@ public class rrAutoComp3 extends LinearOpMode {
             }
         }
         else if(position.equals("trig_right_side")){
-            int a = 2; //counter for where to go
-
             runtime.reset();
-            while (runtime.seconds()<0.5 && opModeIsActive()) {
-                //grabs preloaded while reading
-                l.closeClaw();
-                ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-                if (currentDetections.size() != 0) {
-                    boolean tagFound = false;
-                    for (AprilTagDetection tag : currentDetections) {
-                        if (tag.id == LEFT || tag.id == CENTER || tag.id == RIGHT) {
-                            if(tag.id == LEFT){
-                                a =1;
-                            }
-                            if(tag.id == CENTER)
-                                a =2;
-                            if(tag.id == RIGHT)
-                                a =3;
-                            tagOfInterest = tag;
-                            tagFound = true;
-                            break;
-                        }
-                    }
-                    if (tagFound) {
-                        telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                        tagToTelemetry(tagOfInterest);
-                    } else {
-                        telemetry.addLine("Don't see tag of interest :(");
-                        if (tagOfInterest == null) {
-                            telemetry.addLine("(The tag has never been seen)");
-                        } else {
-                            telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                            tagToTelemetry(tagOfInterest);
-                        }
-                    }
-                } else {
-                    telemetry.addLine("Don't see tag of interest :(");
-                    if (tagOfInterest == null) {
-                        telemetry.addLine("(The tag has never been seen)");
-                    } else {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-                telemetry.update();
-                sleep(500);
-            }
-            stopMaybe();
 
             int polePos = -400;
 
@@ -544,7 +498,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             //resets turret and lift to home position, ready to be used in teleop, strafes to correct parking position based on what april tag position was detected
             turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            if (a == 1) {
+            if (targetLocation == 1) {
                 l.setHorizontalTargetManual(0);
 
                 turret.setTargetPosition(0);
@@ -561,7 +515,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
-            } else if (a == 3) {
+            } else if (targetLocation == 3) {
                 l.setHorizontalTargetManual(0);
 
                 turret.setTargetPosition(0);
@@ -607,54 +561,7 @@ public class rrAutoComp3 extends LinearOpMode {
             }
         }
         else if (position.equals("left_side")) {  // set by extending classes
-            int a = 2; //counter for where to go
-
             runtime.reset();
-            while (runtime.seconds()<0.5 && opModeIsActive()) {
-                //grabs preloaded while reading
-                l.closeClaw();
-                ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-                if (currentDetections.size() != 0) {
-                    boolean tagFound = false;
-                    for (AprilTagDetection tag : currentDetections) {
-                        if (tag.id == LEFT || tag.id == CENTER || tag.id == RIGHT) {
-                            if(tag.id == LEFT){
-                                a =1;
-                            }
-                            if(tag.id == CENTER)
-                                a =2;
-                            if(tag.id == RIGHT)
-                                a =3;
-                            tagOfInterest = tag;
-                            tagFound = true;
-                            break;
-                        }
-                    }
-                    if (tagFound) {
-                        telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                        tagToTelemetry(tagOfInterest);
-                    } else {
-                        telemetry.addLine("Don't see tag of interest :(");
-                        if (tagOfInterest == null) {
-                            telemetry.addLine("(The tag has never been seen)");
-                        } else {
-                            telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                            tagToTelemetry(tagOfInterest);
-                        }
-                    }
-                } else {
-                    telemetry.addLine("Don't see tag of interest :(");
-                    if (tagOfInterest == null) {
-                        telemetry.addLine("(The tag has never been seen)");
-                    } else {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-                telemetry.update();
-                sleep(500);
-            }
-            stopMaybe();
 
             int polePos = -400;
 
@@ -782,7 +689,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             //resets turret and lift to home position, ready to be used in teleop, strafes to correct parking position based on what april tag position was detected
             turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            if (a == 1) {
+            if (targetLocation == 1) {
                 turret.setTargetPosition(0);
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
@@ -796,7 +703,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
-            } else if (a == 3) {
+            } else if (targetLocation == 3) {
                 turret.setTargetPosition(0);
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(0.3);
@@ -838,53 +745,7 @@ public class rrAutoComp3 extends LinearOpMode {
             }
         }
         else if (position.equals("right_side")) {  // set by extending classes
-            int a = 2; //counter for where to go
-
             runtime.reset();
-            while (runtime.seconds()<0.5) {
-                stopMaybe();
-                ArrayList<AprilTagDetection> currentDetections = aprilTagDetectionPipeline.getLatestDetections();
-                if (currentDetections.size() != 0) {
-                    boolean tagFound = false;
-                    for (AprilTagDetection tag : currentDetections) {
-                        if (tag.id == LEFT || tag.id == CENTER || tag.id == RIGHT) {
-                            if(tag.id == LEFT){
-                                a =1;
-                            }
-                            if(tag.id == CENTER)
-                                a =2;
-                            if(tag.id == RIGHT)
-                                a =3;
-                            tagOfInterest = tag;
-                            tagFound = true;
-                            break;
-                        }
-                    }
-                    if (tagFound) {
-                        telemetry.addLine("Tag of interest is in sight!\n\nLocation data:");
-                        tagToTelemetry(tagOfInterest);
-                    } else {
-                        telemetry.addLine("Don't see tag of interest :(");
-                        if (tagOfInterest == null) {
-                            telemetry.addLine("(The tag has never been seen)");
-                        } else {
-                            telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                            tagToTelemetry(tagOfInterest);
-                        }
-                    }
-                } else {
-                    telemetry.addLine("Don't see tag of interest :(");
-                    if (tagOfInterest == null) {
-                        telemetry.addLine("(The tag has never been seen)");
-                    } else {
-                        telemetry.addLine("\nBut we HAVE seen the tag before; last seen at:");
-                        tagToTelemetry(tagOfInterest);
-                    }
-                }
-                telemetry.update();
-                sleep(500);
-            }
-
             int polePos = 370;
 
             //grabs pre-loaded
@@ -1009,7 +870,7 @@ public class rrAutoComp3 extends LinearOpMode {
 
             //resets turret and lift to home position, ready to be used in teleop, strafes to correct parking position based on what april tag position was detected
             turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            if (a == 1) {
+            if (targetLocation == 1) {
                 turret.setTargetPosition(0);
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(-0.3);
@@ -1023,7 +884,7 @@ public class rrAutoComp3 extends LinearOpMode {
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
-            } else if (a == 3) {
+            } else if (targetLocation == 3) {
                 turret.setTargetPosition(0);
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(-0.3);
