@@ -19,6 +19,12 @@ import java.util.List;
  */
 public class Job {
     public static final boolean TIMINGS = false;
+    // ms, if the <insert variable> is greater than this, the job will be considered "slow"
+    // and output warnings when complete
+    public static final double MAX_MEAN_TASK_TIME = 20; // 50 i/s
+    public static final double MAX_95TH_TASK_TIME = 40; // 25 i/s
+    public static final double MAX_MAX_TASK_TIME = 100; // 10 i/s
+
     public static class Timings {
         public static String formatDuration(long ms) {
             if (ms < 1000) return ms + "ms";
@@ -313,6 +319,22 @@ public class Job {
             RobotLog.ii("Job Timings", "   ┃ (" + timings.getTaskTimes().size() + " samples)");
             RobotLog.ii("Job Timings", "   ┣ 95% median : " + Timings.formatDuration(timings.p95TaskMs()));
             RobotLog.ii("Job Timings", "   ┗ Maximum    : " + Timings.formatDuration(timings.maxTaskMs()));
+            ArrayList<String> problems = new ArrayList<>();
+            if (timings.averageTaskMs() > MAX_MEAN_TASK_TIME) {
+                problems.add("Job is too slow on average (mean task time is " + Timings.formatDuration(timings.averageTaskMs()) + ", configured limit is " + Timings.formatDuration(MAX_MEAN_TASK_TIME) + ")");
+            }
+            if (timings.p95TaskMs() > MAX_95TH_TASK_TIME) {
+                problems.add("Job is too slow at peaks (95% median task time is " + Timings.formatDuration(timings.p95TaskMs()) + ", configured limit is " + Timings.formatDuration(MAX_95TH_TASK_TIME) + ")");
+            }
+            if (timings.maxTaskMs() > MAX_MAX_TASK_TIME) {
+                problems.add("Task ran for " + Timings.formatDuration(timings.maxTaskMs()) + " (max), configured limit is " + Timings.formatDuration(MAX_MAX_TASK_TIME));
+            }
+            if (!problems.isEmpty()) {
+                RobotLog.ee("Job Timings", "Performance issues detected:");
+                for (String problem : problems) {
+                    RobotLog.ee("Job Timings", "  " + problem);
+                }
+            }
         }
         this.complete = true;
         this.active = false;
