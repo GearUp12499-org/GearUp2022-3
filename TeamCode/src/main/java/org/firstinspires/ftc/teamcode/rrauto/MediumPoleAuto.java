@@ -22,10 +22,12 @@ import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
 import org.firstinspires.ftc.teamcode.lib.AutoLogTelemetry;
 import org.firstinspires.ftc.teamcode.lib.LinearCleanupOpMode;
+import org.firstinspires.ftc.teamcode.lib.MatchCounter;
 import org.firstinspires.ftc.teamcode.lib.Supplier;
 import org.firstinspires.ftc.teamcode.lib.VirtualTelemetryLog;
 import org.firstinspires.ftc.teamcode.lib.jobs.Job;
 import org.firstinspires.ftc.teamcode.lib.jobs.JobManager;
+import org.firstinspires.ftc.teamcode.lib.jobs.ProfileFile;
 import org.firstinspires.ftc.teamcode.lib.jobs.ResultJob;
 import org.firstinspires.ftc.teamcode.lib.jobs.ResultJobFactory;
 import org.openftc.apriltag.AprilTagDetection;
@@ -61,6 +63,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
 
     @Override
     public void main() {
+        MatchCounter.newMatch();  // Increment match number, for storing logs and profile data
         telemetry.addLine("Starting up...");
         telemetry.update();
         prepareHardware(hardwareMap);
@@ -265,6 +268,9 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
             }
             telemetry.update();
         }
+        ProfileFile profile = new ProfileFile(jobManager.getJobs().values());
+        profile.build();
+        profile.export("profile_match_" + MatchCounter.getMatchNumber() + ".jobprof");
         jobManager.gc();  // Clean up any completed jobs, freeing one-shots and such
         RobotLog.i("runJobsUntilDone: all done");
     }

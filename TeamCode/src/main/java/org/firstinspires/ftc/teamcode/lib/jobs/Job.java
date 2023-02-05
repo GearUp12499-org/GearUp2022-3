@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.lib.NullTools;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -135,6 +136,10 @@ public class Job {
             return sorted.get(sorted.size() - 1);
         }
 
+        public int[] getDownstreamAtFinish() {
+            return downstreamAtFinish;
+        }
+
         private final long createdAt;
         private long startedAt = -1;
         private long completedAt = -1;
@@ -144,6 +149,8 @@ public class Job {
 
         private long lastIdleInvoke = -1;
         private long taskTimeStart = -1;
+
+        private int[] downstreamAtFinish = null;
 
         private boolean sealed = false;
         private final ArrayList<Long> taskTimes = new ArrayList<>();
@@ -160,8 +167,9 @@ public class Job {
             startedAt = System.currentTimeMillis();
         }
 
-        public void complete() {
+        public void complete(int[] downstream) {
             notWhenSealed();
+            downstreamAtFinish = downstream;
             completedAt = System.currentTimeMillis();
         }
 
@@ -302,13 +310,19 @@ public class Job {
             }
         }
         if (TIMINGS) {
-            timings.complete();
+            // collect downstream
+            int[] deps = new int[dependentJobs.size()];
+            for (int i = 0; i < deps.length; i++) {
+                deps[i] = dependentJobs.get(i);
+            }
+            timings.complete(deps);
             long now = System.currentTimeMillis();
             RobotLog.ii("JobTimings", manager.labelFor(id) + " timings:");
             RobotLog.ii("JobTimings", "  Lifecycle time: " + Timings.formatDuration(timings.waitingToStartTime() + timings.runningOverallTime()));
             RobotLog.ii("JobTimings", "   ┣ Waiting to start: " + Timings.formatDuration(timings.waitingToStartTime()));
-            RobotLog.ii("JobTimings", "   ┗ Running overall : " + Timings.formatDuration(timings.runningOverallTime()));
-            RobotLog.ii("JobTimings", "      ┗ This task    : " + Timings.formatDuration(timings.getTotalTimeRunning()));
+            RobotLog.ii("JobTimings", "   ┣ Running overall : " + Timings.formatDuration(timings.runningOverallTime()));
+            RobotLog.ii("JobTimings", "   ┃  ┗ This task    : " + Timings.formatDuration(timings.getTotalTimeRunning()));
+            RobotLog.ii("JobTimings", "   ┗ Downstream      : " + Arrays.toString(deps));
             RobotLog.ii("JobTimings", "  Created " + Timings.formatDuration(now - timings.getCreatedAt()) + " ago");
             RobotLog.ii("JobTimings", "  Started " + Timings.formatDuration(now - timings.getStartedAt()) + " ago");
             RobotLog.ii("JobTimings", "  Mean task time: " + Timings.formatDuration(timings.averageTaskMs()));
