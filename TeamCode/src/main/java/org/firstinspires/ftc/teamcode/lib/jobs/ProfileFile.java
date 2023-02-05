@@ -32,20 +32,21 @@ public class ProfileFile {
             b.append(" ").append("Created=").append(timings.getCreatedAt()).append("\n");
             b.append(" ").append("Started=").append(timings.getStartedAt()).append("\n");
             b.append(" ").append("Completed=").append(timings.getCompletedAt()).append("\n");
-            b.append(" ").append("WaitingDuration=").append(timings.waitingToStartTime())
+            b.append(" ").append("WaitingDuration=D").append(timings.waitingToStartTime())
                     .append(" (").append(Job.Timings.formatDuration(timings.waitingToStartTime())).append(")\n");
-            b.append(" ").append("RunningDuration=").append(timings.runningOverallTime())
+            b.append(" ").append("RunningDuration=D").append(timings.runningOverallTime())
                     .append(" (").append(Job.Timings.formatDuration(timings.runningOverallTime())).append(")\n");
-            b.append(" ").append("TotalExecutingTime=").append(timings.getTotalTimeRunning())
+            b.append(" ").append("TotalExecutingTime=D").append(timings.getTotalTimeRunning())
                     .append(" (").append(Job.Timings.formatDuration(timings.getTotalTimeRunning())).append(")\n");
-            b.append(" ").append("MeanTaskTime=").append(timings.averageTaskMs())
+            b.append(" ").append("TaskTimeSamples=").append(timings.getTaskTimes()).append("\n");
+            b.append(" ").append("MeanTaskTime=D").append(timings.averageTaskMs())
                     .append(" (").append(Job.Timings.formatDuration(timings.averageTaskMs())).append(")\n");
-            b.append(" ").append("P95TaskTime=").append(timings.p95TaskMs())
+            b.append(" ").append("P95TaskTime=D").append(timings.p95TaskMs())
                     .append(" (").append(Job.Timings.formatDuration(timings.p95TaskMs())).append(")\n");
-            b.append(" ").append("MaxTaskTime=").append(timings.maxTaskMs())
+            b.append(" ").append("MaxTaskTime=D").append(timings.maxTaskMs())
                     .append(" (").append(Job.Timings.formatDuration(timings.maxTaskMs())).append(")\n");
-            b.append(" ").append("Blocking=").append(Arrays.toString(timings.getDownstreamAtFinish())).append("\n");
-            b.append(" ").append("AllTaskTimes=").append(timings.getTaskTimes().toString()).append("\n");
+            b.append(" ").append("Blocking=A").append(Arrays.toString(timings.getDownstreamAtFinish())).append("\n");
+            b.append(" ").append("AllTaskTimes=A").append(timings.getTaskTimes().toString()).append("\n");
             b.append("\n");
             data += b.toString();
         }
