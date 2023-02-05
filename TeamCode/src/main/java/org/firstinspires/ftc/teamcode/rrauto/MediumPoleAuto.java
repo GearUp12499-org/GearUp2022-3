@@ -11,6 +11,8 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 
+import android.annotation.SuppressLint;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
@@ -186,6 +188,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
     /**
      * The main job loop.
      */
+    @SuppressLint("DefaultLocale")
     void runJobsUntilDone(Runnable extraLogging) {
         while (!jobManager.isDone()) {
             stopMaybe();
