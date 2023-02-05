@@ -180,7 +180,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
 
             //raises preloaded and drives to second tile, ready to drop off cone on pole
             l.verticalLift(2700, this);
-            straight(0.6,52); // 54 function for driving straight
+            straight(0.6,54); // 54 function for driving straight
 
             //pole detect
             while (Math.abs(turret.getCurrentPosition()) < 700) {
@@ -215,7 +215,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
             }
 
             //drops off cone into the stack
-            l.setHorizontalTargetManual(208);//225
+            l.setHorizontalTargetManual(220);//208
             while (!l.isSatisfiedHorizontally()) {
                 stopMaybe();
                 l.update();
@@ -374,7 +374,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
 
             //raises preloaded and drives to second tile, ready to drop off cone on pole
             l.verticalLift(2700, this);
-            straight(0.6,52); // 54 function for driving straight
+            straight(0.6,54); // 54 function for driving straight
 
             //pole detect
             while (Math.abs(turret.getCurrentPosition()) >- 700) {
@@ -407,7 +407,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
             }
 
             //drops off cone into the stack
-            l.setHorizontalTargetManual(240);//225
+            l.setHorizontalTargetManual(250);//240
             while (!l.isSatisfiedHorizontally()) {
                 stopMaybe();
                 l.update();
