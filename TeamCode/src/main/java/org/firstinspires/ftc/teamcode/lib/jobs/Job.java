@@ -310,9 +310,9 @@ public class Job {
             timings.complete();
             long now = System.currentTimeMillis();
             RobotLog.ii("Job Timings", manager.labelFor(id) + " timings:");
-            RobotLog.ii("Job Timings", "  Lifecycle time: " + timings.waitingToStartTime() + timings.runningOverallTime());
-            RobotLog.ii("Job Timings", "   ┣ Waiting to start: " + timings.waitingToStartTime());
-            RobotLog.ii("Job Timings", "   ┗ Running overall: " + timings.runningOverallTime());
+            RobotLog.ii("Job Timings", "  Lifecycle time: " + Timings.formatDuration(timings.waitingToStartTime() + timings.runningOverallTime()));
+            RobotLog.ii("Job Timings", "   ┣ Waiting to start: " + Timings.formatDuration(timings.waitingToStartTime()));
+            RobotLog.ii("Job Timings", "   ┗ Running overall: " + Timings.formatDuration(timings.runningOverallTime()));
             RobotLog.ii("Job Timings", "  Created " + Timings.formatDuration(now - timings.getCreatedAt()) + " ago");
             RobotLog.ii("Job Timings", "  Started " + Timings.formatDuration(now - timings.getStartedAt()) + " ago");
             RobotLog.ii("Job Timings", "  Mean task time: " + Timings.formatDuration(timings.averageTaskMs()));

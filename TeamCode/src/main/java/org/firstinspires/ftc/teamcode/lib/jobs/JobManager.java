@@ -52,6 +52,7 @@ public class JobManager {
             label.append(" @ ").append(source);
             RobotLog.ii("JobManager", "job " + job.toString() + " from " + getCallSource());
         }
+        labels.put(next, label.toString());
         return next++;
     }
 
