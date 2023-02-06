@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.rrauto;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.CM;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.MM;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
+import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.frontRight;
@@ -30,6 +31,8 @@ import org.firstinspires.ftc.teamcode.lib.jobs.JobManager;
 import org.firstinspires.ftc.teamcode.lib.jobs.ProfileFile;
 import org.firstinspires.ftc.teamcode.lib.jobs.ResultJob;
 import org.firstinspires.ftc.teamcode.lib.jobs.ResultJobFactory;
+import org.firstinspires.ftc.teamcode.lib.jobs.ToggleableJob;
+import org.firstinspires.ftc.teamcode.lib.jobs.ToggleableJobFactory;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -160,6 +163,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
 
         // MAIN SECTION
         // Can't create this in the job chain because we need to be able to get the result later
+        ToggleableJob lock = lockPosition();
         ResultJob<Integer> poleDetect1 = poleDetect(-1200, () -> Math.abs(turret.getCurrentPosition()) > 1000);
 
         Job suffix = jobManager
@@ -167,13 +171,14 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                 .andThen(jobManager.delayJob(500))    // Wait 500ms
                 .andThen(() -> l.setVerticalTargetManual(1800))
                 .andThenAsync(liftUntilVertStop())          // Keep updating the lift
-                .andThen(straight(0.6, 58))             // Move forward to the pole
+                .andThen(straight(0.6, 56))   // Move forward to the pole
                 .andThen(poleDetect1)
+                .andThen(lock::turnOn)                      // Try to stay in the same position
                 .jobSequence(this::scoreCone);
 
         for (int i = 0; i < 3; i++) {
             int finalI = i;
-            suffix = suffix.andThenAsync(moveTurretTo(0.8, 780))
+            suffix = suffix.andThenAsync(moveTurretTo(0.8, 700))
                     .andThen(jobManager.delayJob(500))
                     .andThen(() -> {
                         l.setHorizontalTargetManual(825);
@@ -200,6 +205,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                     .andThen(moveTurretTo(0.5, () -> poleDetect1.getResult() + 37))
                     .jobSequence(this::scoreCone);
         }
+        suffix = suffix.andThen(lock::turnOff).andThen(() -> l.setVerticalTarget(2));  // Guarantee a clean stop
         suffix.start();  // DFS time ;)
 
         // Main event loop
@@ -294,12 +300,15 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
             l.liftVertical2.setPower(0);
             l.liftHorizontal.setPower(0);
         }
+        if (turret != null) {
+            turret.setPower(0);
+        }
     }
 
     Job scoreCone(Job before) {
         return before.andThen(() -> l.setVerticalTargetManual(3500))
                 .andThen(liftUntilVertStop())
-                .andThen(liftHorizontal(344))
+                .andThen(liftHorizontal(304))
                 .andThen(jobManager.delayJob(100))
                 .andThen(controlledLowerLift(-0.4, 2600)) // Slowly lower...
                 .andThen(() -> l.openClaw())
@@ -319,6 +328,90 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                 .onComplete(() -> {
                     l.liftVertical1.setPower(0);
                     l.liftVertical2.setPower(0);
+                })
+                .build();
+    }
+
+    /**
+     * Attempt to keep the robot in the same position by adjusting the power of the motors
+     * to compensate for unintentional movement.
+     * @return Toggleable job that can be started and stopped.
+     */
+    @SuppressLint("DefaultLocale")
+    ToggleableJob lockPosition() {
+        AtomicInteger idealXPos = new AtomicInteger(0);
+        AtomicInteger idealYPos = new AtomicInteger(0);
+        AtomicBoolean thresh = new AtomicBoolean(false);
+        final double RAMP_MAX_SPEED = 0.7;
+        final double RAMP = 8000;
+        final double Y_MOD = 0;
+        final int X_MOD = -1;
+        final int THRESHOLD_ON = 2000;
+        final int THRESHOLD_OFF = 500;
+        final int ABORT = 20000;
+
+        return new ToggleableJobFactory()
+                .manager(jobManager)
+                .onStart(() -> {
+                    idealXPos.set((encoderLeft.getCurrentPosition() + encoderRight.getCurrentPosition()) / 2);
+                    idealYPos.set(encoderRear.getCurrentPosition());
+                    thresh.set(false);
+                })
+                .task(rawJob -> {
+                    if (!(rawJob instanceof ToggleableJob))
+                        throw new ClassCastException("Expected ResultJob, got " + rawJob.getClass().getName() + " instead");
+                    ToggleableJob job = (ToggleableJob) rawJob;
+                    // Monitor the current position and adjust the power accordingly
+                    int currentX = (encoderLeft.getCurrentPosition() + encoderRight.getCurrentPosition()) / 2;
+                    int currentY = encoderRear.getCurrentPosition();
+                    double xDiff = idealXPos.get() - currentX;
+                    xDiff *= X_MOD;
+                    double yDiff = idealYPos.get() - currentY;
+                    yDiff *= Y_MOD;
+                    double magnitude = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+                    double speed = Math.min(magnitude / RAMP, 1) * RAMP_MAX_SPEED;
+                    if (magnitude > ABORT) {
+                        RobotLog.ee("lockPosition", "Aborting!! The following debugging details may be useful:");
+                        RobotLog.ee("lockPosition", String.format("Target     X % 10d and Y % 10d", idealXPos.get(), idealYPos.get()));
+                        RobotLog.ee("lockPosition", String.format("Current    X % 10d and Y % 10d", currentX, currentY));
+                        RobotLog.ee("lockPosition", String.format("Adj. Delta X % 10.2f and Y % 10.2f", xDiff, yDiff));
+                        RobotLog.ee("lockPosition", String.format("Calculated magnitude %.2f", magnitude));
+                        double xNorm = xDiff / magnitude;
+                        double yNorm = yDiff / magnitude;
+                        RobotLog.ee("lockPosition", String.format("Normalized X % 10.2f and Y % 10.2f", xNorm, yNorm));
+                        RobotLog.ee("lockPosition", "Motor powers:");
+                        RobotLog.ee("lockPosition", String.format("  frontLeft %.2f", (yNorm + xNorm) * speed));
+                        RobotLog.ee("lockPosition", String.format("  frontRight %.2f", (yNorm - xNorm) * speed));
+                        RobotLog.ee("lockPosition", String.format("  rearLeft %.2f", (yNorm - xNorm) * speed));
+                        RobotLog.ee("lockPosition", String.format("  rearRight %.2f", (yNorm + xNorm) * speed));
+                        job.turnOff();
+                        throw new RuntimeException("This might get out of hand");
+                    }
+                    if (magnitude > THRESHOLD_ON) {
+                        thresh.set(true);
+                    }
+                    if (magnitude < THRESHOLD_OFF) {
+                        thresh.set(false);
+                    }
+                    telemetry.addData("lock", (thresh.get() ? "active" : "inactive") + " mag %.2f", magnitude);
+                    telemetry.addData("lock",  "x %.2f y %.2f", xDiff, yDiff);
+                    if (thresh.get()) {
+                        // Create a normalized vector
+                        double xNorm = xDiff / magnitude;
+                        double yNorm = yDiff / magnitude;
+                        // Strafe the robot
+                        frontLeft.setPower((yNorm + xNorm) * speed);
+                        frontRight.setPower((yNorm - xNorm) * speed);
+                        rearLeft.setPower((yNorm - xNorm) * speed);
+                        rearRight.setPower((yNorm + xNorm) * speed);
+                    }
+                })
+                .onComplete(() -> {
+                    // Stop the motors
+                    frontLeft.setPower(0);
+                    frontRight.setPower(0);
+                    rearLeft.setPower(0);
+                    rearRight.setPower(0);
                 })
                 .build();
     }

@@ -263,7 +263,7 @@ public class Job {
     /**
      * (internal) Start the job.
      */
-    private void startHandler() {
+    void startHandler() {
         this.onStart.accept(this);
         if (TIMINGS) {
             timings.start();
@@ -294,7 +294,7 @@ public class Job {
     /**
      * (internal) Finish the job, and start any dependent jobs in the process.
      */
-    private void completeHandler() {
+    void completeHandler() {
         this.onComplete.accept(this);
         RobotLog.i("Completed job " + id + ", so checking " + dependentJobs.size() + " dependents");
         for (int job : dependentJobs) {
@@ -475,6 +475,11 @@ public class Job {
             return;
         }
         completeHandler();
+    }
+
+    void reset() {
+        complete = false;
+        active = false;
     }
 
     @NonNull
