@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.lib;
 
 import android.content.Context;
 
+import com.qualcomm.robotcore.util.RobotLog;
+
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 import java.io.File;
@@ -13,10 +15,11 @@ import java.nio.charset.StandardCharsets;
 /**
  * Maintains a file that contains a number identifying the match.
  */
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class MatchCounter {
     public static final String FILENAME = "match_counter.txt";
     public static final File FILE;
-    private static int matchNumber = -1;
+    private static int matchNumber;
     static {
         Context context = AppUtil.getInstance().getApplication();
         FILE = new File(context.getFilesDir(), FILENAME);
@@ -24,8 +27,8 @@ public class MatchCounter {
     }
 
     public static int newMatch() {
-        Context context = AppUtil.getInstance().getApplication();
         writeMatchNumber(++matchNumber);
+        RobotLog.ii("MatchCounter", "Starting match #"+matchNumber);
         return matchNumber;
     }
 

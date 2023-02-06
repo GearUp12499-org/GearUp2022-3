@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.lib.jobs;
 
 import android.content.Context;
 
+import com.qualcomm.robotcore.util.RobotLog;
+
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 import java.io.File;
@@ -24,44 +26,47 @@ public class ProfileFile {
 
     public void build() {
         if (built) throw new IllegalStateException("ProfileFile already built");
-        data = "Job Timing Profile\n\n";
+        StringBuilder c = new StringBuilder("Job Timing Profile\n\n");
         for (Job job : sources) {
-            StringBuilder b = new StringBuilder();
-            b.append("ID ").append(job.id).append(" (").append(job.toString()).append(")").append("\n");
             Job.Timings timings = job.timings;
-            b.append(" ").append("Created=").append(timings.getCreatedAt()).append("\n");
-            b.append(" ").append("Started=").append(timings.getStartedAt()).append("\n");
-            b.append(" ").append("Completed=").append(timings.getCompletedAt()).append("\n");
-            b.append(" ").append("WaitingDuration=D").append(timings.waitingToStartTime())
-                    .append(" (").append(Job.Timings.formatDuration(timings.waitingToStartTime())).append(")\n");
-            b.append(" ").append("RunningDuration=D").append(timings.runningOverallTime())
-                    .append(" (").append(Job.Timings.formatDuration(timings.runningOverallTime())).append(")\n");
-            b.append(" ").append("TotalExecutingTime=D").append(timings.getTotalTimeRunning())
-                    .append(" (").append(Job.Timings.formatDuration(timings.getTotalTimeRunning())).append(")\n");
-            b.append(" ").append("TaskTimeSamples=").append(timings.getTaskTimes()).append("\n");
-            b.append(" ").append("MeanTaskTime=D").append(timings.averageTaskMs())
-                    .append(" (").append(Job.Timings.formatDuration(timings.averageTaskMs())).append(")\n");
-            b.append(" ").append("P95TaskTime=D").append(timings.p95TaskMs())
-                    .append(" (").append(Job.Timings.formatDuration(timings.p95TaskMs())).append(")\n");
-            b.append(" ").append("MaxTaskTime=D").append(timings.maxTaskMs())
-                    .append(" (").append(Job.Timings.formatDuration(timings.maxTaskMs())).append(")\n");
-            b.append(" ").append("Blocking=A").append(Arrays.toString(timings.getDownstreamAtFinish())).append("\n");
-            b.append(" ").append("AllTaskTimes=A").append(timings.getTaskTimes().toString()).append("\n");
-            b.append("\n");
-            data += b.toString();
+            String b = "ID " + job.id + " (" + job + ")" + "\n" +
+                    " " + "Created=" + timings.getCreatedAt() + "\n" +
+                    " " + "Started=" + timings.getStartedAt() + "\n" +
+                    " " + "Completed=" + timings.getCompletedAt() + "\n" +
+                    " " + "WaitingDuration=D" + timings.waitingToStartTime() +
+                    " (" + Job.Timings.formatDuration(timings.waitingToStartTime()) + ")\n" +
+                    " " + "RunningDuration=D" + timings.runningOverallTime() +
+                    " (" + Job.Timings.formatDuration(timings.runningOverallTime()) + ")\n" +
+                    " " + "TotalExecutingTime=D" + timings.getTotalTimeRunning() +
+                    " (" + Job.Timings.formatDuration(timings.getTotalTimeRunning()) + ")\n" +
+                    " " + "TaskTimeSamples=" + timings.getTaskTimes().size() + "\n" +
+                    " " + "MeanTaskTime=D" + timings.averageTaskMs() +
+                    " (" + Job.Timings.formatDuration(timings.averageTaskMs()) + ")\n" +
+                    " " + "P95TaskTime=D" + timings.p95TaskMs() +
+                    " (" + Job.Timings.formatDuration(timings.p95TaskMs()) + ")\n" +
+                    " " + "MaxTaskTime=D" + timings.maxTaskMs() +
+                    " (" + Job.Timings.formatDuration(timings.maxTaskMs()) + ")\n" +
+                    " " + "Blocking=A" + Arrays.toString(timings.getDownstreamAtFinish()) + "\n" +
+                    " " + "AllTaskTimes=A" + timings.getTaskTimes().toString() + "\n" +
+                    "\n";
+            c.append(b);
         }
+        data = c.toString();
+        built = true;
     }
 
     public boolean isBuilt() {
         return built;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public void export(String target, boolean deleteOK) {
         if (!built)
             throw new IllegalStateException("ProfileFile not built");
 
         Context context = AppUtil.getInstance().getApplication();
         File file = new File(context.getFilesDir(), target);
+        RobotLog.ii("ProfileFile", "saving to " + file.getAbsolutePath());
         if (file.exists()) {
             if (deleteOK && file.isFile()) file.delete();
             else if (file.isFile())
