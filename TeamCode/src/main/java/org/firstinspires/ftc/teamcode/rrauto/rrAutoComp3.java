@@ -209,8 +209,8 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
 
             //raises v lift to proper height above the pole
             runtime.reset();
-            l.verticalLift(VERTICAL_TARGETS[3], this);
-            while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3] && runtime.seconds()<1.5) { //1.8 seconds
+            l.verticalLift(VERTICAL_TARGETS[3] + 200, this);
+            while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3] + 200 && runtime.seconds()<1.5) { //1.8 seconds
                 stopMaybe();
                 l.update();
             }
