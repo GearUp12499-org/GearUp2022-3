@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.rrauto;
+
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRear;
-import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
+import static java.lang.Math.abs;
 // whiteboard drawing on engineering notebook 2023/01/07 (alpha and beta switched)
 
 /*
@@ -21,7 +22,7 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.encoderRight;
 
 public class TrigCalculations {
     private static final double encToDist = 1900; //encoder counts per inch odometry wheels
-    private static final double encToAngle = 750/90; //encoder counts per degree turret
+    private static final double encToAngle = 750 / 90; //encoder counts per degree turret
 
     //ALL DISTANCES MEASURED FROM ORIGIN which is in center of turret
     private static final double startX = 10, startY = 0;
@@ -30,7 +31,7 @@ public class TrigCalculations {
     private static final double stackX = 48.25, stackY = 35;     // cone stack
 
     // values adjusted for non-(0, 0) start position
-    private static final double r1 = stackY - stopY, r2 = poleY- stopY;
+    private static final double r1 = stackY - stopY, r2 = poleY - stopY;
     private static final double poleDiffX = poleX, poleDiffY = poleY;
     private static final double stackDiffX = stackX, stackDiffY = stackY;
 
@@ -50,20 +51,22 @@ public class TrigCalculations {
     }
 
     public static double stackAngle(double x, double y) {
-        double deltaX = x/encToDist - stackDiffX;
-        double deltaY = stackDiffY - y/encToDist;
+        double deltaX = x / encToDist - stackDiffX;
+        double deltaY = stackDiffY - y / encToDist;
 
-        return (90+ Math.toDegrees(Math.atan2(deltaX, deltaY)))*encToAngle;
+        return (90 + Math.toDegrees(Math.atan2(deltaX, deltaY))) * encToAngle;
     }
+
     public static double stackAngleR(double x, double y) { //for right side
-        double deltaX = x/encToDist - stackDiffX;
-        double deltaY = (stackDiffY+ 0.5) + y/encToDist;
+        double deltaX = x / encToDist - stackDiffX;
+        double deltaY = (stackDiffY + 0.5) + y / encToDist;
 
-        return (90+ Math.toDegrees(Math.atan2(deltaX, deltaY)))*encToAngle;
+        return (90 + Math.toDegrees(Math.atan2(deltaX, deltaY))) * encToAngle;
     }
+
     public static double sumDeltaAngle(double x, double y) {
         // account for negative values from poleAngle()
-        return Math.abs(poleAngle(x, y)) + Math.abs(stackAngle(x, y));
+        return abs(poleAngle(x, y)) + abs(stackAngle(x, y));
     }
 
     public static double distToPole(double x, double y) {
@@ -75,11 +78,18 @@ public class TrigCalculations {
     }
 
     public static double distToStack(double x, double y) {
-        double xComponent = x/encToDist - stackDiffX;
-        double yComponent =  stackDiffY - y/encToDist-9;
+        double xComponent = x / encToDist - stackDiffX;
+        double yComponent = stackDiffY - y / encToDist - 9;//9 inches is the distance from claw to center of turret
 
         double dist = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
-        return dist*163/5.25;
+        return dist * 163 / 5.25;
+    }
+
+    public static double distToPoleMed(double x, double y) {
+        double xComponent = x / encToDist - (poleDiffX - 24);
+        double yComponent = abs(poleDiffY - y / encToDist);//9 inches is the distance from claw to center of turret
+        double dist = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
+        return (dist - 9) * 163 / 5.25;
     }
 
 }

@@ -584,6 +584,9 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
                 telemetry.update();
             }
 
+            int ang = (int)TrigCalculations.stackAngle((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
+            int dist = (int)TrigCalculations.distToStack((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
+            int distPole = (int)TrigCalculations.distToPoleMed((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
             turret.setPower(0);
             //sleep(300);
 
@@ -599,7 +602,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
             }
 
             //drops off cone into the stack
-            l.setHorizontalTargetManual(250);//208
+            l.setHorizontalTargetManual(distPole);//208
             while (!l.isSatisfiedHorizontally()) {
                 stopMaybe();
                 l.update();
@@ -620,8 +623,6 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
             telemetry.addData("robot y pos:", encoderRear.getCurrentPosition());
 
             telemetry.update();
-            int ang = (int)TrigCalculations.stackAngle((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
-            int dist = (int)TrigCalculations.distToStack((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
             for (int i = 0; i < 3; i++) {
                 //turns from pole to stack
                 turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -672,7 +673,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
                 }*/
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
-                l.setHorizontalTargetManual(270); //225
+                l.setHorizontalTargetManual(distPole); //270
 
                 //once above pole, now we move downward to secure cone onto pole
                 sleep(500);
@@ -715,7 +716,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
                 turret.setPower(0.3);
                 sleep(800);
                 runtime.reset();
-                while(runtime.seconds() < 0.4){
+                while(runtime.seconds() < 0.3){
                     stopMaybe();
                     frontLeft.setPower(0.4);
                     frontRight.setPower(0.4);
