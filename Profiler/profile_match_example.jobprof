@@ -1,0 +1,1164 @@
+Job Timing Profile
+
+ID 11 ([complete Job #11, MediumPoleAuto.scoreCone(MediumPoleAuto.java:309)])
+ Created=1675660383823
+ Started=1675660390451
+ Completed=1675660390565
+ WaitingDuration=D6628 (6.63s)
+ RunningDuration=D114 (114ms)
+ TotalExecutingTime=D16 (16ms)
+ TaskTimeSamples=6
+ MeanTaskTime=D2.8333333333333335 (2.8ms)
+ P95TaskTime=D16.0 (16.0ms)
+ MaxTaskTime=D16 (16ms)
+ Blocking=A[12]
+ AllTaskTimes=A[0, 0, 0, 1, 0, 16]
+
+ID 72 ([complete Job #72, MediumPoleAuto.main(MediumPoleAuto.java:204)])
+ Created=1675660384023
+ Started=1675660407495
+ Completed=1675660407564
+ WaitingDuration=D23472 (23.47s)
+ RunningDuration=D69 (69ms)
+ TotalExecutingTime=D25 (25ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D26.0 (26.0ms)
+ P95TaskTime=D26.0 (26.0ms)
+ MaxTaskTime=D26 (26ms)
+ Blocking=A[73]
+ AllTaskTimes=A[26]
+
+ID 53 ([complete Job #53, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.scoreCone(MediumPoleAuto.java:307)])
+ Created=1675660383960
+ Started=1675660402555
+ Completed=1675660403014
+ WaitingDuration=D18595 (18.60s)
+ RunningDuration=D459 (459ms)
+ TotalExecutingTime=D137 (137ms)
+ TaskTimeSamples=13
+ MeanTaskTime=D10.615384615384615 (10.6ms)
+ P95TaskTime=D27.0 (27.0ms)
+ MaxTaskTime=D27 (27ms)
+ Blocking=A[54]
+ AllTaskTimes=A[19, 8, 11, 8, 11, 7, 9, 7, 8, 8, 8, 7, 27]
+
+ID 37 ([complete Job #37, MediumPoleAuto.liftHorizontal(MediumPoleAuto.java:464), MediumPoleAuto.scoreCone(MediumPoleAuto.java:313)])
+ Created=1675660383914
+ Started=1675660397620
+ Completed=1675660397896
+ WaitingDuration=D13706 (13.71s)
+ RunningDuration=D276 (276ms)
+ TotalExecutingTime=D144 (144ms)
+ TaskTimeSamples=10
+ MeanTaskTime=D14.5 (14.5ms)
+ P95TaskTime=D33.0 (33.0ms)
+ MaxTaskTime=D33 (33ms)
+ Blocking=A[38, 39]
+ AllTaskTimes=A[16, 13, 12, 12, 11, 12, 10, 11, 15, 33]
+
+ID 36 ([complete Job #36, MediumPoleAuto.scoreCone(MediumPoleAuto.java:312)])
+ Created=1675660383912
+ Started=1675660397365
+ Completed=1675660397620
+ WaitingDuration=D13453 (13.45s)
+ RunningDuration=D255 (255ms)
+ TotalExecutingTime=D4 (4ms)
+ TaskTimeSamples=17
+ MeanTaskTime=D0.29411764705882354 (0.3ms)
+ P95TaskTime=D5.0 (5.0ms)
+ MaxTaskTime=D5 (5ms)
+ Blocking=A[37]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5]
+
+ID 71 ([complete Job #71, MediumPoleAuto.main(MediumPoleAuto.java:203)])
+ Created=1675660384020
+ Started=1675660407167
+ Completed=1675660407495
+ WaitingDuration=D23147 (23.15s)
+ RunningDuration=D328 (328ms)
+ TotalExecutingTime=D3 (3ms)
+ TaskTimeSamples=10
+ MeanTaskTime=D0.4 (0.4ms)
+ P95TaskTime=D4.0 (4.0ms)
+ MaxTaskTime=D4 (4ms)
+ Blocking=A[72]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 4]
+
+ID 23 ([complete Job #23, MediumPoleAuto.main(MediumPoleAuto.java:191)])
+ Created=1675660383869
+ Started=1675660393590
+ Completed=1675660393614
+ WaitingDuration=D9721 (9.72s)
+ RunningDuration=D24 (24ms)
+ TotalExecutingTime=D11 (11ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D12.0 (12.0ms)
+ P95TaskTime=D12.0 (12.0ms)
+ MaxTaskTime=D12 (12ms)
+ Blocking=A[24, 25]
+ AllTaskTimes=A[12]
+
+ID 82 ([complete Job #82, MediumPoleAuto.main(MediumPoleAuto.java:208)])
+ Created=1675660384056
+ Started=1675660410978
+ Completed=1675660411032
+ WaitingDuration=D26922 (26.92s)
+ RunningDuration=D54 (54ms)
+ TotalExecutingTime=D32 (32ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D33.0 (33.0ms)
+ P95TaskTime=D33.0 (33.0ms)
+ MaxTaskTime=D33 (33ms)
+ Blocking=A[]
+ AllTaskTimes=A[33]
+
+ID 54 ([complete Job #54, MediumPoleAuto.liftHorizontal(MediumPoleAuto.java:464), MediumPoleAuto.scoreCone(MediumPoleAuto.java:308)])
+ Created=1675660383962
+ Started=1675660403014
+ Completed=1675660403261
+ WaitingDuration=D19052 (19.05s)
+ RunningDuration=D247 (247ms)
+ TotalExecutingTime=D34 (34ms)
+ TaskTimeSamples=9
+ MeanTaskTime=D3.888888888888889 (3.9ms)
+ P95TaskTime=D10.0 (10.0ms)
+ MaxTaskTime=D10 (10ms)
+ Blocking=A[55]
+ AllTaskTimes=A[10, 2, 4, 3, 3, 3, 2, 2, 6]
+
+ID 42 ([complete Job #42, MediumPoleAuto.controlledLowerLift(MediumPoleAuto.java:329), MediumPoleAuto.main(MediumPoleAuto.java:188)])
+ Created=1675660383931
+ Started=1675660398440
+ Completed=1675660399649
+ WaitingDuration=D14509 (14.51s)
+ RunningDuration=D1209 (1.21s)
+ TotalExecutingTime=D103 (103ms)
+ TaskTimeSamples=38
+ MeanTaskTime=D2.736842105263158 (2.7ms)
+ P95TaskTime=D6.0 (6.0ms)
+ MaxTaskTime=D10 (10ms)
+ Blocking=A[43]
+ AllTaskTimes=A[2, 2, 2, 2, 2, 3, 2, 3, 4, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 3, 3, 3, 3, 3, 2, 3, 2, 3, 6, 3, 2, 10]
+
+ID 55 ([complete Job #55, MediumPoleAuto.scoreCone(MediumPoleAuto.java:309)])
+ Created=1675660383969
+ Started=1675660403261
+ Completed=1675660403394
+ WaitingDuration=D19292 (19.29s)
+ RunningDuration=D133 (133ms)
+ TotalExecutingTime=D14 (14ms)
+ TaskTimeSamples=5
+ MeanTaskTime=D3.0 (3.0ms)
+ P95TaskTime=D15.0 (15.0ms)
+ MaxTaskTime=D15 (15ms)
+ Blocking=A[56]
+ AllTaskTimes=A[0, 0, 0, 0, 15]
+
+ID 52 ([complete Job #52, MediumPoleAuto.scoreCone(MediumPoleAuto.java:306)])
+ Created=1675660383957
+ Started=1675660402532
+ Completed=1675660402555
+ WaitingDuration=D18575 (18.58s)
+ RunningDuration=D23 (23ms)
+ TotalExecutingTime=D3 (3ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D4.0 (4.0ms)
+ P95TaskTime=D4.0 (4.0ms)
+ MaxTaskTime=D4 (4ms)
+ Blocking=A[53]
+ AllTaskTimes=A[4]
+
+ID 17 ([complete Job #17, MediumPoleAuto.main(MediumPoleAuto.java:182)])
+ Created=1675660383849
+ Started=1675660391645
+ Completed=1675660392167
+ WaitingDuration=D7796 (7.80s)
+ RunningDuration=D522 (522ms)
+ TotalExecutingTime=D3 (3ms)
+ TaskTimeSamples=22
+ MeanTaskTime=D0.18181818181818182 (0.2ms)
+ P95TaskTime=D1.0 (1.0ms)
+ MaxTaskTime=D3 (3ms)
+ Blocking=A[18]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3]
+
+ID 21 ([complete Job #21, MediumPoleAuto.main(MediumPoleAuto.java:189)])
+ Created=1675660383863
+ Started=1675660393263
+ Completed=1675660393279
+ WaitingDuration=D9400 (9.40s)
+ RunningDuration=D16 (16ms)
+ TotalExecutingTime=D3 (3ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D4.0 (4.0ms)
+ P95TaskTime=D4.0 (4.0ms)
+ MaxTaskTime=D4 (4ms)
+ Blocking=A[22]
+ AllTaskTimes=A[4]
+
+ID 7 ([complete Job #7, MediumPoleAuto.main(MediumPoleAuto.java:175)])
+ Created=1675660383806
+ Started=1675660386728
+ Completed=1675660386755
+ WaitingDuration=D2922 (2.92s)
+ RunningDuration=D27 (27ms)
+ TotalExecutingTime=D18 (18ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D19.0 (19.0ms)
+ P95TaskTime=D19.0 (19.0ms)
+ MaxTaskTime=D19 (19ms)
+ Blocking=A[1]
+ AllTaskTimes=A[19]
+
+ID 64 ([complete Job #64, MediumPoleAuto.controlledLowerLift(MediumPoleAuto.java:329), MediumPoleAuto.main(MediumPoleAuto.java:188)])
+ Created=1675660383999
+ Started=1675660405040
+ Completed=1675660406238
+ WaitingDuration=D21041 (21.04s)
+ RunningDuration=D1198 (1.20s)
+ TotalExecutingTime=D91 (91ms)
+ TaskTimeSamples=35
+ MeanTaskTime=D2.6285714285714286 (2.6ms)
+ P95TaskTime=D4.0 (4.0ms)
+ MaxTaskTime=D10 (10ms)
+ Blocking=A[65]
+ AllTaskTimes=A[2, 2, 2, 2, 4, 3, 3, 2, 3, 3, 2, 2, 3, 2, 2, 3, 2, 2, 3, 2, 3, 2, 2, 2, 2, 2, 3, 2, 2, 3, 3, 3, 2, 2, 10]
+
+ID 2 ([complete Job #2, MediumPoleAuto.main(MediumPoleAuto.java:170)])
+ Created=1675660383786
+ Started=1675660384060
+ Completed=1675660384066
+ WaitingDuration=D274 (274ms)
+ RunningDuration=D6 (6ms)
+ TotalExecutingTime=D8 (8ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D9.0 (9.0ms)
+ P95TaskTime=D9.0 (9.0ms)
+ MaxTaskTime=D9 (9ms)
+ Blocking=A[3]
+ AllTaskTimes=A[9]
+
+ID 49 ([complete Job #49, MediumPoleAuto.main(MediumPoleAuto.java:203)])
+ Created=1675660383950
+ Started=1675660400529
+ Completed=1675660400837
+ WaitingDuration=D16579 (16.58s)
+ RunningDuration=D308 (308ms)
+ TotalExecutingTime=D3 (3ms)
+ TaskTimeSamples=8
+ MeanTaskTime=D0.5 (0.5ms)
+ P95TaskTime=D3.0 (3.0ms)
+ MaxTaskTime=D3 (3ms)
+ Blocking=A[50]
+ AllTaskTimes=A[0, 1, 0, 0, 0, 0, 0, 3]
+
+ID 67 ([complete Job #67, MediumPoleAuto.main(MediumPoleAuto.java:191)])
+ Created=1675660384008
+ Started=1675660406569
+ Completed=1675660406598
+ WaitingDuration=D22561 (22.56s)
+ RunningDuration=D29 (29ms)
+ TotalExecutingTime=D12 (12ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D13.0 (13.0ms)
+ P95TaskTime=D13.0 (13.0ms)
+ MaxTaskTime=D13 (13ms)
+ Blocking=A[68, 69]
+ AllTaskTimes=A[13]
+
+ID 13 ([complete Job #13, MediumPoleAuto.scoreCone(MediumPoleAuto.java:311)])
+ Created=1675660383835
+ Started=1675660391077
+ Completed=1675660391103
+ WaitingDuration=D7242 (7.24s)
+ RunningDuration=D26 (26ms)
+ TotalExecutingTime=D4 (4ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D5.0 (5.0ms)
+ P95TaskTime=D5.0 (5.0ms)
+ MaxTaskTime=D5 (5ms)
+ Blocking=A[14]
+ AllTaskTimes=A[5]
+
+ID 29 ([complete Job #29, MediumPoleAuto.moveTurretTo(MediumPoleAuto.java:513), MediumPoleAuto.main(MediumPoleAuto.java:205)])
+ Created=1675660383888
+ Started=1675660394508
+ Completed=1675660396139
+ WaitingDuration=D10620 (10.62s)
+ RunningDuration=D1631 (1.63s)
+ TotalExecutingTime=D278 (278ms)
+ TaskTimeSamples=54
+ MeanTaskTime=D5.166666666666667 (5.2ms)
+ P95TaskTime=D8.0 (8.0ms)
+ MaxTaskTime=D13 (13ms)
+ Blocking=A[30]
+ AllTaskTimes=A[5, 5, 4, 5, 4, 6, 4, 4, 4, 4, 4, 5, 7, 4, 4, 5, 5, 5, 8, 4, 5, 4, 5, 5, 5, 6, 6, 4, 4, 5, 5, 5, 5, 5, 4, 7, 4, 5, 4, 5, 5, 4, 5, 4, 5, 13, 4, 5, 8, 6, 5, 7, 4, 10]
+
+ID 30 ([complete Job #30, MediumPoleAuto.scoreCone(MediumPoleAuto.java:306)])
+ Created=1675660383891
+ Started=1675660396139
+ Completed=1675660396145
+ WaitingDuration=D12248 (12.25s)
+ RunningDuration=D6 (6ms)
+ TotalExecutingTime=D4 (4ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D5.0 (5.0ms)
+ P95TaskTime=D5.0 (5.0ms)
+ MaxTaskTime=D5 (5ms)
+ Blocking=A[31]
+ AllTaskTimes=A[5]
+
+ID 19 ([complete Job #19, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.main(MediumPoleAuto.java:187)])
+ Created=1675660383854
+ Started=1675660392180
+ Completed=1675660393256
+ WaitingDuration=D8326 (8.33s)
+ RunningDuration=D1076 (1.08s)
+ TotalExecutingTime=D188 (188ms)
+ TaskTimeSamples=40
+ MeanTaskTime=D4.725 (4.7ms)
+ P95TaskTime=D13.0 (13.0ms)
+ MaxTaskTime=D25 (25ms)
+ Blocking=A[]
+ AllTaskTimes=A[9, 3, 8, 4, 3, 5, 3, 3, 3, 2, 3, 4, 3, 3, 3, 4, 11, 3, 13, 3, 6, 3, 3, 6, 3, 3, 3, 3, 3, 3, 3, 4, 6, 2, 3, 4, 3, 3, 7, 25]
+
+ID 43 ([complete Job #43, MediumPoleAuto.main(MediumPoleAuto.java:189)])
+ Created=1675660383934
+ Started=1675660399649
+ Completed=1675660399656
+ WaitingDuration=D15715 (15.72s)
+ RunningDuration=D7 (7ms)
+ TotalExecutingTime=D4 (4ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D5.0 (5.0ms)
+ P95TaskTime=D5.0 (5.0ms)
+ MaxTaskTime=D5 (5ms)
+ Blocking=A[44]
+ AllTaskTimes=A[5]
+
+ID 47 ([complete Job #47, MediumPoleAuto.main(MediumPoleAuto.java:197)])
+ Created=1675660383945
+ Started=1675660399987
+ Completed=1675660400510
+ WaitingDuration=D16042 (16.04s)
+ RunningDuration=D523 (523ms)
+ TotalExecutingTime=D5 (5ms)
+ TaskTimeSamples=15
+ MeanTaskTime=D0.4 (0.4ms)
+ P95TaskTime=D5.0 (5.0ms)
+ MaxTaskTime=D5 (5ms)
+ Blocking=A[48]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5]
+
+ID 3 ([complete Job #3, MediumPoleAuto.main(MediumPoleAuto.java:171)])
+ Created=1675660383788
+ Started=1675660384066
+ Completed=1675660384572
+ WaitingDuration=D278 (278ms)
+ RunningDuration=D506 (506ms)
+ TotalExecutingTime=D5 (5ms)
+ TaskTimeSamples=36
+ MeanTaskTime=D0.16666666666666666 (0.2ms)
+ P95TaskTime=D1.0 (1.0ms)
+ MaxTaskTime=D5 (5ms)
+ Blocking=A[4]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5]
+
+ID 48 ([complete Job #48, MediumPoleAuto.main(MediumPoleAuto.java:198)])
+ Created=1675660383947
+ Started=1675660400510
+ Completed=1675660400529
+ WaitingDuration=D16563 (16.56s)
+ RunningDuration=D19 (19ms)
+ TotalExecutingTime=D17 (17ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D18.0 (18.0ms)
+ P95TaskTime=D18.0 (18.0ms)
+ MaxTaskTime=D18 (18ms)
+ Blocking=A[49]
+ AllTaskTimes=A[18]
+
+ID 57 ([complete Job #57, MediumPoleAuto.scoreCone(MediumPoleAuto.java:311)])
+ Created=1675660383975
+ Started=1675660403917
+ Completed=1675660403954
+ WaitingDuration=D19942 (19.94s)
+ RunningDuration=D37 (37ms)
+ TotalExecutingTime=D9 (9ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D10.0 (10.0ms)
+ P95TaskTime=D10.0 (10.0ms)
+ MaxTaskTime=D10 (10ms)
+ Blocking=A[58]
+ AllTaskTimes=A[10]
+
+ID 27 ([complete Job #27, MediumPoleAuto.main(MediumPoleAuto.java:203)])
+ Created=1675660383882
+ Started=1675660394169
+ Completed=1675660394470
+ WaitingDuration=D10287 (10.29s)
+ RunningDuration=D301 (301ms)
+ TotalExecutingTime=D1 (1ms)
+ TaskTimeSamples=12
+ MeanTaskTime=D0.16666666666666666 (0.2ms)
+ P95TaskTime=D2.0 (2.0ms)
+ MaxTaskTime=D2 (2ms)
+ Blocking=A[28]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
+
+ID 61 ([complete Job #61, MediumPoleAuto.main(MediumPoleAuto.java:182)])
+ Created=1675660383988
+ Started=1675660404508
+ Completed=1675660405017
+ WaitingDuration=D20520 (20.52s)
+ RunningDuration=D509 (509ms)
+ TotalExecutingTime=D3 (3ms)
+ TaskTimeSamples=19
+ MeanTaskTime=D0.21052631578947367 (0.2ms)
+ P95TaskTime=D3.0 (3.0ms)
+ MaxTaskTime=D3 (3ms)
+ Blocking=A[62]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3]
+
+ID 70 ([complete Job #70, MediumPoleAuto.main(MediumPoleAuto.java:198)])
+ Created=1675660384017
+ Started=1675660407137
+ Completed=1675660407167
+ WaitingDuration=D23120 (23.12s)
+ RunningDuration=D30 (30ms)
+ TotalExecutingTime=D8 (8ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D9.0 (9.0ms)
+ P95TaskTime=D9.0 (9.0ms)
+ MaxTaskTime=D9 (9ms)
+ Blocking=A[71]
+ AllTaskTimes=A[9]
+
+ID 59 ([complete Job #59, MediumPoleAuto.liftHorizontal(MediumPoleAuto.java:464), MediumPoleAuto.scoreCone(MediumPoleAuto.java:313)])
+ Created=1675660383980
+ Started=1675660404224
+ Completed=1675660404508
+ WaitingDuration=D20244 (20.24s)
+ RunningDuration=D284 (284ms)
+ TotalExecutingTime=D114 (114ms)
+ TaskTimeSamples=7
+ MeanTaskTime=D16.428571428571427 (16.4ms)
+ P95TaskTime=D39.0 (39.0ms)
+ MaxTaskTime=D39 (39ms)
+ Blocking=A[60, 61]
+ AllTaskTimes=A[15, 12, 11, 12, 11, 15, 39]
+
+ID 81 ([complete Job #81, MediumPoleAuto.liftHorizontal(MediumPoleAuto.java:464), MediumPoleAuto.scoreCone(MediumPoleAuto.java:313)])
+ Created=1675660384053
+ Started=1675660410687
+ Completed=1675660410978
+ WaitingDuration=D26634 (26.63s)
+ RunningDuration=D291 (291ms)
+ TotalExecutingTime=D102 (102ms)
+ TaskTimeSamples=8
+ MeanTaskTime=D12.875 (12.9ms)
+ P95TaskTime=D17.0 (17.0ms)
+ MaxTaskTime=D17 (17ms)
+ Blocking=A[82]
+ AllTaskTimes=A[15, 11, 10, 10, 13, 13, 17, 14]
+
+ID 32 ([complete Job #32, MediumPoleAuto.liftHorizontal(MediumPoleAuto.java:464), MediumPoleAuto.scoreCone(MediumPoleAuto.java:308)])
+ Created=1675660383901
+ Started=1675660396471
+ Completed=1675660396709
+ WaitingDuration=D12570 (12.57s)
+ RunningDuration=D238 (238ms)
+ TotalExecutingTime=D54 (54ms)
+ TaskTimeSamples=12
+ MeanTaskTime=D4.583333333333333 (4.6ms)
+ P95TaskTime=D14.0 (14.0ms)
+ MaxTaskTime=D14 (14ms)
+ Blocking=A[33]
+ AllTaskTimes=A[14, 13, 3, 2, 2, 2, 5, 2, 2, 2, 2, 6]
+
+ID 9 ([complete Job #9, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.scoreCone(MediumPoleAuto.java:307)])
+ Created=1675660383814
+ Started=1675660388721
+ Completed=1675660390205
+ WaitingDuration=D4907 (4.91s)
+ RunningDuration=D1484 (1.48s)
+ TotalExecutingTime=D581 (581ms)
+ TaskTimeSamples=53
+ MeanTaskTime=D10.981132075471699 (11.0ms)
+ P95TaskTime=D27.0 (27.0ms)
+ MaxTaskTime=D28 (28ms)
+ Blocking=A[10]
+ AllTaskTimes=A[28, 10, 11, 10, 9, 10, 9, 10, 9, 14, 10, 14, 10, 12, 10, 10, 12, 10, 27, 10, 12, 15, 10, 14, 11, 11, 9, 9, 12, 9, 12, 10, 10, 10, 13, 7, 9, 12, 9, 7, 10, 8, 8, 9, 7, 8, 7, 9, 11, 7, 7, 8, 27]
+
+ID 38 ([complete Job #38, MediumPoleAuto.moveTurretTo(MediumPoleAuto.java:513), MediumPoleAuto.moveTurretTo(MediumPoleAuto.java:482), MediumPoleAuto.main(MediumPoleAuto.java:181)])
+ Created=1675660383918
+ Started=1675660397896
+ Completed=1675660399036
+ WaitingDuration=D13978 (13.98s)
+ RunningDuration=D1140 (1.14s)
+ TotalExecutingTime=D239 (239ms)
+ TaskTimeSamples=45
+ MeanTaskTime=D5.333333333333333 (5.3ms)
+ P95TaskTime=D10.0 (10.0ms)
+ MaxTaskTime=D13 (13ms)
+ Blocking=A[]
+ AllTaskTimes=A[6, 5, 4, 4, 7, 5, 6, 4, 4, 7, 4, 5, 4, 6, 5, 5, 5, 4, 4, 4, 5, 5, 4, 5, 5, 4, 5, 4, 5, 7, 4, 4, 4, 4, 11, 5, 8, 5, 13, 5, 5, 5, 5, 5, 10]
+
+ID 24 ([complete Job #24, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.main(MediumPoleAuto.java:196)])
+ Created=1675660383873
+ Started=1675660393614
+ Completed=1675660395517
+ WaitingDuration=D9741 (9.74s)
+ RunningDuration=D1903 (1.90s)
+ TotalExecutingTime=D657 (657ms)
+ TaskTimeSamples=61
+ MeanTaskTime=D10.78688524590164 (10.8ms)
+ P95TaskTime=D18.0 (18.0ms)
+ MaxTaskTime=D28 (28ms)
+ Blocking=A[]
+ AllTaskTimes=A[10, 9, 9, 11, 13, 10, 11, 10, 10, 9, 12, 9, 9, 10, 10, 10, 10, 9, 10, 18, 13, 14, 13, 15, 9, 10, 9, 9, 9, 9, 11, 9, 10, 9, 9, 9, 18, 15, 18, 15, 8, 10, 9, 15, 9, 10, 10, 14, 8, 9, 6, 8, 8, 10, 12, 7, 9, 8, 9, 9, 28]
+
+ID 40 ([complete Job #40, MediumPoleAuto.main(MediumPoleAuto.java:183)])
+ Created=1675660383924
+ Started=1675660398399
+ Completed=1675660398440
+ WaitingDuration=D14475 (14.48s)
+ RunningDuration=D41 (41ms)
+ TotalExecutingTime=D35 (35ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D36.0 (36.0ms)
+ P95TaskTime=D36.0 (36.0ms)
+ MaxTaskTime=D36 (36ms)
+ Blocking=A[41, 42]
+ AllTaskTimes=A[36]
+
+ID 12 ([complete Job #12, MediumPoleAuto.controlledLowerLift(MediumPoleAuto.java:329), MediumPoleAuto.scoreCone(MediumPoleAuto.java:310)])
+ Created=1675660383825
+ Started=1675660390565
+ Completed=1675660391077
+ WaitingDuration=D6740 (6.74s)
+ RunningDuration=D512 (512ms)
+ TotalExecutingTime=D96 (96ms)
+ TaskTimeSamples=29
+ MeanTaskTime=D3.3448275862068964 (3.3ms)
+ P95TaskTime=D9.0 (9.0ms)
+ MaxTaskTime=D17 (17ms)
+ Blocking=A[13]
+ AllTaskTimes=A[3, 3, 2, 2, 3, 2, 4, 2, 2, 9, 2, 2, 3, 2, 3, 2, 2, 6, 3, 2, 4, 3, 3, 2, 2, 2, 2, 3, 17]
+
+ID 31 ([complete Job #31, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.scoreCone(MediumPoleAuto.java:307)])
+ Created=1675660383894
+ Started=1675660396145
+ Completed=1675660396471
+ WaitingDuration=D12251 (12.25s)
+ RunningDuration=D326 (326ms)
+ TotalExecutingTime=D132 (132ms)
+ TaskTimeSamples=12
+ MeanTaskTime=D11.083333333333334 (11.1ms)
+ P95TaskTime=D24.0 (24.0ms)
+ MaxTaskTime=D24 (24ms)
+ Blocking=A[32]
+ AllTaskTimes=A[24, 7, 11, 7, 8, 7, 8, 12, 8, 7, 11, 23]
+
+ID 66 ([complete Job #66, MediumPoleAuto.main(MediumPoleAuto.java:190)])
+ Created=1675660384006
+ Started=1675660406259
+ Completed=1675660406569
+ WaitingDuration=D22253 (22.25s)
+ RunningDuration=D310 (310ms)
+ TotalExecutingTime=D3 (3ms)
+ TaskTimeSamples=14
+ MeanTaskTime=D0.2857142857142857 (0.3ms)
+ P95TaskTime=D3.0 (3.0ms)
+ MaxTaskTime=D3 (3ms)
+ Blocking=A[67]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3]
+
+ID 63 ([complete Job #63, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.main(MediumPoleAuto.java:187)])
+ Created=1675660383996
+ Started=1675660405026
+ Completed=1675660406254
+ WaitingDuration=D21030 (21.03s)
+ RunningDuration=D1228 (1.23s)
+ TotalExecutingTime=D163 (163ms)
+ TaskTimeSamples=35
+ MeanTaskTime=D4.685714285714286 (4.7ms)
+ P95TaskTime=D12.0 (12.0ms)
+ MaxTaskTime=D15 (15ms)
+ Blocking=A[]
+ AllTaskTimes=A[10, 3, 6, 2, 4, 3, 3, 3, 3, 2, 4, 2, 3, 12, 11, 3, 4, 4, 3, 7, 3, 3, 3, 2, 3, 3, 4, 3, 7, 3, 12, 5, 2, 4, 15]
+
+ID 79 ([complete Job #79, MediumPoleAuto.scoreCone(MediumPoleAuto.java:311)])
+ Created=1675660384047
+ Started=1675660410401
+ Completed=1675660410427
+ WaitingDuration=D26354 (26.35s)
+ RunningDuration=D26 (26ms)
+ TotalExecutingTime=D4 (4ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D5.0 (5.0ms)
+ P95TaskTime=D5.0 (5.0ms)
+ MaxTaskTime=D5 (5ms)
+ Blocking=A[80]
+ AllTaskTimes=A[5]
+
+ID 68 ([complete Job #68, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.main(MediumPoleAuto.java:196)])
+ Created=1675660384011
+ Started=1675660406598
+ Completed=1675660408706
+ WaitingDuration=D22587 (22.59s)
+ RunningDuration=D2108 (2.11s)
+ TotalExecutingTime=D618 (618ms)
+ TaskTimeSamples=56
+ MeanTaskTime=D11.053571428571429 (11.1ms)
+ P95TaskTime=D20.0 (20.0ms)
+ MaxTaskTime=D32 (32ms)
+ Blocking=A[]
+ AllTaskTimes=A[14, 9, 12, 9, 14, 10, 13, 9, 11, 9, 13, 9, 11, 9, 15, 24, 13, 10, 9, 11, 9, 9, 9, 10, 9, 11, 10, 10, 13, 13, 20, 9, 9, 12, 10, 12, 14, 9, 12, 10, 10, 8, 14, 18, 6, 6, 7, 8, 11, 7, 8, 7, 7, 7, 9, 32]
+
+ID 45 ([complete Job #45, MediumPoleAuto.main(MediumPoleAuto.java:191)])
+ Created=1675660383939
+ Started=1675660399956
+ Completed=1675660399987
+ WaitingDuration=D16017 (16.02s)
+ RunningDuration=D31 (31ms)
+ TotalExecutingTime=D10 (10ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D11.0 (11.0ms)
+ P95TaskTime=D11.0 (11.0ms)
+ MaxTaskTime=D11 (11ms)
+ Blocking=A[46, 47]
+ AllTaskTimes=A[11]
+
+ID 80 ([complete Job #80, MediumPoleAuto.scoreCone(MediumPoleAuto.java:312)])
+ Created=1675660384051
+ Started=1675660410427
+ Completed=1675660410687
+ WaitingDuration=D26376 (26.38s)
+ RunningDuration=D260 (260ms)
+ TotalExecutingTime=D4 (4ms)
+ TaskTimeSamples=13
+ MeanTaskTime=D0.38461538461538464 (0.4ms)
+ P95TaskTime=D4.0 (4.0ms)
+ MaxTaskTime=D4 (4ms)
+ Blocking=A[81]
+ AllTaskTimes=A[0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 4]
+
+ID 33 ([complete Job #33, MediumPoleAuto.scoreCone(MediumPoleAuto.java:309)])
+ Created=1675660383903
+ Started=1675660396709
+ Completed=1675660396835
+ WaitingDuration=D12806 (12.81s)
+ RunningDuration=D126 (126ms)
+ TotalExecutingTime=D24 (24ms)
+ TaskTimeSamples=9
+ MeanTaskTime=D2.7777777777777777 (2.8ms)
+ P95TaskTime=D25.0 (25.0ms)
+ MaxTaskTime=D25 (25ms)
+ Blocking=A[34]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 25]
+
+ID 28 ([complete Job #28, MediumPoleAuto.main(MediumPoleAuto.java:204)])
+ Created=1675660383885
+ Started=1675660394470
+ Completed=1675660394508
+ WaitingDuration=D10585 (10.59s)
+ RunningDuration=D38 (38ms)
+ TotalExecutingTime=D29 (29ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D30.0 (30.0ms)
+ P95TaskTime=D30.0 (30.0ms)
+ MaxTaskTime=D30 (30ms)
+ Blocking=A[29]
+ AllTaskTimes=A[30]
+
+ID 1 ([complete ResultJob #1, MediumPoleAuto.poleDetect(MediumPoleAuto.java:455), MediumPoleAuto.main(MediumPoleAuto.java:167)])
+ Created=1675660383782
+ Started=1675660386755
+ Completed=1675660388709
+ WaitingDuration=D2973 (2.97s)
+ RunningDuration=D1954 (1.95s)
+ TotalExecutingTime=D1201 (1.20s)
+ TaskTimeSamples=32
+ MeanTaskTime=D37.5625 (37.6ms)
+ P95TaskTime=D53.0 (53.0ms)
+ MaxTaskTime=D54 (54ms)
+ Blocking=A[8]
+ AllTaskTimes=A[30, 26, 27, 18, 39, 40, 41, 44, 42, 37, 29, 46, 38, 34, 27, 49, 29, 53, 34, 38, 25, 49, 40, 38, 54, 36, 28, 48, 28, 52, 51, 32]
+
+ID 62 ([complete Job #62, MediumPoleAuto.main(MediumPoleAuto.java:183)])
+ Created=1675660383993
+ Started=1675660405017
+ Completed=1675660405040
+ WaitingDuration=D21024 (21.02s)
+ RunningDuration=D23 (23ms)
+ TotalExecutingTime=D21 (21ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D22.0 (22.0ms)
+ P95TaskTime=D22.0 (22.0ms)
+ MaxTaskTime=D22 (22ms)
+ Blocking=A[63, 64]
+ AllTaskTimes=A[22]
+
+ID 50 ([complete Job #50, MediumPoleAuto.main(MediumPoleAuto.java:204)])
+ Created=1675660383952
+ Started=1675660400837
+ Completed=1675660400870
+ WaitingDuration=D16885 (16.89s)
+ RunningDuration=D33 (33ms)
+ TotalExecutingTime=D31 (31ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D32.0 (32.0ms)
+ P95TaskTime=D32.0 (32.0ms)
+ MaxTaskTime=D32 (32ms)
+ Blocking=A[51]
+ AllTaskTimes=A[32]
+
+ID 15 ([complete Job #15, MediumPoleAuto.liftHorizontal(MediumPoleAuto.java:464), MediumPoleAuto.scoreCone(MediumPoleAuto.java:313)])
+ Created=1675660383840
+ Started=1675660391368
+ Completed=1675660391645
+ WaitingDuration=D7528 (7.53s)
+ RunningDuration=D277 (277ms)
+ TotalExecutingTime=D133 (133ms)
+ TaskTimeSamples=8
+ MeanTaskTime=D16.75 (16.8ms)
+ P95TaskTime=D37.0 (37.0ms)
+ MaxTaskTime=D37 (37ms)
+ Blocking=A[16, 17]
+ AllTaskTimes=A[15, 11, 11, 12, 14, 12, 22, 37]
+
+ID 6 ([complete Job #6, MediumPoleAuto.straight(MediumPoleAuto.java:556), MediumPoleAuto.main(MediumPoleAuto.java:174)])
+ Created=1675660383802
+ Started=1675660384582
+ Completed=1675660386728
+ WaitingDuration=D780 (780ms)
+ RunningDuration=D2146 (2.15s)
+ TotalExecutingTime=D792 (792ms)
+ TaskTimeSamples=68
+ MeanTaskTime=D11.661764705882353 (11.7ms)
+ P95TaskTime=D21.0 (21.0ms)
+ MaxTaskTime=D26 (26ms)
+ Blocking=A[7]
+ AllTaskTimes=A[22, 6, 13, 12, 12, 12, 8, 12, 6, 11, 15, 8, 26, 10, 8, 10, 9, 11, 8, 9, 9, 9, 21, 10, 13, 24, 8, 8, 10, 10, 13, 10, 9, 12, 10, 9, 9, 11, 14, 12, 11, 15, 12, 14, 12, 13, 10, 9, 11, 9, 10, 13, 9, 10, 11, 10, 19, 9, 15, 11, 8, 11, 21, 9, 16, 8, 9, 19]
+
+ID 56 ([complete Job #56, MediumPoleAuto.controlledLowerLift(MediumPoleAuto.java:329), MediumPoleAuto.scoreCone(MediumPoleAuto.java:310)])
+ Created=1675660383972
+ Started=1675660403394
+ Completed=1675660403917
+ WaitingDuration=D19422 (19.42s)
+ RunningDuration=D523 (523ms)
+ TotalExecutingTime=D72 (72ms)
+ TaskTimeSamples=21
+ MeanTaskTime=D3.4761904761904763 (3.5ms)
+ P95TaskTime=D6.0 (6.0ms)
+ MaxTaskTime=D17 (17ms)
+ Blocking=A[57]
+ AllTaskTimes=A[4, 2, 3, 3, 4, 3, 2, 2, 2, 3, 2, 3, 2, 3, 2, 3, 2, 2, 3, 6, 17]
+
+ID 26 ([complete Job #26, MediumPoleAuto.main(MediumPoleAuto.java:198)])
+ Created=1675660383879
+ Started=1675660394133
+ Completed=1675660394169
+ WaitingDuration=D10254 (10.25s)
+ RunningDuration=D36 (36ms)
+ TotalExecutingTime=D12 (12ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D13.0 (13.0ms)
+ P95TaskTime=D13.0 (13.0ms)
+ MaxTaskTime=D13 (13ms)
+ Blocking=A[27]
+ AllTaskTimes=A[13]
+
+ID 41 ([complete Job #41, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.main(MediumPoleAuto.java:187)])
+ Created=1675660383928
+ Started=1675660398420
+ Completed=1675660399750
+ WaitingDuration=D14492 (14.49s)
+ RunningDuration=D1330 (1.33s)
+ TotalExecutingTime=D197 (197ms)
+ TaskTimeSamples=41
+ MeanTaskTime=D4.829268292682927 (4.8ms)
+ P95TaskTime=D14.0 (14.0ms)
+ MaxTaskTime=D20 (20ms)
+ Blocking=A[]
+ AllTaskTimes=A[8, 3, 3, 3, 3, 4, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 5, 16, 4, 2, 7, 3, 3, 3, 3, 3, 3, 3, 3, 7, 2, 8, 5, 14, 3, 3, 2, 13, 7, 20]
+
+ID 25 ([complete Job #25, MediumPoleAuto.main(MediumPoleAuto.java:197)])
+ Created=1675660383876
+ Started=1675660393614
+ Completed=1675660394133
+ WaitingDuration=D9738 (9.74s)
+ RunningDuration=D519 (519ms)
+ TotalExecutingTime=D3 (3ms)
+ TaskTimeSamples=20
+ MeanTaskTime=D0.2 (0.2ms)
+ P95TaskTime=D2.0 (2.0ms)
+ MaxTaskTime=D2 (2ms)
+ Blocking=A[26]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2]
+
+ID 60 ([complete Job #60, MediumPoleAuto.moveTurretTo(MediumPoleAuto.java:513), MediumPoleAuto.moveTurretTo(MediumPoleAuto.java:482), MediumPoleAuto.main(MediumPoleAuto.java:181)])
+ Created=1675660383984
+ Started=1675660404508
+ Completed=1675660405641
+ WaitingDuration=D20524 (20.52s)
+ RunningDuration=D1133 (1.13s)
+ TotalExecutingTime=D188 (188ms)
+ TaskTimeSamples=36
+ MeanTaskTime=D5.25 (5.3ms)
+ P95TaskTime=D10.0 (10.0ms)
+ MaxTaskTime=D12 (12ms)
+ Blocking=A[]
+ AllTaskTimes=A[7, 5, 5, 4, 5, 5, 5, 5, 4, 8, 4, 5, 4, 4, 5, 4, 6, 6, 7, 5, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 10, 4, 4, 4, 7, 12]
+
+ID 58 ([complete Job #58, MediumPoleAuto.scoreCone(MediumPoleAuto.java:312)])
+ Created=1675660383978
+ Started=1675660403954
+ Completed=1675660404224
+ WaitingDuration=D19976 (19.98s)
+ RunningDuration=D270 (270ms)
+ TotalExecutingTime=D5 (5ms)
+ TaskTimeSamples=14
+ MeanTaskTime=D0.42857142857142855 (0.4ms)
+ P95TaskTime=D6.0 (6.0ms)
+ MaxTaskTime=D6 (6ms)
+ Blocking=A[59]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 6]
+
+ID 14 ([complete Job #14, MediumPoleAuto.scoreCone(MediumPoleAuto.java:312)])
+ Created=1675660383838
+ Started=1675660391103
+ Completed=1675660391369
+ WaitingDuration=D7265 (7.27s)
+ RunningDuration=D266 (266ms)
+ TotalExecutingTime=D8 (8ms)
+ TaskTimeSamples=20
+ MeanTaskTime=D0.45 (0.5ms)
+ P95TaskTime=D6.0 (6.0ms)
+ MaxTaskTime=D6 (6ms)
+ Blocking=A[15]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 6]
+
+ID 46 ([complete Job #46, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.main(MediumPoleAuto.java:196)])
+ Created=1675660383942
+ Started=1675660399987
+ Completed=1675660401988
+ WaitingDuration=D16045 (16.05s)
+ RunningDuration=D2001 (2.00s)
+ TotalExecutingTime=D534 (534ms)
+ TaskTimeSamples=49
+ MeanTaskTime=D10.918367346938776 (10.9ms)
+ P95TaskTime=D17.0 (17.0ms)
+ MaxTaskTime=D25 (25ms)
+ Blocking=A[]
+ AllTaskTimes=A[9, 12, 11, 9, 12, 9, 9, 10, 11, 9, 14, 9, 10, 9, 10, 15, 13, 10, 9, 10, 11, 11, 10, 11, 9, 17, 13, 22, 11, 10, 10, 9, 12, 10, 10, 11, 10, 12, 9, 10, 10, 8, 8, 10, 7, 8, 13, 8, 25]
+
+ID 51 ([complete Job #51, MediumPoleAuto.moveTurretTo(MediumPoleAuto.java:513), MediumPoleAuto.main(MediumPoleAuto.java:205)])
+ Created=1675660383955
+ Started=1675660400870
+ Completed=1675660402532
+ WaitingDuration=D16915 (16.92s)
+ RunningDuration=D1662 (1.66s)
+ TotalExecutingTime=D234 (234ms)
+ TaskTimeSamples=42
+ MeanTaskTime=D5.595238095238095 (5.6ms)
+ P95TaskTime=D10.0 (10.0ms)
+ MaxTaskTime=D11 (11ms)
+ Blocking=A[52]
+ AllTaskTimes=A[5, 4, 5, 4, 5, 5, 8, 4, 7, 5, 4, 10, 10, 4, 5, 6, 5, 5, 8, 4, 5, 4, 5, 5, 5, 6, 7, 5, 5, 5, 6, 6, 5, 5, 11, 4, 5, 5, 5, 4, 5, 9]
+
+ID 16 ([complete Job #16, MediumPoleAuto.moveTurretTo(MediumPoleAuto.java:513), MediumPoleAuto.moveTurretTo(MediumPoleAuto.java:482), MediumPoleAuto.main(MediumPoleAuto.java:181)])
+ Created=1675660383844
+ Started=1675660391645
+ Completed=1675660392770
+ WaitingDuration=D7801 (7.80s)
+ RunningDuration=D1125 (1.13s)
+ TotalExecutingTime=D232 (232ms)
+ TaskTimeSamples=42
+ MeanTaskTime=D5.5476190476190474 (5.5ms)
+ P95TaskTime=D9.0 (9.0ms)
+ MaxTaskTime=D13 (13ms)
+ Blocking=A[]
+ AllTaskTimes=A[5, 5, 7, 5, 5, 6, 5, 4, 5, 5, 7, 5, 4, 7, 4, 4, 4, 5, 5, 5, 6, 5, 4, 9, 5, 5, 5, 4, 6, 5, 6, 5, 6, 4, 4, 12, 5, 6, 5, 6, 5, 13]
+
+ID 75 ([complete Job #75, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.scoreCone(MediumPoleAuto.java:307)])
+ Created=1675660384035
+ Started=1675660409182
+ Completed=1675660409540
+ WaitingDuration=D25147 (25.15s)
+ RunningDuration=D358 (358ms)
+ TotalExecutingTime=D113 (113ms)
+ TaskTimeSamples=11
+ MeanTaskTime=D10.363636363636363 (10.4ms)
+ P95TaskTime=D24.0 (24.0ms)
+ MaxTaskTime=D24 (24ms)
+ Blocking=A[76]
+ AllTaskTimes=A[20, 7, 8, 7, 7, 8, 8, 8, 10, 7, 24]
+
+ID 20 ([complete Job #20, MediumPoleAuto.controlledLowerLift(MediumPoleAuto.java:329), MediumPoleAuto.main(MediumPoleAuto.java:188)])
+ Created=1675660383858
+ Started=1675660392194
+ Completed=1675660393263
+ WaitingDuration=D8336 (8.34s)
+ RunningDuration=D1069 (1.07s)
+ TotalExecutingTime=D99 (99ms)
+ TaskTimeSamples=40
+ MeanTaskTime=D2.5 (2.5ms)
+ P95TaskTime=D3.0 (3.0ms)
+ MaxTaskTime=D6 (6ms)
+ Blocking=A[21]
+ AllTaskTimes=A[2, 2, 2, 2, 3, 2, 2, 3, 2, 2, 2, 3, 3, 2, 3, 2, 2, 2, 3, 3, 2, 3, 3, 3, 2, 3, 2, 2, 3, 3, 2, 2, 2, 3, 3, 2, 3, 2, 2, 6]
+
+ID 8 ([complete Job #8, MediumPoleAuto.scoreCone(MediumPoleAuto.java:306)])
+ Created=1675660383811
+ Started=1675660388709
+ Completed=1675660388721
+ WaitingDuration=D4898 (4.90s)
+ RunningDuration=D12 (12ms)
+ TotalExecutingTime=D5 (5ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D6.0 (6.0ms)
+ P95TaskTime=D6.0 (6.0ms)
+ MaxTaskTime=D6 (6ms)
+ Blocking=A[9]
+ AllTaskTimes=A[6]
+
+ID 44 ([complete Job #44, MediumPoleAuto.main(MediumPoleAuto.java:190)])
+ Created=1675660383937
+ Started=1675660399656
+ Completed=1675660399956
+ WaitingDuration=D15719 (15.72s)
+ RunningDuration=D300 (300ms)
+ TotalExecutingTime=D1 (1ms)
+ TaskTimeSamples=11
+ MeanTaskTime=D0.18181818181818182 (0.2ms)
+ P95TaskTime=D2.0 (2.0ms)
+ MaxTaskTime=D2 (2ms)
+ Blocking=A[45]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2]
+
+ID 69 ([complete Job #69, MediumPoleAuto.main(MediumPoleAuto.java:197)])
+ Created=1675660384015
+ Started=1675660406598
+ Completed=1675660407137
+ WaitingDuration=D22583 (22.58s)
+ RunningDuration=D539 (539ms)
+ TotalExecutingTime=D4 (4ms)
+ TaskTimeSamples=16
+ MeanTaskTime=D0.3125 (0.3ms)
+ P95TaskTime=D4.0 (4.0ms)
+ MaxTaskTime=D4 (4ms)
+ Blocking=A[70]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 4]
+
+ID 65 ([complete Job #65, MediumPoleAuto.main(MediumPoleAuto.java:189)])
+ Created=1675660384003
+ Started=1675660406238
+ Completed=1675660406259
+ WaitingDuration=D22235 (22.24s)
+ RunningDuration=D21 (21ms)
+ TotalExecutingTime=D4 (4ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D5.0 (5.0ms)
+ P95TaskTime=D5.0 (5.0ms)
+ MaxTaskTime=D5 (5ms)
+ Blocking=A[66]
+ AllTaskTimes=A[5]
+
+ID 77 ([complete Job #77, MediumPoleAuto.scoreCone(MediumPoleAuto.java:309)])
+ Created=1675660384042
+ Started=1675660409738
+ Completed=1675660409869
+ WaitingDuration=D25696 (25.70s)
+ RunningDuration=D131 (131ms)
+ TotalExecutingTime=D15 (15ms)
+ TaskTimeSamples=5
+ MeanTaskTime=D3.2 (3.2ms)
+ P95TaskTime=D16.0 (16.0ms)
+ MaxTaskTime=D16 (16ms)
+ Blocking=A[78]
+ AllTaskTimes=A[0, 0, 0, 0, 16]
+
+ID 22 ([complete Job #22, MediumPoleAuto.main(MediumPoleAuto.java:190)])
+ Created=1675660383866
+ Started=1675660393279
+ Completed=1675660393590
+ WaitingDuration=D9413 (9.41s)
+ RunningDuration=D311 (311ms)
+ TotalExecutingTime=D2 (2ms)
+ TaskTimeSamples=23
+ MeanTaskTime=D0.13043478260869565 (0.1ms)
+ P95TaskTime=D0.0 (0.0ms)
+ MaxTaskTime=D3 (3ms)
+ Blocking=A[23]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3]
+
+ID 5 ([complete Job #5, MediumPoleAuto.liftUntilVertStop(MediumPoleAuto.java:477), MediumPoleAuto.main(MediumPoleAuto.java:173)])
+ Created=1675660383799
+ Started=1675660384580
+ Completed=1675660385813
+ WaitingDuration=D781 (781ms)
+ RunningDuration=D1233 (1.23s)
+ TotalExecutingTime=D378 (378ms)
+ TaskTimeSamples=30
+ MeanTaskTime=D12.633333333333333 (12.6ms)
+ P95TaskTime=D28.0 (28.0ms)
+ MaxTaskTime=D28 (28ms)
+ Blocking=A[]
+ AllTaskTimes=A[28, 10, 10, 15, 10, 10, 11, 10, 12, 11, 10, 11, 13, 23, 9, 10, 10, 11, 13, 10, 11, 10, 11, 14, 10, 17, 10, 13, 8, 28]
+
+ID 78 ([complete Job #78, MediumPoleAuto.controlledLowerLift(MediumPoleAuto.java:329), MediumPoleAuto.scoreCone(MediumPoleAuto.java:310)])
+ Created=1675660384045
+ Started=1675660409869
+ Completed=1675660410401
+ WaitingDuration=D25824 (25.82s)
+ RunningDuration=D532 (532ms)
+ TotalExecutingTime=D70 (70ms)
+ TaskTimeSamples=23
+ MeanTaskTime=D3.0869565217391304 (3.1ms)
+ P95TaskTime=D5.0 (5.0ms)
+ MaxTaskTime=D18 (18ms)
+ Blocking=A[79]
+ AllTaskTimes=A[3, 2, 2, 2, 2, 2, 2, 3, 2, 2, 2, 2, 3, 5, 3, 2, 3, 3, 2, 2, 2, 2, 18]
+
+ID 4 ([complete Job #4, MediumPoleAuto.main(MediumPoleAuto.java:172)])
+ Created=1675660383794
+ Started=1675660384572
+ Completed=1675660384582
+ WaitingDuration=D778 (778ms)
+ RunningDuration=D10 (10ms)
+ TotalExecutingTime=D5 (5ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D6.0 (6.0ms)
+ P95TaskTime=D6.0 (6.0ms)
+ MaxTaskTime=D6 (6ms)
+ Blocking=A[5, 6]
+ AllTaskTimes=A[6]
+
+ID 34 ([complete Job #34, MediumPoleAuto.controlledLowerLift(MediumPoleAuto.java:329), MediumPoleAuto.scoreCone(MediumPoleAuto.java:310)])
+ Created=1675660383906
+ Started=1675660396835
+ Completed=1675660397355
+ WaitingDuration=D12929 (12.93s)
+ RunningDuration=D520 (520ms)
+ TotalExecutingTime=D93 (93ms)
+ TaskTimeSamples=30
+ MeanTaskTime=D3.1333333333333333 (3.1ms)
+ P95TaskTime=D4.0 (4.0ms)
+ MaxTaskTime=D19 (19ms)
+ Blocking=A[35]
+ AllTaskTimes=A[2, 2, 2, 3, 2, 2, 3, 3, 2, 2, 3, 2, 2, 2, 4, 2, 3, 3, 3, 4, 4, 2, 3, 2, 2, 2, 3, 3, 3, 19]
+
+ID 76 ([complete Job #76, MediumPoleAuto.liftHorizontal(MediumPoleAuto.java:464), MediumPoleAuto.scoreCone(MediumPoleAuto.java:308)])
+ Created=1675660384039
+ Started=1675660409540
+ Completed=1675660409738
+ WaitingDuration=D25501 (25.50s)
+ RunningDuration=D198 (198ms)
+ TotalExecutingTime=D39 (39ms)
+ TaskTimeSamples=10
+ MeanTaskTime=D4.0 (4.0ms)
+ P95TaskTime=D14.0 (14.0ms)
+ MaxTaskTime=D14 (14ms)
+ Blocking=A[77]
+ AllTaskTimes=A[14, 2, 2, 3, 3, 3, 2, 2, 2, 7]
+
+ID 18 ([complete Job #18, MediumPoleAuto.main(MediumPoleAuto.java:183)])
+ Created=1675660383851
+ Started=1675660392167
+ Completed=1675660392194
+ WaitingDuration=D8316 (8.32s)
+ RunningDuration=D27 (27ms)
+ TotalExecutingTime=D20 (20ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D21.0 (21.0ms)
+ P95TaskTime=D21.0 (21.0ms)
+ MaxTaskTime=D21 (21ms)
+ Blocking=A[19, 20]
+ AllTaskTimes=A[21]
+
+ID 73 ([complete Job #73, MediumPoleAuto.moveTurretTo(MediumPoleAuto.java:513), MediumPoleAuto.main(MediumPoleAuto.java:205)])
+ Created=1675660384025
+ Started=1675660407564
+ Completed=1675660409168
+ WaitingDuration=D23539 (23.54s)
+ RunningDuration=D1604 (1.60s)
+ TotalExecutingTime=D239 (239ms)
+ TaskTimeSamples=44
+ MeanTaskTime=D5.454545454545454 (5.5ms)
+ P95TaskTime=D10.0 (10.0ms)
+ MaxTaskTime=D14 (14ms)
+ Blocking=A[74]
+ AllTaskTimes=A[4, 5, 5, 5, 7, 5, 11, 4, 5, 5, 5, 5, 4, 4, 5, 5, 9, 5, 5, 6, 4, 5, 4, 4, 4, 6, 8, 4, 4, 4, 4, 5, 5, 4, 5, 5, 5, 4, 14, 5, 5, 5, 8, 10]
+
+ID 0 ([complete ToggleableJob #0, MediumPoleAuto.lockPosition(MediumPoleAuto.java:413), MediumPoleAuto.main(MediumPoleAuto.java:166)])
+ Created=1675660383778
+ Started=1675660386742
+ Completed=1675660411018
+ WaitingDuration=D2964 (2.96s)
+ RunningDuration=D24276 (24.28s)
+ TotalExecutingTime=D6494 (6.49s)
+ TaskTimeSamples=829
+ MeanTaskTime=D7.8347406513872135 (7.8ms)
+ P95TaskTime=D15.0 (15.0ms)
+ MaxTaskTime=D30 (30ms)
+ Blocking=A[]
+ AllTaskTimes=A[6, 4, 4, 4, 6, 5, 4, 4, 5, 6, 9, 4, 7, 8, 6, 4, 4, 4, 6, 6, 5, 5, 5, 5, 5, 7, 8, 4, 7, 6, 7, 6, 5, 4, 4, 5, 4, 4, 5, 5, 4, 8, 4, 5, 4, 5, 5, 4, 6, 4, 5, 4, 5, 5, 5, 4, 4, 6, 5, 4, 4, 3, 4, 5, 7, 5, 5, 8, 5, 7, 5, 4, 5, 5, 4, 6, 4, 6, 6, 4, 5, 4, 5, 4, 5, 6, 5, 5, 8, 4, 4, 10, 5, 4, 6, 6, 5, 6, 5, 5, 4, 5, 7, 4, 6, 5, 4, 6, 5, 4, 6, 5, 4, 4, 8, 5, 4, 4, 4, 5, 4, 5, 4, 4, 4, 4, 4, 4, 5, 5, 6, 5, 5, 4, 4, 7, 5, 4, 4, 5, 6, 4, 4, 4, 7, 4, 5, 4, 4, 4, 3, 9, 5, 4, 5, 7, 5, 5, 4, 11, 5, 5, 7, 4, 5, 7, 5, 5, 7, 4, 4, 4, 4, 7, 4, 4, 5, 6, 9, 5, 5, 4, 3, 5, 4, 7, 5, 8, 4, 5, 5, 3, 4, 4, 4, 4, 4, 4, 6, 4, 4, 5, 4, 6, 5, 5, 7, 4, 4, 7, 5, 4, 5, 4, 5, 4, 4, 4, 4, 5, 9, 6, 5, 5, 5, 7, 4, 4, 5, 5, 7, 5, 5, 7, 4, 8, 5, 5, 4, 4, 7, 6, 5, 7, 4, 6, 5, 4, 8, 4, 7, 5, 3, 7, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 5, 4, 4, 8, 5, 3, 5, 5, 3, 4, 4, 5, 7, 4, 3, 6, 4, 3, 5, 3, 4, 5, 5, 4, 7, 4, 4, 3, 4, 4, 4, 4, 7, 7, 4, 9, 4, 4, 8, 6, 4, 5, 5, 4, 7, 10, 5, 7, 5, 4, 4, 4, 4, 4, 5, 5, 7, 4, 4, 4, 6, 4, 4, 7, 5, 5, 4, 4, 4, 8, 5, 4, 4, 5, 4, 7, 4, 4, 3, 6, 7, 5, 4, 5, 5, 4, 6, 6, 4, 4, 4, 5, 4, 5, 4, 3, 7, 4, 8, 5, 5, 4, 5, 6, 5, 4, 5, 6, 6, 4, 8, 6, 4, 4, 4, 4, 5, 7, 5, 4, 4, 4, 5, 4, 3, 5, 4, 4, 4, 7, 4, 5, 4, 9, 6, 5, 4, 4, 9, 7, 4, 5, 7, 4, 4, 4, 4, 4, 5, 4, 4, 3, 4, 5, 6, 5, 5, 4, 4, 4, 4, 4, 4, 4, 6, 8, 4, 6, 4, 4, 4, 6, 4, 4, 9, 4, 5, 4, 5, 4, 4, 4, 5, 7, 4, 4, 4, 4, 5, 5, 5, 8, 4, 4, 30, 10, 13, 17, 10, 14, 12, 10, 12, 10, 13, 10, 11, 13, 10, 9, 27, 9, 10, 10, 14, 14, 11, 16, 12, 15, 13, 10, 6, 13, 10, 11, 26, 9, 14, 10, 10, 9, 3, 9, 11, 9, 17, 9, 10, 9, 11, 25, 12, 10, 10, 15, 4, 9, 11, 10, 9, 12, 13, 25, 4, 10, 13, 11, 9, 11, 11, 18, 14, 11, 15, 20, 10, 12, 12, 11, 10, 10, 15, 9, 9, 10, 13, 21, 17, 10, 15, 13, 10, 18, 10, 9, 11, 10, 16, 11, 12, 11, 20, 10, 11, 9, 14, 8, 12, 10, 12, 11, 9, 10, 10, 12, 15, 10, 24, 9, 14, 11, 13, 10, 9, 15, 13, 12, 9, 15, 10, 14, 10, 10, 19, 10, 9, 26, 8, 13, 11, 4, 11, 11, 9, 9, 10, 18, 9, 14, 12, 9, 9, 11, 9, 8, 11, 10, 12, 22, 12, 12, 10, 14, 9, 13, 11, 9, 12, 9, 12, 9, 8, 13, 18, 13, 12, 14, 10, 9, 9, 10, 9, 10, 9, 12, 9, 10, 9, 10, 9, 22, 13, 9, 12, 10, 14, 9, 17, 10, 11, 11, 11, 15, 10, 25, 17, 9, 11, 8, 6, 12, 9, 14, 12, 10, 14, 12, 9, 8, 11, 11, 20, 8, 14, 9, 10, 13, 9, 10, 14, 11, 9, 5, 6, 9, 9, 9, 10, 8, 10, 11, 10, 13, 12, 9, 10, 9, 9, 3, 12, 10, 10, 11, 9, 9, 9, 14, 13, 11, 5, 13, 9, 9, 9, 9, 9, 11, 8, 9, 21, 15, 9, 9, 9, 12, 8, 12, 8, 11, 8, 13, 13, 14, 13, 9, 9, 9, 8, 13, 13, 9, 12, 9, 17, 9, 12, 18, 8, 16, 10, 10, 9, 9, 9, 15, 9, 10, 10, 9, 11, 12, 9, 18, 9, 4, 15, 10, 10, 11, 9, 9, 3, 9, 5, 10, 16, 9, 11, 13, 10, 13, 9, 14, 13, 19, 11, 8, 11, 9, 11, 10, 10, 8, 8, 9, 9, 10, 9, 9, 14, 9, 9, 12, 15, 17, 10, 12, 14, 10, 11, 12, 10, 14, 8, 15, 10, 9, 10, 9, 8, 8, 16, 14, 16]
+
+ID 39 ([complete Job #39, MediumPoleAuto.main(MediumPoleAuto.java:182)])
+ Created=1675660383921
+ Started=1675660397896
+ Completed=1675660398399
+ WaitingDuration=D13975 (13.98s)
+ RunningDuration=D503 (503ms)
+ TotalExecutingTime=D1 (1ms)
+ TaskTimeSamples=25
+ MeanTaskTime=D0.08 (0.1ms)
+ P95TaskTime=D1.0 (1.0ms)
+ MaxTaskTime=D1 (1ms)
+ Blocking=A[40]
+ AllTaskTimes=A[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1]
+
+ID 35 ([complete Job #35, MediumPoleAuto.scoreCone(MediumPoleAuto.java:311)])
+ Created=1675660383909
+ Started=1675660397355
+ Completed=1675660397365
+ WaitingDuration=D13446 (13.45s)
+ RunningDuration=D10 (10ms)
+ TotalExecutingTime=D5 (5ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D6.0 (6.0ms)
+ P95TaskTime=D6.0 (6.0ms)
+ MaxTaskTime=D6 (6ms)
+ Blocking=A[36]
+ AllTaskTimes=A[6]
+
+ID 74 ([complete Job #74, MediumPoleAuto.scoreCone(MediumPoleAuto.java:306)])
+ Created=1675660384028
+ Started=1675660409167
+ Completed=1675660409182
+ WaitingDuration=D25139 (25.14s)
+ RunningDuration=D15 (15ms)
+ TotalExecutingTime=D3 (3ms)
+ TaskTimeSamples=1
+ MeanTaskTime=D4.0 (4.0ms)
+ P95TaskTime=D4.0 (4.0ms)
+ MaxTaskTime=D4 (4ms)
+ Blocking=A[75]
+ AllTaskTimes=A[4]
+
+ID 10 ([complete Job #10, MediumPoleAuto.liftHorizontal(MediumPoleAuto.java:464), MediumPoleAuto.scoreCone(MediumPoleAuto.java:308)])
+ Created=1675660383818
+ Started=1675660390205
+ Completed=1675660390451
+ WaitingDuration=D6387 (6.39s)
+ RunningDuration=D246 (246ms)
+ TotalExecutingTime=D40 (40ms)
+ TaskTimeSamples=12
+ MeanTaskTime=D3.4166666666666665 (3.4ms)
+ P95TaskTime=D13.0 (13.0ms)
+ MaxTaskTime=D13 (13ms)
+ Blocking=A[11]
+ AllTaskTimes=A[13, 2, 3, 2, 3, 3, 2, 2, 2, 2, 2, 5]
+

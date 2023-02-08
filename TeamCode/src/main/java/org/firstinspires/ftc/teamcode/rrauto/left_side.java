@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 //@Autonomous(name = "left_side", group = "Pushbot")
 //@Disabled
-public class rrautotest extends rrAutoComp3 {
+public class left_side extends rrAutoComp3 {
 
     // Constructor
-    public rrautotest() {
+    public left_side() {
         position = "left_side";
     }
 }
