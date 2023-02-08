@@ -43,11 +43,11 @@ public class TrigCalculations {
     }
 
     public static double poleAngle(double x, double y) {
-        double deltaX = poleDiffX - x;
-        double deltaY = poleDiffY - y;
+        double deltaX = poleDiffX - x/encToDist;
+        double deltaY = poleDiffY + y/encToDist;
 
         // should return negative angle value
-        return Math.toDegrees(Math.atan2(deltaY, deltaX));
+        return Math.toDegrees(Math.atan2(deltaX, Math.abs(deltaY)));
     }
 
     public static double stackAngle(double x, double y) {
@@ -79,14 +79,20 @@ public class TrigCalculations {
 
     public static double distToStack(double x, double y) {
         double xComponent = x / encToDist - stackDiffX;
-        double yComponent = stackDiffY - y / encToDist - 9;//9 inches is the distance from claw to center of turret
+        double yComponent = stackDiffY - y / encToDist;//9 inches is the distance from claw to center of turret
 
         double dist = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
-        return dist * 163 / 5.25;
+        return (dist-9) * 163 / 5.25;
     }
 
     public static double distToPoleMed(double x, double y) {
         double xComponent = x / encToDist - (poleDiffX - 24);
+        double yComponent = abs(poleDiffY - y / encToDist);//9 inches is the distance from claw to center of turret
+        double dist = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
+        return (dist - 9) * 163 / 5.25;
+    }
+    public static double distToPoleHigh(double x, double y) {
+        double xComponent =(poleDiffX) - x / encToDist;
         double yComponent = abs(poleDiffY - y / encToDist);//9 inches is the distance from claw to center of turret
         double dist = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
         return (dist - 9) * 163 / 5.25;
