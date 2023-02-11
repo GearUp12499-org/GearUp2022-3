@@ -10,6 +10,7 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.runtime;
 import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
+import static org.firstinspires.ftc.teamcode.rrauto.TrigCalculations.distToPoleHigh;
 
 import android.annotation.SuppressLint;
 
@@ -196,7 +197,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
                     break;
                 }
                 turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-                turret.setPower(-0.25); //.35
+                turret.setPower(-0.20); //.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
             }
@@ -209,14 +210,25 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
 
             //raises v lift to proper height above the pole
             runtime.reset();
-            l.verticalLift(VERTICAL_TARGETS[3] + 400, this);
-            while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3] + 400 && runtime.seconds()<1.5) { //1.8 seconds
+            l.verticalLift(VERTICAL_TARGETS[3] + 800, this);
+            while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3] + 700 && runtime.seconds()<1.5) { //1.8 seconds
                 stopMaybe();
                 l.update();
             }
+            runtime.reset();;
+            /*while(runtime.seconds()<0.5){
+                l.liftVertical2.setPower(1);
+                l.liftVertical1.setPower(1);
+            }
+            int bruteTarg =  l.liftVertical1.getCurrentPosition();
+            l.liftVertical1.setPower(0);
+            l.liftVertical2.setPower(0);
+            l.verticalLift(bruteTarg, this);
 
+*/
             //drops off cone into the stack
-            l.setHorizontalTargetManual(220);//208
+            int distPole = (int)distToPoleHigh((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
+            l.setHorizontalTargetManual(distPole);//208
             while (!l.isSatisfiedHorizontally()) {
                 stopMaybe();
                 l.update();
@@ -289,7 +301,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
-                l.setHorizontalTargetManual(210); //225
+                l.setHorizontalTargetManual(distPole); //210
 
                 //once above pole, now we move downward to secure cone onto pole
                 sleep(300);
@@ -402,13 +414,14 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
             //raises v lift to proper height above the pole
             runtime.reset();
             l.verticalLift(VERTICAL_TARGETS[3], this);
+            int distPole = (int)distToPoleHigh((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
             while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3] && runtime.seconds()<1.5) { //1.8 seconds
                 stopMaybe();
                 l.update();
             }
 
             //drops off cone into the stack
-            l.setHorizontalTargetManual(250);//240
+            l.setHorizontalTargetManual(distPole);//250
             while (!l.isSatisfiedHorizontally()) {
                 stopMaybe();
                 l.update();
@@ -441,7 +454,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
 
                 //lowers vertical lift to cone stack and extends out horizontal lift to stack
                 l.setVerticalTargetManual(1180-i*150);
-                l.setHorizontalTargetManual(dist); //825
+                l.setHorizontalTargetManual(dist+ 50); //825
                 while(l.liftVertical1.getCurrentPosition()>(1180-(i*150))){
                     stopMaybe();
                     l.liftVertical1.setPower(-0.6);
@@ -469,7 +482,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
                 sleep(300);
 
                 //extends v lift to height above the tall pole and rotates to it
-                l.setVerticalTargetManual(VERTICAL_TARGETS[3]-150);
+                l.setVerticalTargetManual(VERTICAL_TARGETS[3]);//-150
                 turr(0.5, polePos -34); //37
 
                 //needs a little more juice at the top of pole to make it
@@ -481,7 +494,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
                 }
                 l.liftVertical1.setPower(0);
                 l.liftVertical2.setPower(0);
-                l.setHorizontalTargetManual(235); //210
+                l.setHorizontalTargetManual(distPole-20); //235
 
                 //once above pole, now we move downward to secure cone onto pole
                 sleep(300);
