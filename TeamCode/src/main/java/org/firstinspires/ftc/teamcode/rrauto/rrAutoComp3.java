@@ -413,9 +413,9 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
 
             //raises v lift to proper height above the pole
             runtime.reset();
-            l.verticalLift(VERTICAL_TARGETS[3], this);
+            l.verticalLift(VERTICAL_TARGETS[3]+500, this);
             int distPole = (int)distToPoleHigh((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
-            while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3] && runtime.seconds()<1.5) { //1.8 seconds
+            while(l.liftVertical1.getCurrentPosition()< VERTICAL_TARGETS[3]+500 && runtime.seconds()<1.5) { //1.8 seconds
                 stopMaybe();
                 l.update();
             }
@@ -447,7 +447,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
             for (int i = 0; i < 4; i++) {
                 //turns from pole to stack
                 turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                turret.setTargetPosition(-ang-15); //750
+                turret.setTargetPosition(-ang-34); //-15
                 turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 turret.setPower(-0.8); //0.3
                 sleep(500);
@@ -483,7 +483,7 @@ public class rrAutoComp3 extends LinearCleanupOpMode {
 
                 //extends v lift to height above the tall pole and rotates to it
                 l.setVerticalTargetManual(VERTICAL_TARGETS[3]);//-150
-                turr(0.5, polePos -34); //37
+                turr(0.5, polePos-11); //-34
 
                 //needs a little more juice at the top of pole to make it
                 runtime.reset();
