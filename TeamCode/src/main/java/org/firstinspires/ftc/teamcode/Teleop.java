@@ -17,11 +17,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.lib.LinearCleanupOpMode;
 import org.firstinspires.ftc.teamcode.snap.MatchTimer;
 import org.firstinspires.ftc.teamcode.snap.SnapRunner;
 
 @TeleOp(name = "TeleOp")
-public class Teleop extends LinearOpMode {
+public class Teleop extends LinearCleanupOpMode {
     public Lift l;
 
     public final int TURRET_THRESHOLD = 800;
@@ -31,7 +32,31 @@ public class Teleop extends LinearOpMode {
     public IOControl io;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void cleanup() {
+        if (frontLeft != null) {
+            frontLeft.setPower(0);
+        }
+        if (frontRight != null) {
+            frontRight.setPower(0);
+        }
+        if (rearLeft != null) {
+            rearLeft.setPower(0);
+        }
+        if (rearRight != null) {
+            rearRight.setPower(0);
+        }
+        if (l != null) {
+            l.liftVertical1.setPower(0);
+            l.liftVertical2.setPower(0);
+            l.liftHorizontal.setPower(0);
+        }
+        if (turret != null) {
+            turret.setPower(0);
+        }
+    }
+
+    @Override
+    public void main() throws InterruptedException {
         prepareHardware(hardwareMap);
         l = new Lift(hardwareMap);
         io = new IOControl(hardwareMap);
