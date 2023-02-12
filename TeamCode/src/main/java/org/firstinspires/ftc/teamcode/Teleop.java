@@ -17,6 +17,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.snap.MatchTimer;
+import org.firstinspires.ftc.teamcode.snap.SnapRunner;
 
 @TeleOp(name = "TeleOp")
 public class Teleop extends LinearOpMode {
@@ -34,8 +36,11 @@ public class Teleop extends LinearOpMode {
         l = new Lift(hardwareMap);
         io = new IOControl(hardwareMap);
         turret_center = turret.getCurrentPosition();
+        SnapRunner snapRunner = new SnapRunner();
+        snapRunner.addSnap(new MatchTimer(telemetry));
 
         waitForStart();
+        snapRunner.init();
         while (opModeIsActive()) {
             drive();
             lift();
@@ -50,8 +55,10 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("f/b", encoderRear.getCurrentPosition());
             telemetry.addData("lift counts:", l.liftVertical1.getCurrentPosition());
             telemetry.addData("lift target:", l.targetVerticalCount);
+            snapRunner.loop();
             telemetry.update();
         }
+        snapRunner.finish();
     }
 
     //////////////////////////////////////////////////////////////////
