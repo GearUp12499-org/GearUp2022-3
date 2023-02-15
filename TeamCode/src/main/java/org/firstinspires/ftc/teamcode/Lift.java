@@ -9,10 +9,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift {
-    public static final int[] VERTICAL_TARGETS = {40, inEnc(14), inEnc(26), 3000};
+    // Feb 14 - multiplied by (384.5 / 537.7) for new motor gearbox
+    public static final int[] VERTICAL_TARGETS = {29, inEnc(14), inEnc(26), 3218};
     public static final int[] HORIZONTAL_TARGETS = {30, 220};
     public static final double[] HORIZONTAL_POWER_LEVEL = {0, 0.65, 0.8, 1};
-    public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 4600;  // 3500
+    public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 3289;  // 3500
     public static final int LOWER_HORIZONTAL_BOUND = 30, UPPER_HORIZONTAL_BOUND = 850; // was 225, then 500
     public int currentVerticalTarget = 0, targetVerticalCount = VERTICAL_TARGETS[0];
     public int currentHorizontalTarget = 0, targetHorizontalCount = HORIZONTAL_TARGETS[0];
@@ -27,7 +28,7 @@ public class Lift {
     public static final double POWER_H = 0.65; //0.65
     public static final double POWER_DOWN = -0.8;
 
-    public static final double ENCODER_COUNTS_PER_ROTATION = 537.7;
+    public static final double ENCODER_COUNTS_PER_ROTATION = 384.5;
     public static final double SPOOL_DIAMETER = 1.25;
     public static final double SPOOL_CIRCUMFERENCE = SPOOL_DIAMETER * Math.PI;
     public static final double COUNTS_TO_INCHES_FACTOR = SPOOL_CIRCUMFERENCE / ENCODER_COUNTS_PER_ROTATION;
@@ -179,7 +180,8 @@ public class Lift {
     }
 
     public void setVerticalTargetManual(int target) {
-        targetVerticalCount = target;
+        // I can't be bothered to change all of these :(
+        targetVerticalCount = (int) (target * (384.5 / 537.7));
         updTargets();
     }
 
