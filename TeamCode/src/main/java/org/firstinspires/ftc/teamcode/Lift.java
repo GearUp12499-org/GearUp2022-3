@@ -18,13 +18,15 @@ public class Lift {
     public int currentVerticalTarget = 0, targetVerticalCount = VERTICAL_TARGETS[0];
     public int currentHorizontalTarget = 0, targetHorizontalCount = HORIZONTAL_TARGETS[0];
 
-    public boolean inMotion = false;
+    public boolean correcting = false;
+    public boolean traveling = false;
 
     public final DcMotor liftVertical1;
     public final DcMotor liftVertical2;
     public final DcMotor liftHorizontal;
 
     public static final double POWER_UP = 1.0;
+    public static final double POWER_CORRECT = 0.2;
     public static final double POWER_H = 0.65; //0.65
     public static final double POWER_DOWN = -0.8;
 
@@ -32,6 +34,9 @@ public class Lift {
     public static final double SPOOL_DIAMETER = 1.25;
     public static final double SPOOL_CIRCUMFERENCE = SPOOL_DIAMETER * Math.PI;
     public static final double COUNTS_TO_INCHES_FACTOR = SPOOL_CIRCUMFERENCE / ENCODER_COUNTS_PER_ROTATION;
+
+    public static final double START_CORRECTING = -20;
+    public static final double STOP_CORRECTING = 0;
 
     public final Servo servo;
 
@@ -83,14 +88,27 @@ public class Lift {
      * Check current state of the lift, update motor powers accordingly.
      */
     public void update() {
-        if (inMotion) {
+        if (!traveling) {
+            // Correction
+            double diff = liftVertical1.getCurrentPosition() - targetVerticalCount;
+            if (diff < START_CORRECTING && !correcting) {
+                liftVertical1.setPower(POWER_CORRECT);
+                liftVertical2.setPower(POWER_CORRECT);
+                correcting = true;
+            } else if (diff > STOP_CORRECTING && correcting) {
+                liftVertical1.setPower(0);
+                liftVertical2.setPower(0);
+                correcting = false;
+            }
+        } else {
+            correcting = false;
             if (liftVertical1.getCurrentPosition() > targetVerticalCount + 30) {
                 liftVertical1.setPower(POWER_DOWN);
                 liftVertical2.setPower(POWER_DOWN);
-            }else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 30 && liftVertical1.getCurrentPosition()>targetVerticalCount-200) {
+            } else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 30 && liftVertical1.getCurrentPosition() > targetVerticalCount - 200) {
                 liftVertical1.setPower(0.4);
                 liftVertical2.setPower(0.4);
-            }else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 30) {
+            } else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 30) {
                 liftVertical1.setPower(POWER_UP);
                 liftVertical2.setPower(POWER_UP);
             }
@@ -100,7 +118,7 @@ public class Lift {
 
                 liftVertical1.setPower(0);
                 liftVertical2.setPower(0);
-                inMotion = false;
+                traveling = false;
             }
         }
     }
@@ -109,7 +127,7 @@ public class Lift {
         targetVerticalCount = clamp(targetVerticalCount, LOWER_VERTICAL_BOUND, UPPER_VERTICAL_BOUND);
         targetHorizontalCount = clamp(targetHorizontalCount, LOWER_HORIZONTAL_BOUND, UPPER_HORIZONTAL_BOUND);
         liftHorizontal.setTargetPosition(targetHorizontalCount);
-        inMotion = true;
+        traveling = true;
     }
 
     public void goUp() {

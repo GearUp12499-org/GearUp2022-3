@@ -476,7 +476,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                     telemetry.addLine("  vertical1 " + l.liftVertical1.getPower());
                     telemetry.addLine("  vertical2 " + l.liftVertical2.getPower());
                 })
-                .completeCondition(() -> !l.inMotion)
+                .completeCondition(() -> !l.traveling)
                 .build();
     }
 
