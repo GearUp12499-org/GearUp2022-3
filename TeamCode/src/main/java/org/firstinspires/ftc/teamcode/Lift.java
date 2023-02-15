@@ -9,13 +9,17 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class Lift {
-    // Feb 14 - multiplied by (384.5 / 537.7) for new motor gearbox
-    public static final int[] VERTICAL_TARGETS = {29, inEnc(14), inEnc(26), 3218};
+    public static final int[] VERTICAL_TARGETS = {40, inEnc(14), inEnc(26), 4500};
     public static final int[] HORIZONTAL_TARGETS = {30, 220};
     public static final double[] HORIZONTAL_POWER_LEVEL = {0, 0.65, 0.8, 1};
-    public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 3289;  // 3500
+    public static final int LOWER_VERTICAL_BOUND = 20, UPPER_VERTICAL_BOUND = 4600;  // 3500
     public static final int LOWER_HORIZONTAL_BOUND = 30, UPPER_HORIZONTAL_BOUND = 850; // was 225, then 500
     public int currentVerticalTarget = 0, targetVerticalCount = VERTICAL_TARGETS[0];
+
+    public int getFakedVerticalCount() {
+        return (int) (targetVerticalCount * (384.5 / 537.7));
+    }
+
     public int currentHorizontalTarget = 0, targetHorizontalCount = HORIZONTAL_TARGETS[0];
 
     public boolean correcting = false;
@@ -30,7 +34,7 @@ public class Lift {
     public static final double POWER_H = 0.65; //0.65
     public static final double POWER_DOWN = -0.8;
 
-    public static final double ENCODER_COUNTS_PER_ROTATION = 384.5;
+    public static final double ENCODER_COUNTS_PER_ROTATION = 537.7;
     public static final double SPOOL_DIAMETER = 1.25;
     public static final double SPOOL_CIRCUMFERENCE = SPOOL_DIAMETER * Math.PI;
     public static final double COUNTS_TO_INCHES_FACTOR = SPOOL_CIRCUMFERENCE / ENCODER_COUNTS_PER_ROTATION;
@@ -90,7 +94,7 @@ public class Lift {
     public void update() {
         if (!traveling) {
             // Correction
-            double diff = liftVertical1.getCurrentPosition() - targetVerticalCount;
+            double diff = liftVertical1.getCurrentPosition() - getFakedVerticalCount();
             if (diff < START_CORRECTING && !correcting) {
                 liftVertical1.setPower(POWER_CORRECT);
                 liftVertical2.setPower(POWER_CORRECT);
@@ -102,13 +106,13 @@ public class Lift {
             }
         } else {
             correcting = false;
-            if (liftVertical1.getCurrentPosition() > targetVerticalCount + 30) {
+            if (liftVertical1.getCurrentPosition() > getFakedVerticalCount() + 30) {
                 liftVertical1.setPower(POWER_DOWN);
                 liftVertical2.setPower(POWER_DOWN);
-            } else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 30 && liftVertical1.getCurrentPosition() > targetVerticalCount - 200) {
+            } else if (liftVertical1.getCurrentPosition() < getFakedVerticalCount() - 30 && liftVertical1.getCurrentPosition() > getFakedVerticalCount() - 200) {
                 liftVertical1.setPower(0.4);
                 liftVertical2.setPower(0.4);
-            } else if (liftVertical1.getCurrentPosition() < targetVerticalCount - 30) {
+            } else if (liftVertical1.getCurrentPosition() < getFakedVerticalCount() - 30) {
                 liftVertical1.setPower(POWER_UP);
                 liftVertical2.setPower(POWER_UP);
             }
@@ -194,8 +198,7 @@ public class Lift {
     }
 
     public void setVerticalTargetManual(int target) {
-        // I can't be bothered to change all of these :(
-        targetVerticalCount = (int) (target * (384.5 / 537.7));
+        targetVerticalCount = target;
         updTargets();
     }
 
