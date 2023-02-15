@@ -79,6 +79,9 @@ public class Lift {
         servo.setPosition(0.25);
     }
 
+    /**
+     * Check current state of the lift, update motor powers accordingly.
+     */
     public void update() {
         if (inMotion) {
             if (liftVertical1.getCurrentPosition() > targetVerticalCount + 30) {
@@ -100,13 +103,6 @@ public class Lift {
                 inMotion = false;
             }
         }
-    }
-    public void update2() {
-        while (liftVertical1.getCurrentPosition() < targetVerticalCount && liftVertical1.getCurrentPosition() > targetVerticalCount - 300){
-            liftVertical1.setPower(0.8);
-            liftVertical2.setPower(0.8);
-        }
-
     }
 
     public void updTargets() {
