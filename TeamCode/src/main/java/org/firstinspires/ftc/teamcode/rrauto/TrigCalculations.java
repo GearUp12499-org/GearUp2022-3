@@ -46,8 +46,8 @@ public class TrigCalculations {
         double deltaX = poleDiffX - x/encToDist;
         double deltaY = poleDiffY + y/encToDist;
 
-        // should return negative angle value
-        return Math.toDegrees(Math.atan2(deltaX, Math.abs(deltaY)));
+        return (90-Math.toDegrees(Math.atan2(deltaX, Math.abs(deltaY))))*encToAngle;
+
     }
 
     public static double stackAngle(double x, double y) {

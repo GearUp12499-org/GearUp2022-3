@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.cv.pipes.BrokenMaybe;
 import org.firstinspires.ftc.teamcode.cv.pipes.SharpEdgesPipeline;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -93,13 +94,12 @@ public class CameraLoadTest extends LinearOpMode {
         WebcamName name = hardwareMap.get(WebcamName.class, "Webcam 1");
         camera = OpenCvCameraFactory.getInstance().createWebcam(name);
         cameraState = CameraState.STARTING;
-        SharpEdgesPipeline pipeline = new SharpEdgesPipeline();
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
                 cameraState = CameraState.READY;
                 camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
-                camera.setPipeline(pipeline);
+                camera.setPipeline(new BrokenMaybe());
             }
 
             @Override

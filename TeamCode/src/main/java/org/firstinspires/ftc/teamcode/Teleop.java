@@ -41,6 +41,10 @@ public class Teleop extends LinearOpMode {
             lift();
             turret();
             autoScore();
+            //l.update2();
+            l.liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            l.liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
             telemetry.addLine("Distance sensor:");
             telemetry.addData("Distance (mm)", io.distSensorM.getDistance(DistanceUnit.MM));
