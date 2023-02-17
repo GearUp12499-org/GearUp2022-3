@@ -55,7 +55,6 @@ public class trig_left_side extends rrAutoComp3 {
         }
 
         turret.setPower(0);
-        //sleep(300);
 
         telemetry.addData("polepos:", polePos);
         telemetry.update();
@@ -68,16 +67,7 @@ public class trig_left_side extends rrAutoComp3 {
             l.update();
         }
         runtime.reset();
-            /*while(runtime.seconds()<0.5){
-                l.liftVertical2.setPower(1);
-                l.liftVertical1.setPower(1);
-            }
-            int bruteTarg =  l.liftVertical1.getCurrentPosition();
-            l.liftVertical1.setPower(0);
-            l.liftVertical2.setPower(0);
-            l.verticalLift(bruteTarg, this);
 
-*/
         //drops off cone into the stack
         int distPole = (int)distToPoleHigh((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
         l.setHorizontalTargetManual(distPole);//208
@@ -86,7 +76,7 @@ public class trig_left_side extends rrAutoComp3 {
             l.update();
         }
         sleep(300);
-        while(l.liftVertical1.getCurrentPosition()>3800){
+        while(l.liftVertical1.getCurrentPosition()>3800*(384.5 / 537.7)){
             stopMaybe();
             l.liftVertical1.setPower(-0.4);
             l.liftVertical2.setPower(-0.4);
@@ -157,7 +147,7 @@ public class trig_left_side extends rrAutoComp3 {
 
             //once above pole, now we move downward to secure cone onto pole
             sleep(300);
-            while(l.liftVertical1.getCurrentPosition()>3800){
+            while(l.liftVertical1.getCurrentPosition()>3800*(384.5 / 537.7)){
                 stopMaybe();
                 l.liftVertical1.setPower(-0.4);
                 l.liftVertical2.setPower(-0.4);
