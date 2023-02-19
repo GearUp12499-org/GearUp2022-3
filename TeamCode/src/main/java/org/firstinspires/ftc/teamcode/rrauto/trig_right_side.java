@@ -111,7 +111,7 @@ public class trig_right_side extends rrAutoComp3 {
             l.liftVertical2.setPower(0);
             //sleep(500); //1000
             l.closeClaw();
-            sleep(300);
+            sleep(350);
 
             //lifts cone off of stack and retracts h lift
             l.setVerticalTargetManual(1180 - (i * 150) + 250);
