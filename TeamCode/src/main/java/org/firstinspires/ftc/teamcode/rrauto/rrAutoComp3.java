@@ -182,6 +182,9 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
 
     //--------------------------------------------------------------
     @SuppressLint("DefaultLocale")
+    void pidLoop(){
+
+    }
     void tagToTelemetry(AprilTagDetection detection) {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
@@ -197,7 +200,7 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
         if (position>0){
             while(turret.getCurrentPosition()<position){
                 stopMaybe();
-                if(turret.getCurrentPosition()>position-150){
+                if(turret.getCurrentPosition()>position-300){
                     turret.setPower(0.2);
                 }
                 else
@@ -208,7 +211,7 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
         else{
             while(turret.getCurrentPosition()>position){
                 stopMaybe();
-                if(turret.getCurrentPosition()<position+150){
+                if(turret.getCurrentPosition()<position+300){
                     turret.setPower(-0.2);
                 }
                 else
