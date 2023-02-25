@@ -181,10 +181,10 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
     }
 
     //--------------------------------------------------------------
-    @SuppressLint("DefaultLocale")
     void pidLoop(){
 
     }
+    @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection) {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
         telemetry.addLine(String.format("Translation X: %.2f feet", detection.pose.x * FEET_PER_METER));
