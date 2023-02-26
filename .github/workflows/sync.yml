@@ -3,6 +3,7 @@ name: Sync upstream
 on:
   schedule:
     - cron: '0 0 * * *' # Run at 00:00 UTC every day
+  workflow_dispatch:
 
 jobs:
   sync:
@@ -19,7 +20,7 @@ jobs:
           git fetch upstream
       - name: check
         run: |
-          export UPSTREAM_UPDATES=git rev-list upstream/master --not HEAD --count
+          export UPSTREAM_UPDATES=$(git rev-list upstream/master --not HEAD --count)
           echo "There are $UPSTREAM_UPDATES updates from upstream"
       - name: prepare
         if: ${{ env.UPSTREAM_UPDATES > 0 }}
