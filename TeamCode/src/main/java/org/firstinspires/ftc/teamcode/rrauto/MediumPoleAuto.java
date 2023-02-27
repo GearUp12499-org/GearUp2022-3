@@ -63,6 +63,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
 
     private JobManager jobManager;
     private IOControl io;
+    private AsyncJJogger ajj;
 
     @Override
     public void main() {
@@ -73,6 +74,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
         l = new Lift(hardwareMap);
         io = new IOControl(hardwareMap);
         jobManager = new JobManager();
+        ajj = new AsyncJJogger(jobManager);
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         OpenCvCamera camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
@@ -171,14 +173,14 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                 .andThen(jobManager.delayJob(500))    // Wait 500ms
                 .andThen(() -> l.setVerticalTargetManual(1800))
                 .andThenAsync(liftUntilVertStop())          // Keep updating the lift
-                .andThen(straight(0.6, 56))   // Move forward to the pole
+                .andThen(ajj.straight(0.6, 56))   // Move forward to the pole
                 .andThen(poleDetect1)
                 .andThen(lock::turnOn)                      // Try to stay in the same position
                 .jobSequence(this::scoreCone);
 
         for (int i = 0; i < 3; i++) {
             int finalI = i;
-            suffix = suffix.andThenAsync(moveTurretTo(0.8, 700))
+            suffix = suffix.andThenAsync(ajj.moveTurretTo(0.8, 700))
                     .andThen(jobManager.delayJob(500))
                     .andThen(() -> {
                         l.setHorizontalTargetManual(825);
@@ -202,7 +204,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                     })
                     .andThen(jobManager.delayJob(300))
                     .andThen(() -> l.setVerticalTargetManual(3500))
-                    .andThen(moveTurretTo(0.5, () -> poleDetect1.getResult() + 37))
+                    .andThen(ajj.moveTurretTo(0.5, () -> poleDetect1.getResult() + 37))
                     .jobSequence(this::scoreCone);
         }
         suffix = suffix.andThen(lock::turnOff).andThen(() -> l.setVerticalTarget(2));  // Guarantee a clean stop
@@ -481,81 +483,4 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
     }
 
     // JJogger reimplementation
-    Job moveTurretTo(double speed, int target) {
-        return moveTurretTo(speed, () -> target);
-    }
-
-    // JJogger reimplementation
-    Job moveTurretTo(double speed, Supplier<Integer> integerSupplier) {
-        // Dummy class to support get/set of data in the Job.
-        AtomicBoolean data = new AtomicBoolean(false);
-
-        return jobManager.factory
-                .manager(jobManager)
-                .onStart(() -> { /* onStart */
-                    data.set(turret.getCurrentPosition() < integerSupplier.get());
-                    turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    turret.setTargetPosition(integerSupplier.get());
-                    if (turret.getCurrentPosition() < integerSupplier.get())
-                        turret.setPower(speed);
-                    else if (turret.getCurrentPosition() > integerSupplier.get())
-                        turret.setPower(-speed);
-                    else {
-                        turret.setPower(0);
-                    }
-                })
-                .task(() -> { /* task */
-                    if (Math.abs(turret.getCurrentPosition() - integerSupplier.get()) < 150) {
-                        turret.setPower(0.2 * (data.get() ? 1 : -1));
-                    }
-                })
-                .completeCondition(() -> { /* completeCondition */
-                    return data.get() ? turret.getCurrentPosition() >= integerSupplier.get() : turret.getCurrentPosition() <= integerSupplier.get();
-                })
-                .onComplete(() -> turret.setPower(0))
-                .build();
-    }
-
-    Job straight(double speed, double distance) {
-        // 1700 ec approx. 1 in
-
-        double adjust = 0.05;
-        AtomicInteger targetEncoderCounts = new AtomicInteger((int) (distance * 1700.0));
-
-        return jobManager.factory
-                .manager(jobManager)
-                .onStart(
-                        () -> targetEncoderCounts.set((int) (distance * 1700.0) + encoderLeft.getCurrentPosition())
-                )
-                .task(() -> {
-                    double realSpeed = speed;
-                    if (encoderLeft.getCurrentPosition() / 1700.0 > 41) {
-                        realSpeed = 0.2;
-                    }
-                    if (encoderLeft.getCurrentPosition() > encoderRight.getCurrentPosition()) {
-                        frontLeft.setPower(realSpeed - adjust);
-                        frontRight.setPower(realSpeed);
-                        rearLeft.setPower(realSpeed - adjust);
-                        rearRight.setPower(realSpeed);
-                    } else if (encoderLeft.getCurrentPosition() < encoderRight.getCurrentPosition()) {
-                        frontLeft.setPower(realSpeed + adjust);
-                        frontRight.setPower(realSpeed);
-                        rearLeft.setPower(realSpeed + adjust);
-                        rearRight.setPower(realSpeed);
-                    } else if (encoderLeft.getCurrentPosition() == encoderRight.getCurrentPosition()) {
-                        frontLeft.setPower(realSpeed);
-                        frontRight.setPower(realSpeed);
-                        rearLeft.setPower(realSpeed);
-                        rearRight.setPower(realSpeed);
-                    }
-                })
-                .completeCondition(() -> encoderLeft.getCurrentPosition() > targetEncoderCounts.get())
-                .onComplete(() -> { /* onComplete */
-                    frontLeft.setPower(0);
-                    frontRight.setPower(0);
-                    rearLeft.setPower(0);
-                    rearRight.setPower(0);
-                })
-                .build();
-    }
 }

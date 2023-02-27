@@ -59,6 +59,12 @@ public class ProfileFile {
         return built;
     }
 
+    public static boolean doesFileExist(String target) {
+        Context context = AppUtil.getInstance().getApplication();
+        File file = new File(context.getFilesDir(), target);
+        return file.exists();
+    }
+
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public void export(String target, boolean deleteOK) {
         if (!built)

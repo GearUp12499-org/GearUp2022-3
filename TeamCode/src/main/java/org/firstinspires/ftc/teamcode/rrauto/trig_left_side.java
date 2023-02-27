@@ -34,8 +34,15 @@ public class trig_left_side extends rrAutoComp3 {
 
         //raises preloaded and drives to second tile, ready to drop off cone on pole
         l.verticalLift(3100, this);
-        turr(-0.6, -180); // need to make this concurrent with lift and straight (is blocking rn) // 22.5deg * (750 / 90) = roughly 180
-        straight(0.6,54); // 54 function for driving straight // need to integrate id into pid (very inaccurate at 0.6->0.7 with only p)
+//        turr(-0.6, -180); // need to make this concurrent with lift and straight (is blocking rn) // 22.5deg * (750 / 90) = roughly 180
+//        straight(0.6,54); // 54 function for driving straight // need to integrate id into pid (very inaccurate at 0.6->0.7 with only p)
+
+        ajj.moveTurretTo(0.6, -180).start();
+        ajj.straight(0.6, 54).start();
+
+        runJobsUntilDone(() -> {
+            l.update();
+        });
 
         //pole detect
         while (Math.abs(turret.getCurrentPosition()) < 700) {
@@ -53,7 +60,7 @@ public class trig_left_side extends rrAutoComp3 {
             if(turret.getCurrentPosition()>-180)
                 turret.setPower(-0.8); //.35
             else{
-                turret.setPower(-0.1);
+                turret.setPower(-0.2);
             }
 
             telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));

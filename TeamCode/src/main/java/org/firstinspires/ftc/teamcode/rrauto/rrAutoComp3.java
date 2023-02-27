@@ -27,6 +27,10 @@ import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.lib.LinearCleanupOpMode;
+import org.firstinspires.ftc.teamcode.lib.MatchCounter;
+import org.firstinspires.ftc.teamcode.lib.jobs.Job;
+import org.firstinspires.ftc.teamcode.lib.jobs.JobManager;
+import org.firstinspires.ftc.teamcode.lib.jobs.ProfileFile;
 import org.firstinspires.ftc.teamcode.util.NotImplemented;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -34,10 +38,13 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Autonomous(name = "RR AUTO", group = "GearUp")
 public abstract class rrAutoComp3 extends LinearCleanupOpMode {
     public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 4500};
+    private static final boolean LOGGING = true;
     public static DcMotor liftVertical1;
 
     double fx = 578.272;
@@ -59,6 +66,12 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
     static final double FEET_PER_METER = 3.28084;
     Lift l;
     IOControl io;
+
+    /**
+     * Run things asynchronously with JobManager!
+     */
+    JobManager jobManager;
+    AsyncJJogger ajj;
 
     @Override
     public void cleanup() {
@@ -93,6 +106,9 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
         liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        jobManager = new JobManager();
+        ajj = new AsyncJJogger(jobManager);
 
         telemetry.setMsTransmissionInterval(50);
         l.openClaw();
@@ -342,4 +358,60 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
     }
 
     abstract void main_auto_content(int targetLocation) throws InterruptedException;
+
+    @SuppressLint("DefaultLocale")
+    void runJobsUntilDone(Runnable extraLogging) {
+        while (!jobManager.isDone()) {
+            stopMaybe();
+            jobManager.invokeAll();
+            extraLogging.run();
+
+            if (LOGGING) {
+                List<Integer> finished = new ArrayList<>();
+                List<Integer> running = new ArrayList<>();
+                List<Integer> waiting = new ArrayList<>();
+                for (Map.Entry<Integer, Job> jobPair : jobManager.getJobs().entrySet()) {
+                    if (jobPair.getValue().isComplete()) {
+                        finished.add(jobPair.getKey());
+                    } else if (jobPair.getValue().isActive()) {
+                        running.add(jobPair.getKey());
+                    } else {
+                        waiting.add(jobPair.getKey());
+                    }
+                }
+
+                // running, waiting, finished
+                telemetry.addLine(String.format("Jobs: %d running, %d waiting, %d finished", running.size(), waiting.size(), finished.size()));
+
+                double percentage = 100.0 * (double) finished.size() / (double) (finished.size() + running.size() + waiting.size());
+                telemetry.addLine(String.format("> %.2f%% done", percentage));
+                telemetry.addLine("  Running:");
+                for (int id : running) {
+                    Job job = jobManager.getJob(id);
+                    telemetry.addLine(String.format("    %s", job.toString()));
+                }
+                telemetry.addLine("  Waiting:");
+                for (int id : waiting) {
+                    Job job = jobManager.getJob(id);
+                    telemetry.addLine(String.format("    (%s) %s", job.getDependencies().size() == 0 ? "idle" : job.getDependencies().size(), job));
+                }
+                telemetry.addLine("  Finished:");
+                for (int id : finished) {
+                    Job job = jobManager.getJob(id);
+                    telemetry.addLine(String.format("    %s", job.toString()));
+                }
+            }
+            telemetry.update();
+        }
+        ProfileFile profile = new ProfileFile(jobManager.getJobs().values());
+        profile.build();
+        String baseName = "profile_match_" + MatchCounter.getMatchNumber() + "_";
+        int index = 0;
+        while (ProfileFile.doesFileExist(baseName + index + ".jobprof")) {
+            index++;
+        }
+        profile.export(baseName + index + ".jobprof");
+        jobManager.gc();  // Clean up any completed jobs, freeing one-shots and such
+        RobotLog.i("runJobsUntilDone: all done");
+    }
 }
