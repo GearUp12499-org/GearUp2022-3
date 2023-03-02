@@ -221,6 +221,7 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
         }
         turret.setPower(0);
     }
+
     void straight(double speed, double distance) { // distance is in inches
         //1700 encoder counts to 1 inch.
         double adjust = 0.05;
@@ -249,6 +250,7 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
                 rearRight.setPower(speed);
             }
             l.update();
+            turrDrive(-250);
 
 
         }
@@ -297,7 +299,13 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
         rearLeft.setPower(0);
         rearRight.setPower(0);
     }
-
+    public void turrDrive(int goal){
+        if(turret.getCurrentPosition()>goal)
+            turret.setPower(-0.2);
+        else{
+            turret.setPower(0);
+        }
+    }
     public void driveStraight(double lf, double lb,
                               double rf, double rb, double distance) { //leftFront leftBack etc
         // sets power for all drive motors
