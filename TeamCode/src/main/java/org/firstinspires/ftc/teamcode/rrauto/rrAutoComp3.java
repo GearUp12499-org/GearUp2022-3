@@ -181,9 +181,26 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
     }
 
     //--------------------------------------------------------------
-    void pidLoop(){
+    void PIDTest(double distance){
 
+        PID compensator = new PID(0);
+
+        //1700 encoder counts to 1 inch.
+        while ((encoderLeft.getCurrentPosition()) / (1700.0) <= distance) {
+            double theta = compensator.calculateTheta(encoderRear.getCurrentPosition());
+            telemetry.addData("theta (deg):", Math.toDegrees(theta));
+            telemetry.update();
+
+            compensator.pidUpdate();
+        }
+        telemetry.addData("distance:", encoderLeft.getCurrentPosition()/1500.0);
+        telemetry.update();
+        frontLeft.setPower(0);
+        frontRight.setPower(0);
+        rearLeft.setPower(0);
+        rearRight.setPower(0);
     }
+
     @SuppressLint("DefaultLocale")
     void tagToTelemetry(AprilTagDetection detection) {
         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));

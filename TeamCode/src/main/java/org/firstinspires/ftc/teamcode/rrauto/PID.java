@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
-public class PID {
-    private static final double trackRadius = 6.5;
-    private static final double kp = 7;
-    private static final double kd = 7;
-    private static final double ki = 7;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-    private static final double maxThetaChange = 10;
+public class PID {
+    private final double encoderConversion = 1700.0;
+    private final double trackRadius = 6.5;
+    private final double kp = 7;
+    private final double kd = 7;
+    private final double ki = 7;
+
+    private final double maxThetaChange = 10;
 
     private double errorPrev = 0;
     private double deltaError = 0;
@@ -15,12 +18,12 @@ public class PID {
     private double target;
     private double theta;
 
-    public PID(double target, double theta) {
+    public PID(double target) {
         this.target = target;
-        this.theta = theta;
     }
 
-    public static double pidUpdate() {
+    public double pidUpdate() {
+
         double error = target - theta;
         double deltaTheta = 0.0;
 
@@ -43,14 +46,17 @@ public class PID {
             deltaTheta = -1 * maxThetaChange;
         }
 
-        theta += deltaTheta;        
+        theta += deltaTheta;
+        return theta;
     }
 
-    public static void updateTheta(double leftEnc, double rightEnc) {
-        theta = Math.asin((rightEnc - leftEnc) / (2 * trackRadius));
+    public double calculateTheta(double backEnc) {
+        // s = r(theta)
+        theta = backEnc / (trackRadius * encoderConversion);
+        return theta;
     }
 
-    public static double getTheta() {
+    public double getTheta() {
         return theta;
     }
 }

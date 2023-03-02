@@ -28,7 +28,8 @@ public class trig_right_side extends rrAutoComp3 {
 
     @Override
     void main_auto_content(int targetLocation) throws InterruptedException {
-        runtime.reset();
+        PIDTest(50);
+        /*runtime.reset();
 
         int polePos = -400;
 
@@ -220,6 +221,6 @@ public class trig_right_side extends rrAutoComp3 {
             }
             l.liftVertical1.setPower(0);
             l.liftVertical2.setPower(0);
-        }
+        }*/
     }
 }
