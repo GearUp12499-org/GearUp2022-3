@@ -1,15 +1,13 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
 public class PID {
     private final double encoderConversion = 1700.0;
     private final double trackRadius = 6.5;
-    private final double kp = 7;
-    private final double kd = 7;
-    private final double ki = 7;
+    private final double kp = 0.10;//0.1, 0.3
+    private final double kd =1.5;//0.25
+    private final double ki = 0.01;
 
-    private final double maxThetaChange = 10;
+    private final double maxCompensation = 99;
 
     private double errorPrev = 0;
     private double deltaError = 0;
@@ -24,30 +22,31 @@ public class PID {
 
     public double pidUpdate() {
 
-        double error = target - theta;
-        double deltaTheta = 0.0;
+        double error = -1 * (target - theta);
+        double compensation = 0.0;
 
         // proportional
-        deltaTheta += kp * error;
+        compensation += kp * error;
 
         // derivative
         deltaError = errorPrev - error;
-        deltaTheta += kd * deltaError;
+        compensation += kd * deltaError;
         errorPrev = error;
 
         // integral
         errorSum += error;
-        deltaTheta += ki * errorSum;
+        compensation += ki * errorSum;
 
         // enforce max change per iteration
-        if(deltaTheta > maxThetaChange) {
-            deltaTheta = maxThetaChange;
-        } else if (deltaTheta < -1 * maxThetaChange) {
-            deltaTheta = -1 * maxThetaChange;
+        if(compensation > maxCompensation) {
+            compensation = maxCompensation;
+        } else if (compensation < -1 * maxCompensation) {
+            compensation = -1 * maxCompensation;
         }
 
-        theta += deltaTheta;
-        return theta;
+        theta -= compensation;
+
+        return -compensation;
     }
 
     public double calculateTheta(double backEnc) {

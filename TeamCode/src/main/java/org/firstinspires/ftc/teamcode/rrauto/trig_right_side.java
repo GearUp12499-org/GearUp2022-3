@@ -28,7 +28,8 @@ public class trig_right_side extends rrAutoComp3 {
 
     @Override
     void main_auto_content(int targetLocation) throws InterruptedException {
-        PIDTest(50);
+        PIDTest(50, 0.9);
+        sleep(5000);
         /*runtime.reset();
 
         int polePos = -400;

@@ -10,24 +10,17 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.runtime;
 import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
-import static org.firstinspires.ftc.teamcode.rrauto.TrigCalculations.distToPoleHigh;
-import static org.firstinspires.ftc.teamcode.rrauto.TrigCalculations.poleAngle;
 
 import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.DetectPoleV2;
 import org.firstinspires.ftc.teamcode.IOControl;
 import org.firstinspires.ftc.teamcode.Lift;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.lib.LinearCleanupOpMode;
-import org.firstinspires.ftc.teamcode.util.NotImplemented;
 import org.openftc.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -181,24 +174,39 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
     }
 
     //--------------------------------------------------------------
-    void PIDTest(double distance){
+    @SuppressLint("DefaultLocale")
+    void PIDTest(double distance, double speed){
 
         PID compensator = new PID(0);
 
         //1700 encoder counts to 1 inch.
         while ((encoderLeft.getCurrentPosition()) / (1700.0) <= distance) {
             double theta = compensator.calculateTheta(encoderRear.getCurrentPosition());
-            telemetry.addData("theta (deg):", Math.toDegrees(theta));
+            double compensation = compensator.pidUpdate();
+
+            telemetry.addLine(String.format("theta (deg): %.3f", Math.toDegrees(theta)));
+            telemetry.addLine(String.format("compensation: %.3f ", compensation));
             telemetry.update();
 
-            compensator.pidUpdate();
+            /*
+            double currentPos = encoderLeft.getCurrentPosition() / 1700.0;
+            double proportionTraveled = currentPos / distance;
+            if(proportionTraveled > 0.7) {
+                speed *= (1- proportionTraveled);
+            }
+            */
+            frontLeft.setPower(speed + compensation);
+            frontRight.setPower(speed);
+            rearLeft.setPower(speed + compensation);
+            rearRight.setPower(speed);
         }
-        telemetry.addData("distance:", encoderLeft.getCurrentPosition()/1500.0);
-        telemetry.update();
+        telemetry.speak("50");
         frontLeft.setPower(0);
         frontRight.setPower(0);
         rearLeft.setPower(0);
         rearRight.setPower(0);
+
+
     }
 
     @SuppressLint("DefaultLocale")
