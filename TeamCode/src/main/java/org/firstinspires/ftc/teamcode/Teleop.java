@@ -286,6 +286,7 @@ public class Teleop extends LinearCleanupOpMode {
             int targ = 0;
             liftHorizontal.setPower(0.2);
             if(l.liftVertical1.getCurrentPosition()<500){
+                // sag correction
                 double h = (4.93 - 3.4 - 0.000658*(x)-0.00000324*(x)*(x));
                 targ = (int)((2.9-h)*vLiftEti);
                 l.setVerticalTargetManual(targ);
