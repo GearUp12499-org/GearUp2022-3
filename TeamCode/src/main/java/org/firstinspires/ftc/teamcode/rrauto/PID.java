@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.rrauto;
 public class PID {
     private final double encoderConversion = 1700.0;
     private final double trackRadius = 6.5;
-    private final double kp = 0.10;//0.1, 0.3
-    private final double kd =1.5;//1.5
-    private final double ki = 0.0175;//0.01
+    private final double kp = 0.55;//0.1, 0.3
+    private final double kd = 3.75;//1.5
+    private final double ki = 0.1;//0.01, 0.0175
 
     private final double maxCompensation = 99;
 
@@ -22,7 +22,7 @@ public class PID {
 
     public double pidUpdate() {
 
-        double error = -1 * (target - theta);
+        double error = target - theta;
         double compensation = 0.0;
 
         // proportional
@@ -40,18 +40,19 @@ public class PID {
         // enforce max change per iteration
         if(compensation > maxCompensation) {
             compensation = maxCompensation;
-        } else if (compensation < -1 * maxCompensation) {
-            compensation = -1 * maxCompensation;
+        } else if (compensation < -maxCompensation) {
+            compensation = -maxCompensation;
         }
 
-        theta -= compensation;
-
-        return -compensation;
+        return compensation;
     }
 
-    public double calculateTheta(double backEnc) {
-        // s = r(theta)
-        theta = backEnc / (trackRadius * encoderConversion);
+    public double calculateTheta(double leftEnc, double rightEnc) {
+        // s = r(theta) method
+        // theta = backEnc / (trackRadius * encoderConversion);
+
+        // small angle approximation method
+        theta = (leftEnc - rightEnc) / (trackRadius * encoderConversion);
         return theta;
     }
 

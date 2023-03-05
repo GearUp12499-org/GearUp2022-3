@@ -181,7 +181,7 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
 
         //1700 encoder counts to 1 inch.
         while ((encoderLeft.getCurrentPosition()) / (1700.0) <= distance) {
-            double theta = compensator.calculateTheta(encoderRear.getCurrentPosition());
+            double theta = compensator.calculateTheta(encoderLeft.getCurrentPosition(), encoderRight.getCurrentPosition());
             double compensation = compensator.pidUpdate();
 
             telemetry.addLine(String.format("theta (deg): %.3f", Math.toDegrees(theta)));
@@ -191,14 +191,14 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
 
             double currentPos = encoderLeft.getCurrentPosition() / 1700.0;
             double proportionTraveled = currentPos / distance;
-            if(proportionTraveled > 0.1) {
-                l.update();
-                turrDrive(-250);
-                if(proportionTraveled>0.7)
-                    speed = 0.2;
+            //if(proportionTraveled > 0.1) {
+            l.update();
+            turrDrive(-250);
+            if(proportionTraveled>0.7)
+                speed = 0.2;
 
 
-            }
+            //}
 
             frontLeft.setPower(speed + compensation);
             frontRight.setPower(speed);
