@@ -4,8 +4,8 @@ public class PID {
     private final double encoderConversion = 1700.0;
     private final double trackRadius = 6.5;
     private final double kp = 0.10;//0.1, 0.3
-    private final double kd =1.5;//0.25
-    private final double ki = 0.01;
+    private final double kd =1.5;//1.5
+    private final double ki = 0.0175;//0.01
 
     private final double maxCompensation = 99;
 

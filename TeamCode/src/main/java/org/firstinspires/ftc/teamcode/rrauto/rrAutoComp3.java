@@ -188,17 +188,23 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
             telemetry.addLine(String.format("compensation: %.3f ", compensation));
             telemetry.update();
 
-            /*
+
             double currentPos = encoderLeft.getCurrentPosition() / 1700.0;
             double proportionTraveled = currentPos / distance;
-            if(proportionTraveled > 0.7) {
-                speed *= (1- proportionTraveled);
+            if(proportionTraveled > 0.1) {
+                l.update();
+                turrDrive(-250);
+                if(proportionTraveled>0.7)
+                    speed = 0.2;
+
+
             }
-            */
+
             frontLeft.setPower(speed + compensation);
             frontRight.setPower(speed);
             rearLeft.setPower(speed + compensation);
             rearRight.setPower(speed);
+            //turrDrive(-250);
         }
         telemetry.speak("50");
         frontLeft.setPower(0);

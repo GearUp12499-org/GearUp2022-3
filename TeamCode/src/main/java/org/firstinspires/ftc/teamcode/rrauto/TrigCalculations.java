@@ -49,6 +49,13 @@ public class TrigCalculations {
         return (90-Math.toDegrees(Math.atan2(deltaX, Math.abs(deltaY))))*encToAngle;
 
     }
+    public static double poleAngleShort(double x, double y) {
+        double deltaX = (poleDiffX-24) - x/encToDist;
+        double deltaY = poleDiffY + y/encToDist;
+
+        return (90-Math.toDegrees(Math.atan2(Math.abs(deltaX), Math.abs(deltaY))))*encToAngle;
+
+    }
 
     public static double stackAngle(double x, double y) {
         double deltaX = x / encToDist - stackDiffX;
@@ -56,6 +63,7 @@ public class TrigCalculations {
 
         return (90 + Math.toDegrees(Math.atan2(deltaX, deltaY))) * encToAngle;
     }
+
 
     public static double stackAngleR(double x, double y) { //for right side
         double deltaX = x / encToDist - stackDiffX;
