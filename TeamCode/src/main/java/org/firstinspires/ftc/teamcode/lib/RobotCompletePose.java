@@ -38,7 +38,12 @@ public class RobotCompletePose {
     /**
      * How close to a safe point is close enough?
      */
-    public static final int SAFE_PT_CLEAR_DISTANCE = 0;
+    public static final int SAFE_PT_CLEAR_DISTANCE = 10;
+
+    /**
+     * "done" when this far away from the target
+     */
+    public static final int FINISH_CLEAR_DISTANCE = 10;
 
     /**
      * Defines where the upper and lower zones are. Upper zone has free movement,
@@ -174,7 +179,7 @@ public class RobotCompletePose {
         }
     }
 
-    public void runAsync(Lift l, @Nullable Telemetry writeTo) {
+    public RobotCompletePose runAsync(Lift l, @Nullable Telemetry writeTo) {
         // SharedHardware or bust
         if (writeTo != null) {
             writeTo.addLine("Pose runner:");
@@ -191,12 +196,13 @@ public class RobotCompletePose {
         int deltaTurret = Math.abs(target.turretPos - this.turretPos); // 0 if not going to safe point
         if (deltaTurret > HORIZONTAL_CLEARANCE) {
             turret.setPower(0);
-            return;
+            return current;
         }
         if (turret.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) {
             turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         turretTo(target.turretPos);
+        return current;
     }
 
     @NonNull
@@ -212,5 +218,9 @@ public class RobotCompletePose {
         }
         RobotCompletePose other = (RobotCompletePose) obj;
         return this.horizontalLift == other.horizontalLift && this.verticalLift == other.verticalLift && this.turretPos == other.turretPos;
+    }
+
+    public boolean isDone(RobotCompletePose current) {
+        return distance(current) < FINISH_CLEAR_DISTANCE;
     }
 }

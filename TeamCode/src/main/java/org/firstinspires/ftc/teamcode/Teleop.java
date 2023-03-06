@@ -369,35 +369,51 @@ public class Teleop extends LinearCleanupOpMode {
         last1Back = gamepad1.back;
 
         if (gamepad1.a && !last1A) {
-            if (deliveryPose == null) {
-                notifyError(gamepad1);
-            } else if (autoScoreTarget == null) {
-                autoScoreTarget = deliveryPose;
-                notifyOk(gamepad1);
-            } else {
+            if (autoScoreTarget != null) {
                 autoScoreTarget = null;
                 turret.setPower(0);
                 notifyError(gamepad1);  // "error" (cleared)
+            } else if (deliveryPose == null) {
+                notifyError(gamepad1);
+            } else {
+                autoScoreTarget = deliveryPose;
+                notifyOk(gamepad1);
             }
         }
         last1A = gamepad1.a;
         if (gamepad1.y && !last1Y) {
-            if (collectionPose == null) {
-                notifyError(gamepad1);
-            } else if (autoScoreTarget == null) {
-                autoScoreTarget = collectionPose;
-                notifyOk(gamepad1);
-            } else {
+            if (autoScoreTarget != null) {
                 autoScoreTarget = null;
                 turret.setPower(0);
                 notifyError(gamepad1);  // "error" (cleared)
+            } else if (collectionPose == null) {
+                notifyError(gamepad1);
+            } else {
+                autoScoreTarget = collectionPose;
+                notifyOk(gamepad1);
             }
         }
         last1Y = gamepad1.y;
 
         if (autoScoreTarget != null) {
             telemetry.addLine("1: press A or Y to cancel AutoScore");
-            autoScoreTarget.runAsync(l, telemetry);
+            RobotCompletePose current = autoScoreTarget.runAsync(l, telemetry);
+            if (autoScoreTarget.isDone(current)) {
+                autoScoreTarget = null;
+                turret.setPower(0);
+                notifyOk(gamepad1);
+            }
+        }
+
+        if (collectionPose == null) {
+            telemetry.addLine("1: press START to set collection pose");
+        } else if (autoScoreTarget == null) {
+            telemetry.addLine("1: press Y to run AutoScore to collect");
+        }
+        if (deliveryPose == null) {
+            telemetry.addLine("1: press BACK to set delivery pose");
+        } else if (autoScoreTarget == null) {
+            telemetry.addLine("1: press A to run AutoScore to deliver");
         }
     }
 
@@ -465,16 +481,16 @@ public class Teleop extends LinearCleanupOpMode {
     private void notifyError(Gamepad gamepad) {
         Gamepad.RumbleEffect.Builder builder = new Gamepad.RumbleEffect.Builder();
         builder
-                .addStep(0, 0.5f, 200)
-                .addStep(0, 0, 100)
-                .addStep(0, 0.5f, 200);
+                .addStep(0.5f, 0.5f, 200)
+                .addStep(0.5f, 0, 100)
+                .addStep(0.5f, 0.5f, 200);
         gamepad.runRumbleEffect(builder.build());
     }
 
     private void notifyOk(Gamepad gamepad) {
         Gamepad.RumbleEffect.Builder builder = new Gamepad.RumbleEffect.Builder();
         builder
-                .addStep(0, 0.5f, 200);
+                .addStep(0.5f, 0.5f, 200);
         gamepad.runRumbleEffect(builder.build());
     }
 }
