@@ -33,8 +33,8 @@ public class trig_left_side extends rrAutoComp3 {
         int polePos = -400;
 
         //raises preloaded and drives to second tile, ready to drop off cone on pole
-        l.verticalLift(3100, this);
-        PIDTest(51, 0.9);
+        l.verticalLift(3200, this);
+        PIDTest(50, 0.9);
 
         //turr(-0.6, -180); // need to make this concurrent with lift and straight (is blocking rn) // 22.5deg * (750 / 90) = roughly 180
         //straight(0.6,54); // 54 function for driving straight // need to integrate id into pid (very inaccurate at 0.6->0.7 with only p)
@@ -53,9 +53,9 @@ public class trig_left_side extends rrAutoComp3 {
             }
             turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             if(turret.getCurrentPosition()>-180)
-                turret.setPower(-0.3); //.35
+                turret.setPower(-0.15); //.35
             else{
-                turret.setPower(-0.14);
+                turret.setPower(-0.15);
             }
 
             telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
@@ -161,7 +161,7 @@ public class trig_left_side extends rrAutoComp3 {
             if(i <4) {
                 l.setVerticalTargetManual(VERTICAL_TARGETS[3]+1500);
 
-                turr(-0.6, polePos + 15); //+15
+                turr(-0.6, polePos- 10); //+15
 
                 //needs a little more juice at the top of pole to make it
                 runtime.reset();
@@ -221,7 +221,7 @@ public class trig_left_side extends rrAutoComp3 {
 
             turret.setTargetPosition(0);
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            turret.setPower(-0.3);
+            turret.setPower(-0.6);
             sleep(1000);
             l.setVerticalTargetManual(0);
             strafe(0.6, -22.5);
@@ -237,7 +237,7 @@ public class trig_left_side extends rrAutoComp3 {
 
             turret.setTargetPosition(0);
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            turret.setPower(-0.3);
+            turret.setPower(-0.6);
             sleep(800);
             l.setVerticalTargetManual(0);
             strafe(0.65, 22);
@@ -253,7 +253,7 @@ public class trig_left_side extends rrAutoComp3 {
             l.setHorizontalTargetManual(0);
             turret.setTargetPosition(0);
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            turret.setPower(-0.3);
+            turret.setPower(-0.6);
             sleep(1000);
             runtime.reset();
             while(runtime.seconds() < 0.4){

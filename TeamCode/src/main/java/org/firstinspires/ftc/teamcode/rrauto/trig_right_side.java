@@ -29,7 +29,7 @@ public class trig_right_side extends rrAutoComp3 {
     @Override
     void main_auto_content(int targetLocation) throws InterruptedException {
         l.verticalLift(3100, this);
-        PIDTest(50, 0.9);
+        PIDTest(51, 0.9);
         sleep(5000);
         /*runtime.reset();
 

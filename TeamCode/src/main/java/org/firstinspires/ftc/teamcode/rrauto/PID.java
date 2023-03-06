@@ -1,11 +1,14 @@
 package org.firstinspires.ftc.teamcode.rrauto;
 
+import com.acmerobotics.dashboard.config.Config;
+
+@Config
 public class PID {
     private final double encoderConversion = 1700.0;
     private final double trackRadius = 6.5;
-    private final double kp = 0.55;//0.1, 0.3
-    private final double kd = 3.75;//1.5
-    private final double ki = 0.1;//0.01, 0.0175
+    public static double kp = 0.55;//0.1, 0.3
+    public static double kd = 0.2;//1.5
+    public static double ki = 0.0001;//0.01, 0.0175
 
     private final double maxCompensation = 99;
 
