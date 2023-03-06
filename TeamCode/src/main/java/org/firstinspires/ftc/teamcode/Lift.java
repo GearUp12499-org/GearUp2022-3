@@ -16,8 +16,14 @@ public class Lift {
     public static final int LOWER_HORIZONTAL_BOUND = 30, UPPER_HORIZONTAL_BOUND = 850; // was 225, then 500
     public int currentVerticalTarget = 0, targetVerticalCount = VERTICAL_TARGETS[0];
 
+    public static final double RATIO = 384.5 / 537.7;
+
     public int getFakedVerticalCount() {
-        return (int) (targetVerticalCount * (384.5 / 537.7));
+        return (int) (targetVerticalCount * RATIO);
+    }
+
+    public int getFakedCurrentVerticalCounts() {
+        return (int) ((liftVertical1.getCurrentPosition() + liftVertical2.getCurrentPosition()) / 2 * RATIO);
     }
 
     public int currentHorizontalTarget = 0, targetHorizontalCount = HORIZONTAL_TARGETS[0];
