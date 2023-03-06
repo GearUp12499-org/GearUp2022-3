@@ -226,13 +226,19 @@ public class Teleop extends LinearCleanupOpMode {
                 l.update();
         }
         else if (gamepad2.dpad_up) {
+            l.comp = false;
             l.liftVertical1.setPower(Lift.POWER_UP * 0.8);
             l.liftVertical2.setPower(Lift.POWER_UP * 0.8);
             l.setVerticalTargetManual(l.getFakedCurrentVerticalCounts());
         } else if (gamepad2.dpad_down) {
+            l.comp = false;
             l.liftVertical1.setPower(Lift.POWER_DOWN * 0.8);
             l.liftVertical2.setPower(Lift.POWER_DOWN * 0.8);
             l.setVerticalTargetManual(l.getFakedCurrentVerticalCounts());
+        }
+
+        if (!gamepad2.dpad_down && !gamepad2.dpad_up) {
+            l.comp = true;
         }
 
         if ((last2DpadUp && !gamepad2.dpad_up) || (last2DpadDown && !gamepad2.dpad_down)) {

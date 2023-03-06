@@ -17,13 +17,14 @@ public class Lift {
     public int currentVerticalTarget = 0, targetVerticalCount = VERTICAL_TARGETS[0];
 
     public static final double RATIO = 384.5 / 537.7;
+    public boolean comp = true;
 
     public int getFakedVerticalCount() {
         return (int) (targetVerticalCount * RATIO);
     }
 
     public int getFakedCurrentVerticalCounts() {
-        return (int) ((liftVertical1.getCurrentPosition() + liftVertical2.getCurrentPosition()) / 2 * RATIO);
+        return (int) ((liftVertical1.getCurrentPosition() + liftVertical2.getCurrentPosition()) / (2 * RATIO));
     }
 
     public int currentHorizontalTarget = 0, targetHorizontalCount = HORIZONTAL_TARGETS[0];
@@ -98,6 +99,7 @@ public class Lift {
      * Check current state of the lift, update motor powers accordingly.
      */
     public void update() {
+        if (!comp) return;
         if (!traveling) {
             // Correction
             double diff = liftVertical1.getCurrentPosition() - getFakedVerticalCount();
