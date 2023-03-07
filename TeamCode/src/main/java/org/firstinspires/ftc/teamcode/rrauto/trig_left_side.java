@@ -64,10 +64,10 @@ public class trig_left_side extends rrAutoComp3 {
 
         polePos = -(int)poleAngle((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
         turret.setPower(0);
-        l.verticalLift(4700,this);
+        l.verticalLift(VERTICAL_TARGETS[3] + 1500,this);
         while(turret.getCurrentPosition()<polePos){
             l.update();
-            turret.setPower(0.2);
+            turret.setPower(0.1);
         }
         turret.setPower(0);
 
@@ -76,8 +76,8 @@ public class trig_left_side extends rrAutoComp3 {
 
         //raises v lift to proper height above the pole
         runtime.reset();
-        l.verticalLift(VERTICAL_TARGETS[3] + 4500, this);
-        while(l.liftVertical1.getCurrentPosition()< 2800 ) { //1.8 seconds
+        l.verticalLift(VERTICAL_TARGETS[3] + 1500, this);
+        while(l.liftVertical1.getCurrentPosition()< 3300 ) { //1.8 seconds
             stopMaybe();
             //l.update();
             l.liftVertical1.setPower(1);
@@ -269,8 +269,8 @@ public class trig_left_side extends rrAutoComp3 {
             rearRight.setPower(0);
             while(l.liftVertical1.getCurrentPosition()>40) {
                 stopMaybe();
-                l.liftVertical1.setPower(-0.8);
-                l.liftVertical2.setPower(-0.8);
+                l.liftVertical1.setPower(-0.3);
+                l.liftVertical2.setPower(-0.3);
             }
             l.liftVertical1.setPower(0);
             l.liftVertical2.setPower(0);
