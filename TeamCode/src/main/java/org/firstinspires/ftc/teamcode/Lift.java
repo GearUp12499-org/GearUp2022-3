@@ -20,11 +20,12 @@ public class Lift {
     public boolean comp = true;
 
     public int getFakedVerticalCount() {
+
         return (int) (targetVerticalCount * RATIO);
     }
 
     public int getFakedCurrentVerticalCounts() {
-        return (int) ((liftVertical1.getCurrentPosition() + liftVertical2.getCurrentPosition()) / (2 * RATIO));
+        return (int) (liftVertical1.getCurrentPosition() / ( RATIO));
     }
 
     public int currentHorizontalTarget = 0, targetHorizontalCount = HORIZONTAL_TARGETS[0];

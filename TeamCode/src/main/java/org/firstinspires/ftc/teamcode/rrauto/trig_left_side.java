@@ -37,7 +37,7 @@ public class trig_left_side extends rrAutoComp3 {
 
         //raises preloaded and drives to second tile, ready to drop off cone on pole
         l.verticalLift(3300, this); //3200
-        PIDTest(50, 0.9);
+        PIDTest(50, 0.9, "left");
 
         //turr(-0.6, -180); // need to make this concurrent with lift and straight (is blocking rn) // 22.5deg * (750 / 90) = roughly 180
         //straight(0.6,54); // 54 function for driving straight // need to integrate id into pid (very inaccurate at 0.6->0.7 with only p)

@@ -192,7 +192,7 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
 
     //--------------------------------------------------------------
     @SuppressLint("DefaultLocale")
-    void PIDTest(double distance, double speed){
+    void PIDTest(double distance, double speed, String side){
 
         PID compensator = new PID(0);
 
@@ -210,7 +210,11 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
             double proportionTraveled = currentPos / distance;
             //if(proportionTraveled > 0.1) {
             l.update();
-            turrDrive(-250);
+
+            if (side.equals("left"))
+                turrDrive(-250);
+            else
+                turrDrive(250);
             if(proportionTraveled>0.7)
                 speed = 0.2;
 
@@ -348,8 +352,10 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
         rearRight.setPower(0);
     }
     public void turrDrive(int goal){
-        if(turret.getCurrentPosition()>goal)
+        if(turret.getCurrentPosition()>goal+5)
             turret.setPower(-0.2);
+        else if (turret.getCurrentPosition()<goal-5)
+            turret.setPower(0.2);
         else{
             turret.setPower(0);
         }
