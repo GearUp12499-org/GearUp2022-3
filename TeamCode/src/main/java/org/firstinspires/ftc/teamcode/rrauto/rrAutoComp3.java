@@ -15,6 +15,7 @@ import android.annotation.SuppressLint;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.DetectPoleV2;
@@ -27,9 +28,14 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Autonomous(name = "RR AUTO", group = "GearUp")
 public abstract class rrAutoComp3 extends LinearCleanupOpMode {
+    public HashMap<String, Object> persistTeleData = new HashMap<>();
+    public ElapsedTime entireRun = new ElapsedTime();
+
     public static final int[] VERTICAL_TARGETS = {20, 1450, 2200, 4500};
     public static DcMotor liftVertical1;
 
@@ -72,6 +78,13 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
     }
 
     public void main() throws InterruptedException {
+        persistTeleData.clear();
+        telemetry.addAction(() -> {
+            for (Map.Entry<String, Object> entry : persistTeleData.entrySet()) {
+                telemetry.addData(entry.getKey(), entry.getValue());
+            }
+        });
+        entireRun.reset();
         // expose the hardware to the rest of the code (mainly 'turret' for now)
         prepareHardware(hardwareMap);
         l = new Lift(hardwareMap);
@@ -171,6 +184,10 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
         l.closeClaw();
         safeSleep(250);
         main_auto_content(targetLocation); // haha abstraction go brrrr :L
+        while (opModeIsActive()) {
+            telemetry.addLine("waiting to stop");
+            telemetry.update();
+        }
     }
 
     //--------------------------------------------------------------

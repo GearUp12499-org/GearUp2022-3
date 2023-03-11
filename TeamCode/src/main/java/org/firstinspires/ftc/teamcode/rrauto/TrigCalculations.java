@@ -21,22 +21,22 @@ import static java.lang.Math.abs;
  * */
 
 public class TrigCalculations {
-    private static final double encToDist = 1900; //encoder counts per inch odometry wheels
-    private static final double encToAngle = 750 / 90; //encoder counts per degree turret
+    public static final double encToDist = 1900; //encoder counts per inch odometry wheels
+    public static final double encToAngle = 750 / 90; //encoder counts per degree turret
 
     //ALL DISTANCES MEASURED FROM ORIGIN which is in center of turret
-    private static final double startX = 10, startY = 0;
-    private static final double stopX = encoderLeft.getCurrentPosition(), stopY = encoderRear.getCurrentPosition();
-    private static final double poleX = 60.75, poleY = -12.4;    // pole
-    private static final double stackX = 48.25, stackY = 35;     // cone stack
+    public static final double startX = 10, startY = 0;
+    public static final double stopX = encoderLeft.getCurrentPosition(), stopY = encoderRear.getCurrentPosition();
+    public static final double poleX = 60.75, poleY = -12.4;    // pole
+    public static final double stackX = 48.25, stackY = 35;     // cone stack
 
     // values adjusted for non-(0, 0) start position
-    private static final double r1 = stackY - stopY, r2 = poleY - stopY;
-    private static final double poleDiffX = poleX, poleDiffY = poleY;
-    private static final double stackDiffX = stackX, stackDiffY = stackY;
+    public static final double r1 = stackY - stopY, r2 = poleY - stopY;
+    public static final double poleDiffX = poleX, poleDiffY = poleY;
+    public static final double stackDiffX = stackX, stackDiffY = stackY;
 
     // account for distance from center of turret to front of claw
-    private static final int HORIZONTAL_DISTANCE_DIFFERENCE_IN = 8;
+    public static final int HORIZONTAL_DISTANCE_DIFFERENCE_IN = 8;
 
     public static double initialDrive() {
         return stopX - startX;
@@ -50,11 +50,10 @@ public class TrigCalculations {
 
     }
     public static double poleAngleShort(double x, double y) {
-        double deltaX = (poleDiffX-24) - x/encToDist;
-        double deltaY = poleDiffY + y/encToDist;
+        double deltaX = x/encToDist-37;
+        double deltaY = 12 + y/encToDist;
 
-        return (90-Math.toDegrees(Math.atan2(Math.abs(deltaX), Math.abs(deltaY))))*encToAngle;
-
+        return (180-Math.toDegrees(Math.atan2(Math.abs(deltaX), Math.abs(deltaY))))*encToAngle;
     }
 
     public static double stackAngle(double x, double y) {

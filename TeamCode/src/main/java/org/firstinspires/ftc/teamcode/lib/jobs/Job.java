@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.lib.jobs;
 
-import android.annotation.SuppressLint;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.lib.Consumer;
+import org.firstinspires.ftc.teamcode.lib.DurationFormatter;
 import org.firstinspires.ftc.teamcode.lib.Function;
 import org.firstinspires.ftc.teamcode.lib.NullTools;
 import org.jetbrains.annotations.NotNull;
@@ -29,27 +28,6 @@ public class Job {
     public static final double MAX_MAX_TASK_TIME = 250; // 4 i/s
 
     public static class Timings {
-        @SuppressLint("DefaultLocale")
-        public static String formatDuration(long ms) {
-            if (ms < 1000) return ms + "ms";
-            double seconds = ms / 1000.0;
-            if (seconds < 60) return String.format("%.2fs", seconds);
-            double minutes = seconds / 60.0;
-            if (minutes < 60) return String.format("%dm %.2fs", (int) Math.floor(minutes), seconds % 60);
-            double hours = minutes / 60.0;
-            return String.format("%dh %dm %.2fs", (int) Math.floor(hours), (int) Math.floor(minutes % 60), seconds % 60);
-        }
-
-        @SuppressLint("DefaultLocale")
-        public static String formatDuration(double ms) {
-            if (ms < 1000) return String.format("%.1fms", ms);
-            double seconds = ms / 1000.0;
-            if (seconds < 60) return String.format("%.2fs", seconds);
-            double minutes = seconds / 60.0;
-            if (minutes < 60) return String.format("%dm %.2fs", (int) Math.floor(minutes), seconds % 60);
-            double hours = minutes / 60.0;
-            return String.format("%dh %dm %.2fs", (int) Math.floor(hours), (int) Math.floor(minutes % 60), seconds % 60);
-        }
 
         public long getCreatedAt() {
             return createdAt;
@@ -318,26 +296,26 @@ public class Job {
             timings.complete(deps);
             long now = System.currentTimeMillis();
             RobotLog.ii("JobTimings", manager.labelFor(id) + " timings:");
-            RobotLog.ii("JobTimings", "  Lifecycle time: " + Timings.formatDuration(timings.waitingToStartTime() + timings.runningOverallTime()));
-            RobotLog.ii("JobTimings", "   ┣ Waiting to start: " + Timings.formatDuration(timings.waitingToStartTime()));
-            RobotLog.ii("JobTimings", "   ┣ Running overall : " + Timings.formatDuration(timings.runningOverallTime()));
-            RobotLog.ii("JobTimings", "   ┃  ┗ This task    : " + Timings.formatDuration(timings.getTotalTimeRunning()));
+            RobotLog.ii("JobTimings", "  Lifecycle time: " + DurationFormatter.formatDuration(timings.waitingToStartTime() + timings.runningOverallTime()));
+            RobotLog.ii("JobTimings", "   ┣ Waiting to start: " + DurationFormatter.formatDuration(timings.waitingToStartTime()));
+            RobotLog.ii("JobTimings", "   ┣ Running overall : " + DurationFormatter.formatDuration(timings.runningOverallTime()));
+            RobotLog.ii("JobTimings", "   ┃  ┗ This task    : " + DurationFormatter.formatDuration(timings.getTotalTimeRunning()));
             RobotLog.ii("JobTimings", "   ┗ Downstream      : " + Arrays.toString(deps));
-            RobotLog.ii("JobTimings", "  Created " + Timings.formatDuration(now - timings.getCreatedAt()) + " ago");
-            RobotLog.ii("JobTimings", "  Started " + Timings.formatDuration(now - timings.getStartedAt()) + " ago");
-            RobotLog.ii("JobTimings", "  Mean task time: " + Timings.formatDuration(timings.averageTaskMs()));
+            RobotLog.ii("JobTimings", "  Created " + DurationFormatter.formatDuration(now - timings.getCreatedAt()) + " ago");
+            RobotLog.ii("JobTimings", "  Started " + DurationFormatter.formatDuration(now - timings.getStartedAt()) + " ago");
+            RobotLog.ii("JobTimings", "  Mean task time: " + DurationFormatter.formatDuration(timings.averageTaskMs()));
             RobotLog.ii("JobTimings", "   ┃ (" + timings.getTaskTimes().size() + " samples)");
-            RobotLog.ii("JobTimings", "   ┣ 95% median : " + Timings.formatDuration(timings.p95TaskMs()));
-            RobotLog.ii("JobTimings", "   ┗ Maximum    : " + Timings.formatDuration(timings.maxTaskMs()));
+            RobotLog.ii("JobTimings", "   ┣ 95% median : " + DurationFormatter.formatDuration(timings.p95TaskMs()));
+            RobotLog.ii("JobTimings", "   ┗ Maximum    : " + DurationFormatter.formatDuration(timings.maxTaskMs()));
             ArrayList<String> problems = new ArrayList<>();
             if (timings.averageTaskMs() > MAX_MEAN_TASK_TIME) {
-                problems.add("Job is too slow on average (mean task time is " + Timings.formatDuration(timings.averageTaskMs()) + ", configured limit is " + Timings.formatDuration(MAX_MEAN_TASK_TIME) + ")");
+                problems.add("Job is too slow on average (mean task time is " + DurationFormatter.formatDuration(timings.averageTaskMs()) + ", configured limit is " + DurationFormatter.formatDuration(MAX_MEAN_TASK_TIME) + ")");
             }
             if (timings.p95TaskMs() > MAX_95TH_TASK_TIME) {
-                problems.add("Job is too slow at peaks (95% median task time is " + Timings.formatDuration(timings.p95TaskMs()) + ", configured limit is " + Timings.formatDuration(MAX_95TH_TASK_TIME) + ")");
+                problems.add("Job is too slow at peaks (95% median task time is " + DurationFormatter.formatDuration(timings.p95TaskMs()) + ", configured limit is " + DurationFormatter.formatDuration(MAX_95TH_TASK_TIME) + ")");
             }
             if (timings.maxTaskMs() > MAX_MAX_TASK_TIME) {
-                problems.add("Task ran for " + Timings.formatDuration(timings.maxTaskMs()) + " (max), configured limit is " + Timings.formatDuration(MAX_MAX_TASK_TIME));
+                problems.add("Task ran for " + DurationFormatter.formatDuration(timings.maxTaskMs()) + " (max), configured limit is " + DurationFormatter.formatDuration(MAX_MAX_TASK_TIME));
             }
             if (!problems.isEmpty()) {
                 RobotLog.ee("JobTimings", "Performance issues detected:");

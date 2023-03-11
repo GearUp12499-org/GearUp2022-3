@@ -14,8 +14,11 @@ import static org.firstinspires.ftc.teamcode.rrauto.TrigCalculations.poleAngle;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.lib.DurationFormatter;
+import org.firstinspires.ftc.teamcode.lib.StopOpMode;
 
 
 @Autonomous(name = "trig_left_side", group = "Pushbot")
@@ -33,22 +36,21 @@ public class trig_left_side extends rrAutoComp3 {
         int polePos = -400;
 
         //raises preloaded and drives to second tile, ready to drop off cone on pole
-        l.verticalLift(3200, this); //3200
+        l.verticalLift(3300, this); //3200
         PIDTest(50, 0.9);
 
         //turr(-0.6, -180); // need to make this concurrent with lift and straight (is blocking rn) // 22.5deg * (750 / 90) = roughly 180
         //straight(0.6,54); // 54 function for driving straight // need to integrate id into pid (very inaccurate at 0.6->0.7 with only p)
 
         //pole detect
+        boolean useTrig = true;
         while (Math.abs(turret.getCurrentPosition()) < 700) {
             stopMaybe();
             if (io.distSensorM.getDistance(DistanceUnit.MM) <250 &&
-                    turret.getCurrentPosition() < -380 && turret.getCurrentPosition() > -500) {
+                    turret.getCurrentPosition() < -380 && turret.getCurrentPosition() > -700) {
                 polePos = turret.getCurrentPosition();
-                break;
-            }
-            else if (turret.getCurrentPosition() < -480){
-                polePos = -(int)poleAngle((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
+                persistTeleData.put("used strategy", "pole detection @ " + polePos);
+                useTrig = false;
                 break;
             }
             turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -58,11 +60,17 @@ public class trig_left_side extends rrAutoComp3 {
                 turret.setPower(-0.15);
             }
 
-            telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
+            telemetry.addData("distance", io.distSensorM.getDistance(DistanceUnit.CM));
+            telemetry.addData("height", l.targetVerticalCount);
             telemetry.update();
+            l.update();
         }
-
+//        if (useTrig) {
         polePos = -(int)poleAngle((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
+        persistTeleData.put("used strategy", "trig @ " + polePos);
+//        }
+        persistTeleData.put("detect", "all done " + DurationFormatter.formatDuration(entireRun.milliseconds()));
+//        polePos = -(int)poleAngle((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
         turret.setPower(0);
         l.verticalLift(VERTICAL_TARGETS[3],this); //1500
         while(turret.getCurrentPosition()<polePos){
@@ -115,15 +123,18 @@ public class trig_left_side extends rrAutoComp3 {
         telemetry.addData("robot y pos:", encoderRear.getCurrentPosition());
 
         telemetry.update();
+        RobotLog.i("xArgs " + (encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2);
+        RobotLog.i("yArgs " + encoderRear.getCurrentPosition());
         int ang = (int)TrigCalculations.stackAngle((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
         int dist = (int)TrigCalculations.distToStack((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
         int distPoleShort= (int)TrigCalculations.distToPoleMed((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
         int angShort= (int)TrigCalculations.poleAngleShort((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
+        RobotLog.i("the angShort is " + angShort + ", or " + angShort / TrigCalculations.encToAngle);
 
         for (int i = 0; i < 5; i++) {
             //turns from pole to stack
             turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            turret.setTargetPosition(ang+30); //750
+            turret.setTargetPosition(ang); //750
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turret.setPower(1); //0.3
             sleep(500);
@@ -161,7 +172,7 @@ public class trig_left_side extends rrAutoComp3 {
             if(i <4) {
                 l.setVerticalTargetManual(VERTICAL_TARGETS[3]-1000); //1500
 
-                turr(-0.6, polePos- 10); //+15
+                turr(-0.6, polePos); //+15
 
                 //needs a little more juice at the top of pole to make it
                 runtime.reset();
@@ -184,8 +195,7 @@ public class trig_left_side extends rrAutoComp3 {
             }
             else{
                 l.setVerticalTargetManual(VERTICAL_TARGETS[1]+1500);
-
-                turr(0.6, 1150); //+15
+                turr(0.6, angShort); //+15
 
                 //needs a little more juice at the top of pole to make it
                 runtime.reset();
@@ -212,6 +222,9 @@ public class trig_left_side extends rrAutoComp3 {
             sleep(150);
             l.setHorizontalTarget(0);
             sleep(100);
+
+            persistTeleData.put("additional cone #"+(i+1), DurationFormatter.formatDuration(entireRun.milliseconds()));
+            telemetry.update();
         }
 
         //resets turret and lift to home position, ready to be used in teleop, strafes to correct parking position based on what april tag position was detected
@@ -223,8 +236,9 @@ public class trig_left_side extends rrAutoComp3 {
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turret.setPower(-0.6);
             sleep(1000);
-            l.setVerticalTargetManual(0);
+            l.setVerticalTargetManual(1000);
             strafe(0.6, -22.5);
+            l.setVerticalTargetManual(0);
             while(l.liftVertical1.getCurrentPosition()>40) {
                 stopMaybe();
                 l.liftVertical1.setPower(-0.3);
@@ -239,8 +253,9 @@ public class trig_left_side extends rrAutoComp3 {
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turret.setPower(-0.6);
             sleep(800);
-            l.setVerticalTargetManual(0);
+            l.setVerticalTargetManual(1000);
             strafe(0.65, 22);
+            l.setVerticalTargetManual(0);
             while(l.liftVertical1.getCurrentPosition()>40) {
                 stopMaybe();
                 l.liftVertical1.setPower(-0.3);
@@ -275,5 +290,8 @@ public class trig_left_side extends rrAutoComp3 {
             l.liftVertical1.setPower(0);
             l.liftVertical2.setPower(0);
         }
+
+        persistTeleData.put("all done", DurationFormatter.formatDuration(entireRun.milliseconds()));
+        telemetry.update();
     }
 }

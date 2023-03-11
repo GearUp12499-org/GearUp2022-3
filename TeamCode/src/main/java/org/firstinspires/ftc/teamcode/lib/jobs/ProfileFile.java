@@ -5,6 +5,7 @@ import android.content.Context;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.lib.DurationFormatter;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,18 +35,18 @@ public class ProfileFile {
                     " " + "Started=" + timings.getStartedAt() + "\n" +
                     " " + "Completed=" + timings.getCompletedAt() + "\n" +
                     " " + "WaitingDuration=D" + timings.waitingToStartTime() +
-                    " (" + Job.Timings.formatDuration(timings.waitingToStartTime()) + ")\n" +
+                    " (" + DurationFormatter.formatDuration(timings.waitingToStartTime()) + ")\n" +
                     " " + "RunningDuration=D" + timings.runningOverallTime() +
-                    " (" + Job.Timings.formatDuration(timings.runningOverallTime()) + ")\n" +
+                    " (" + DurationFormatter.formatDuration(timings.runningOverallTime()) + ")\n" +
                     " " + "TotalExecutingTime=D" + timings.getTotalTimeRunning() +
-                    " (" + Job.Timings.formatDuration(timings.getTotalTimeRunning()) + ")\n" +
+                    " (" + DurationFormatter.formatDuration(timings.getTotalTimeRunning()) + ")\n" +
                     " " + "TaskTimeSamples=" + timings.getTaskTimes().size() + "\n" +
                     " " + "MeanTaskTime=D" + timings.averageTaskMs() +
-                    " (" + Job.Timings.formatDuration(timings.averageTaskMs()) + ")\n" +
+                    " (" + DurationFormatter.formatDuration(timings.averageTaskMs()) + ")\n" +
                     " " + "P95TaskTime=D" + timings.p95TaskMs() +
-                    " (" + Job.Timings.formatDuration(timings.p95TaskMs()) + ")\n" +
+                    " (" + DurationFormatter.formatDuration(timings.p95TaskMs()) + ")\n" +
                     " " + "MaxTaskTime=D" + timings.maxTaskMs() +
-                    " (" + Job.Timings.formatDuration(timings.maxTaskMs()) + ")\n" +
+                    " (" + DurationFormatter.formatDuration(timings.maxTaskMs()) + ")\n" +
                     " " + "Blocking=A" + Arrays.toString(timings.getDownstreamAtFinish()) + "\n" +
                     " " + "AllTaskTimes=A" + timings.getTaskTimes().toString() + "\n" +
                     "\n";
