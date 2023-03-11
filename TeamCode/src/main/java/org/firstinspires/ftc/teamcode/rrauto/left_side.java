@@ -228,8 +228,9 @@ public class left_side extends rrAutoComp3 {
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turret.setPower(-0.6);
             sleep(1000);
-            l.setVerticalTargetManual(0);
+            l.setVerticalTargetManual(1000);
             strafe(0.6, -22.5);
+            l.setVerticalTargetManual(0);
             while(l.liftVertical1.getCurrentPosition()>40) {
                 stopMaybe();
                 l.liftVertical1.setPower(-0.3);
@@ -244,8 +245,9 @@ public class left_side extends rrAutoComp3 {
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turret.setPower(-0.6);
             sleep(800);
-            l.setVerticalTargetManual(0);
+            l.setVerticalTargetManual(1000);
             strafe(0.65, 22);
+            l.setVerticalTargetManual(0);
             while(l.liftVertical1.getCurrentPosition()>40) {
                 stopMaybe();
                 l.liftVertical1.setPower(-0.3);
