@@ -38,7 +38,7 @@ public class Lift {
 
     public static final double POWER_UP = 1.0;
     public static final double POWER_CORRECT = 0.2;
-    public static final double POWER_H = 0.90; //0.65
+    public static final double POWER_H = 0.9021; //0.65
     public static final double POWER_DOWN = -1; //-0.8
 
     public static final double ENCODER_COUNTS_PER_ROTATION = 537.7;

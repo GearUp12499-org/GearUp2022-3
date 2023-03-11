@@ -33,7 +33,7 @@ public class trig_left_side extends rrAutoComp3 {
         int polePos = -400;
 
         //raises preloaded and drives to second tile, ready to drop off cone on pole
-        l.verticalLift(3200, this);
+        l.verticalLift(3200, this); //3200
         PIDTest(50, 0.9);
 
         //turr(-0.6, -180); // need to make this concurrent with lift and straight (is blocking rn) // 22.5deg * (750 / 90) = roughly 180
@@ -53,7 +53,7 @@ public class trig_left_side extends rrAutoComp3 {
             }
             turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             if(turret.getCurrentPosition()>-180)
-                turret.setPower(-0.15); //.35
+                turret.setPower(-0.34); //.35
             else{
                 turret.setPower(-0.15);
             }
@@ -64,7 +64,7 @@ public class trig_left_side extends rrAutoComp3 {
 
         polePos = -(int)poleAngle((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
         turret.setPower(0);
-        l.verticalLift(VERTICAL_TARGETS[3] + 1500,this);
+        l.verticalLift(VERTICAL_TARGETS[3],this); //1500
         while(turret.getCurrentPosition()<polePos){
             l.update();
             turret.setPower(0.1);
@@ -76,8 +76,8 @@ public class trig_left_side extends rrAutoComp3 {
 
         //raises v lift to proper height above the pole
         runtime.reset();
-        l.verticalLift(VERTICAL_TARGETS[3] + 1500, this);
-        while(l.liftVertical1.getCurrentPosition()< 3300 ) { //1.8 seconds
+        l.verticalLift(VERTICAL_TARGETS[3], this); //1500
+        while(l.liftVertical1.getCurrentPosition()< 3300 ) { //3300
             stopMaybe();
             //l.update();
             l.liftVertical1.setPower(1);
@@ -145,7 +145,7 @@ public class trig_left_side extends rrAutoComp3 {
             //lifts cone off of stack and retracts h lift
             l.setVerticalTargetManual(900 - (i * 135) + 250);
             runtime.reset();
-            while(runtime.seconds()<0.5){
+            while(runtime.seconds()<0.37){
                 stopMaybe();
                 l.liftVertical1.setPower(1);
                 l.liftVertical2.setPower(1);
@@ -159,13 +159,13 @@ public class trig_left_side extends rrAutoComp3 {
 
             //extends v lift to height above the tall pole and rotates to it
             if(i <4) {
-                l.setVerticalTargetManual(VERTICAL_TARGETS[3]+1500);
+                l.setVerticalTargetManual(VERTICAL_TARGETS[3]-1000); //1500
 
                 turr(-0.6, polePos- 10); //+15
 
                 //needs a little more juice at the top of pole to make it
                 runtime.reset();
-                while (liftVertical1.getCurrentPosition() < 3300) {
+                while (liftVertical1.getCurrentPosition() < 3200) {//3300
                     stopMaybe();
                     l.liftVertical1.setPower(1);
                     l.liftVertical2.setPower(1);
