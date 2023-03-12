@@ -22,6 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Autonomous(name = "left_side_medium", group = "Pushbot")
 //@Disabled
 public class left_side extends rrAutoComp3 {
+    public static final double RATIO = (384.5 / 537.7);
 
     // Constructor
     public left_side() {
@@ -34,7 +35,7 @@ public class left_side extends rrAutoComp3 {
         int polePos = -1200;
 
         //raises preloaded and drives to second tile, ready to drop off cone on pole
-        l.verticalLift(1300, this);
+        l.verticalLift((int)(RATIO*1300), this);
         PIDTest(51, 0.9, "left");
 
         //turr(-0.6, -180); // need to make this concurrent with lift and straight (is blocking rn) // 22.5deg * (750 / 90) = roughly 180
@@ -65,7 +66,7 @@ public class left_side extends rrAutoComp3 {
 
         //polePos = -(int)poleAngle((encoderLeft.getCurrentPosition()+ encoderRight.getCurrentPosition())/2,encoderRear.getCurrentPosition());
         turret.setPower(0);
-        l.verticalLift(VERTICAL_TARGETS[2],this);
+        l.verticalLift((int)(RATIO*VERTICAL_TARGETS[2]),this);
         while(turret.getCurrentPosition()<polePos){
             l.update();
             turret.setPower(0.2);
@@ -77,7 +78,7 @@ public class left_side extends rrAutoComp3 {
 
         //raises v lift to proper height above the pole
         runtime.reset();
-        l.verticalLift(VERTICAL_TARGETS[2] , this);
+        l.verticalLift((int)(RATIO*VERTICAL_TARGETS[2]), this);
         while(l.liftVertical1.getCurrentPosition()< 2400 ) { //1.8 seconds
             stopMaybe();
             //l.update();
@@ -132,9 +133,9 @@ public class left_side extends rrAutoComp3 {
             else
                 sleep(300);
             //lowers vertical lift to cone stack and extends out horizontal lift to stack
-            l.setVerticalTargetManual(1180-i*150);
+            l.setVerticalTargetManual((int)(RATIO*1180-i*150));
             l.setHorizontalTargetManual(dist); //825
-            while(l.liftVertical1.getCurrentPosition()>(900-(i*150))){
+            while(l.liftVertical1.getCurrentPosition()>(1000-(i*150))){
                 stopMaybe();
                 l.liftVertical1.setPower(-0.6);
                 l.liftVertical2.setPower(-0.6);
@@ -148,7 +149,7 @@ public class left_side extends rrAutoComp3 {
             sleep(350);
 
             //lifts cone off of stack and retracts h lift
-            l.setVerticalTargetManual(900 - (i * 135) + 250);
+            l.setVerticalTargetManual((int)(RATIO*(900 - (i * 135) + 250)));
             runtime.reset();
             while(runtime.seconds()<0.5){
                 stopMaybe();
@@ -164,7 +165,7 @@ public class left_side extends rrAutoComp3 {
 
             //extends v lift to height above the tall pole and rotates to it
             if(i <2) {
-                l.setVerticalTargetManual(VERTICAL_TARGETS[2]+1500);
+                l.setVerticalTargetManual((int)(RATIO*(VERTICAL_TARGETS[2]+1500)));
 
                 turr(-0.6, polePos+10); //+15
 
@@ -188,7 +189,7 @@ public class left_side extends rrAutoComp3 {
                 }
             }
             else{
-                l.setVerticalTargetManual(VERTICAL_TARGETS[1]+2500);
+                l.setVerticalTargetManual((int)(RATIO*(VERTICAL_TARGETS[1]+2500)));
 
                 turr(0.6, 1150); //+15
 
@@ -228,7 +229,7 @@ public class left_side extends rrAutoComp3 {
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turret.setPower(-0.6);
             sleep(1000);
-            l.setVerticalTargetManual(1000);
+            l.setVerticalTargetManual((int)(RATIO*1000));
             strafe(0.6, -22.5);
             l.setVerticalTargetManual(0);
             while(l.liftVertical1.getCurrentPosition()>40) {
@@ -245,7 +246,7 @@ public class left_side extends rrAutoComp3 {
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turret.setPower(-0.6);
             sleep(800);
-            l.setVerticalTargetManual(1000);
+            l.setVerticalTargetManual((int)(RATIO*1000));
             strafe(0.65, 22);
             l.setVerticalTargetManual(0);
             while(l.liftVertical1.getCurrentPosition()>40) {

@@ -21,7 +21,7 @@ public class Lift {
 
     public int getFakedVerticalCount() {
 
-        return (int) (targetVerticalCount * RATIO);
+        return (int) (targetVerticalCount);
     }
 
     public int getFakedCurrentVerticalCounts() {
