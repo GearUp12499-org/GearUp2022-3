@@ -15,9 +15,11 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.lib.LinearCleanupOpMode;
+import org.firstinspires.ftc.teamcode.lib.RobotCompletePose;
 import org.firstinspires.ftc.teamcode.snap.MatchTimer;
 import org.firstinspires.ftc.teamcode.snap.SnapRunner;
 
@@ -361,6 +363,16 @@ public class Teleop extends LinearCleanupOpMode {
     }
 
     ////////////////////////////////////////////////////////////////////
+    public RobotCompletePose collectionPose = null;
+    boolean last1Start = false;
+    public RobotCompletePose deliveryPose = null;
+    boolean last1Back = false;
+
+    boolean last1A = false;
+    boolean last1Y = false;
+
+    RobotCompletePose autoScoreTarget = null;
+
     public void autoScore(){ //automating scoring
         /*
         basically the way this is going to work is the following
@@ -373,73 +385,65 @@ public class Teleop extends LinearCleanupOpMode {
         This cycle repeats on an on, this will probably be revised/optimized as we practice it
         --JJ
          */
-        /*
-        int turrStackPos =0;
-        int hLiftStackPos= 0;
-        int turrPolePos = 0;
-        int hLiftPolePos = 0;
-        int a = 0;
-
-        //setting encoder count values
-        if(gamepad1.start){
-            turrStackPos = turret.getCurrentPosition();
-            hLiftStackPos = liftHorizontal.getCurrentPosition();
+        // Now with 100% more snapshots!
+        if (gamepad1.start && !last1Start) {
+            collectionPose = RobotCompletePose.captureImmediatePosition(l);
+            notifyOk(gamepad1);
         }
-        else if(gamepad1.back){
-            turrPolePos = turret.getCurrentPosition();
-            hLiftPolePos = liftHorizontal.getCurrentPosition();
-            if(turrPolePos>0) //this means that you are dropping off to a pole to the left of your robot, if turret side is considered front
-                a = 1;
-            else if(turrPolePos<0)
-                a = -1; // this means that you are dropping off to a pole to the right of your robot
+        last1Start = gamepad1.start;
+        if (gamepad1.back && !last1Back) {
+            deliveryPose = RobotCompletePose.captureImmediatePosition(l);
+            notifyOk(gamepad1);
         }
+        last1Back = gamepad1.back;
 
-        //getting to cone stack
-        if(gamepad1.y){
-            double vLiftEti = 759/5.25;//encoder count to inch
-            if(l.liftVertical1.getCurrentPosition()>2000){
-                if(a == 1) {
-                    turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    turret.setTargetPosition(turrStackPos); //750
-                    turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    turret.setPower(-0.8); //0.3
-                    sleep(500);
-
-                    //lowers vertical lift to cone stack and extends out horizontal lift to stack
-                    l.setVerticalTargetManual(100);
-                    l.setHorizontalTargetManual(825);
-                    while (l.liftVertical1.getCurrentPosition() > (100)) {
-                        l.liftVertical1.setPower(-0.6);
-                        l.liftVertical2.setPower(-0.6);
-                    }
-                }
-                else if(a == -1){
-                    turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    turret.setTargetPosition(turrStackPos); //750
-                    turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    turret.setPower(0.8); //0.3
-                    sleep(500);
-
-                    //lowers vertical lift to cone stack and extends out horizontal lift to stack
-                    l.setVerticalTargetManual(100);
-                    l.setHorizontalTargetManual(825);
-                    while (l.liftVertical1.getCurrentPosition() > (100)) {
-                        l.liftVertical1.setPower(-0.6);
-                        l.liftVertical2.setPower(-0.6);
-                    }
-                    double h = (4.93 - 3.4 - 0.000658*(hLiftStackPos)-0.00000324*(hLiftStackPos)*(hLiftStackPos));
-                    int targ = (int)((1.9-h)*vLiftEti);
-                    l.setVerticalTargetManual(targ);
-                    while(liftHorizontal.getCurrentPosition()<hLiftStackPos){
-                        liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                        liftHorizontal.setPower(0.2);
-                        l.update();
-                    }
-                }
+        if (gamepad1.a && !last1A) {
+            if (autoScoreTarget != null) {
+                autoScoreTarget = null;
+                turret.setPower(0);
+                notifyError(gamepad1);  // "error" (cleared)
+            } else if (deliveryPose == null) {
+                notifyError(gamepad1);
+            } else {
+                autoScoreTarget = deliveryPose;
+                notifyOk(gamepad1);
             }
         }
-*/
+        last1A = gamepad1.a;
+        if (gamepad1.y && !last1Y) {
+            if (autoScoreTarget != null) {
+                autoScoreTarget = null;
+                turret.setPower(0);
+                notifyError(gamepad1);  // "error" (cleared)
+            } else if (collectionPose == null) {
+                notifyError(gamepad1);
+            } else {
+                autoScoreTarget = collectionPose;
+                notifyOk(gamepad1);
+            }
+        }
+        last1Y = gamepad1.y;
 
+        if (autoScoreTarget != null) {
+            telemetry.addLine("1: press A or Y to cancel AutoScore");
+            RobotCompletePose current = autoScoreTarget.runAsync(l, telemetry);
+            if (autoScoreTarget.isDone(current)) {
+                autoScoreTarget = null;
+                turret.setPower(0);
+                notifyOk(gamepad1);
+            }
+        }
+
+        if (collectionPose == null) {
+            telemetry.addLine("1: press START to set collection pose");
+        } else if (autoScoreTarget == null) {
+            telemetry.addLine("1: press Y to run AutoScore to collect");
+        }
+        if (deliveryPose == null) {
+            telemetry.addLine("1: press BACK to set delivery pose");
+        } else if (autoScoreTarget == null) {
+            telemetry.addLine("1: press A to run AutoScore to deliver");
+        }
     }
 
     public void turretAuto(){
@@ -509,5 +513,21 @@ public class Teleop extends LinearCleanupOpMode {
         telemetry.addData("turret position:", now);
         telemetry.addData("turret speed:", speed);
 
+    }
+
+    private void notifyError(Gamepad gamepad) {
+        Gamepad.RumbleEffect.Builder builder = new Gamepad.RumbleEffect.Builder();
+        builder
+                .addStep(0.5f, 0.5f, 200)
+                .addStep(0.5f, 0, 100)
+                .addStep(0.5f, 0.5f, 200);
+        gamepad.runRumbleEffect(builder.build());
+    }
+
+    private void notifyOk(Gamepad gamepad) {
+        Gamepad.RumbleEffect.Builder builder = new Gamepad.RumbleEffect.Builder();
+        builder
+                .addStep(0.5f, 0.5f, 200);
+        gamepad.runRumbleEffect(builder.build());
     }
 }
