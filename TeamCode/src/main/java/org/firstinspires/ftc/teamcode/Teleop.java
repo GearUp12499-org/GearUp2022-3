@@ -117,10 +117,19 @@ public class Teleop extends LinearCleanupOpMode {
             double m4 = vX + vY;
             driveMotor(speed * m1, speed * m2, speed * m3, speed * m4);
         } else {
-            double left = -gamepad1.left_stick_y,
-                    right = -gamepad1.right_stick_y;
+            // Hippity hoppity your code is now my property
+            double y = -gamepad1.left_stick_y; // Remember, this is reversed!
+            double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
+            double rx = gamepad1.right_stick_x;
+
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
+
             updateDirection();
-            driveMotor(left, left, right, right);
+            driveMotor(frontLeftPower, backLeftPower, frontRightPower, backRightPower);
         }
     }
 
