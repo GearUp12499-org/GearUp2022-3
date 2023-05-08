@@ -12,7 +12,6 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 import static org.firstinspires.ftc.teamcode.SharedHardware.runtime;
 import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -84,6 +83,9 @@ public class Teleop extends LinearCleanupOpMode {
             telemetry.addData("f/b", encoderRear.getCurrentPosition());
             telemetry.addData("lift counts:", l.liftVertical1.getCurrentPosition());
             telemetry.addData("lift target:", l.targetVerticalCount);
+
+            telemetry.addData("The lift is:", l.correcting ? "correcting" : l.traveling ? "traveling" : "???");
+            telemetry.addData("lift power", l.liftVertical1.getPower() + " & " + l.liftVertical2.getPower());
             snapRunner.loop();
             telemetry.update();
         }
@@ -156,23 +158,6 @@ public class Teleop extends LinearCleanupOpMode {
 
 
     public void lift() {
-        // TODO make dpad not go BRRRRRRRRRRRRRRRRRRRRRR
-        /*
-        if (RisingFallingEdges.isRisingEdge(gamepad2.back)) {
-            l.liftVertical1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            l.liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            l.liftVertical1.setPower(Lift.POWER_DOWN / 2.0);
-            l.liftVertical2.setPower(Lift.POWER_DOWN / 2.0); // slowly move down
-        }
-        if (RisingFallingEdges.isFallingEdge(gamepad2.back)) {
-            l.liftVertical1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            l.liftVertical1.setPower(Lift.POWER_UP);
-            l.liftVertical1.setTargetPosition(0);
-            l.liftVertical1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            l.liftVertical2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            l.liftVertical2.setPower(0);
-            l.liftVertical2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }*/
         int hTargPos = 0;
         if(gamepad1.start){
             hTargPos = liftHorizontal.getCurrentPosition();
