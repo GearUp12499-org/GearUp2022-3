@@ -6,13 +6,11 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.prepareHardware;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearLeft;
 import static org.firstinspires.ftc.teamcode.SharedHardware.rearRight;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "MecanumDrive_v1")
-@Disabled
-public class SimpleMecanum extends LinearOpMode {
+@TeleOp(name = "Kids Drive Robots 1")
+public class KidsDriveRobots1 extends LinearOpMode {
     @Override
     public void runOpMode() {
         prepareHardware(hardwareMap);
@@ -26,7 +24,7 @@ public class SimpleMecanum extends LinearOpMode {
             // Denominator is the largest motor power (absolute value) or 1
             // This ensures all the powers maintain the same ratio, but only when
             // at least one is out of the range [-1, 1]
-            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1) * 2;
             double frontLeftPower = (y + x + rx) / denominator;
             double rearLeftPower = (y - x + rx) / denominator;
             double frontRightPower = (y - x - rx) / denominator;
@@ -36,11 +34,6 @@ public class SimpleMecanum extends LinearOpMode {
             rearLeft.setPower(rearLeftPower);
             frontRight.setPower(frontRightPower);
             rearRight.setPower(rearRightPower);
-
-            int pos = frontRight.getCurrentPosition();
-            telemetry.addData("pos", pos);
-
-            telemetry.update();
         }
     }
 }
