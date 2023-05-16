@@ -68,7 +68,7 @@ public class Teleop extends LinearCleanupOpMode {
         while (opModeIsActive()) {
             drive();
             lift();
-            turret();
+//            turret();
             autoScore();
             //l.update2();
             l.liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -196,19 +196,19 @@ public class Teleop extends LinearCleanupOpMode {
             l.setHorizontalTargetManual(5);
             l.retract();
             l.update();
-            int direction = sign(-turret.getCurrentPosition());
-            turret.setPower(0.5 * direction);
+//            int direction = sign(-turret.getCurrentPosition());
+//            turret.setPower(0.5 * direction);
             //l.setVerticalTarget(0);
             l.setVerticalTargetManual(175);
             runtime.reset();
-            while (opModeIsActive() && !(Math.abs(turret.getCurrentPosition()) <= 20)) {
-                if (Math.abs(turret.getCurrentPosition()) <= 10) {
-                    turret.setPower(0);
-                }
-                if(runtime.seconds()>0.5)
-                    l.update();
-            }
-            turret.setPower(0);
+//            while (opModeIsActive() && !(Math.abs(turret.getCurrentPosition()) <= 20)) {
+//                if (Math.abs(turret.getCurrentPosition()) <= 10) {
+//                    turret.setPower(0);
+//                }
+//                if(runtime.seconds()>0.5)
+//                    l.update();
+//            }
+//            turret.setPower(0);
 
         } else if (gamepad2.a)
             l.setVerticalTarget(1); //2
