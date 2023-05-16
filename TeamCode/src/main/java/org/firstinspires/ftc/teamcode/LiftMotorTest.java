@@ -35,9 +35,9 @@ public class LiftMotorTest extends LinearOpMode {
             while (l.liftVertical1.getCurrentPosition() < 4000) {
                 l.liftVertical1.setPower(currentSpeed);
                 l.liftVertical2.setPower(currentSpeed);
-                if(l.liftVertical1.getCurrentPosition()>3750){
-                    l.liftVertical1.setPower(currentSpeed/2);
-                    l.liftVertical2.setPower(currentSpeed/2);
+                if (l.liftVertical1.getCurrentPosition() > 3750) {
+                    l.liftVertical1.setPower(currentSpeed / 2);
+                    l.liftVertical2.setPower(currentSpeed / 2);
                 }
 
             }

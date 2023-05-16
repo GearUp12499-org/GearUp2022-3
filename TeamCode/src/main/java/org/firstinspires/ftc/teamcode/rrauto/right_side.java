@@ -23,7 +23,7 @@ public class right_side extends rrAutoComp3 {
     @Override
     void main_auto_content(int targetLocation) throws InterruptedException {
         l.verticalLift(2700, this);
-        straight(0.6,54); // 54 function for driving straight
+        straight(0.6, 54); // 54 function for driving straight
 
         //resets turret and lift to home position, ready to be used in teleop, strafes to correct parking position based on what april tag position was detected
         turret.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -34,7 +34,7 @@ public class right_side extends rrAutoComp3 {
             sleep(800);
             strafe(0.6, -18);
             //sleep(1500);
-            while(l.liftVertical1.getCurrentPosition()>40) {
+            while (l.liftVertical1.getCurrentPosition() > 40) {
                 stopMaybe();
                 l.liftVertical1.setPower(-0.5);
                 l.liftVertical2.setPower(-0.5);
@@ -49,15 +49,14 @@ public class right_side extends rrAutoComp3 {
             sleep(800);
             strafe(0.6, 17);
             //sleep(1500);
-            while(l.liftVertical1.getCurrentPosition()>40) {
+            while (l.liftVertical1.getCurrentPosition() > 40) {
                 stopMaybe();
                 l.liftVertical1.setPower(-0.5);
                 l.liftVertical2.setPower(-0.5);
             }
             l.liftVertical1.setPower(0);
             l.liftVertical2.setPower(0);
-        }
-        else {
+        } else {
             turret.setTargetPosition(0);
             turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             turret.setPower(-0.3);

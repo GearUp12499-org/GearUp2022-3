@@ -4,7 +4,9 @@ import java.util.ArrayList;
 
 public class SnapRunner {
     public ArrayList<Snap> snaps = new ArrayList<Snap>();
-    public SnapRunner() {}
+
+    public SnapRunner() {
+    }
 
     public void addSnap(Snap snap) {
         snaps.add(snap);

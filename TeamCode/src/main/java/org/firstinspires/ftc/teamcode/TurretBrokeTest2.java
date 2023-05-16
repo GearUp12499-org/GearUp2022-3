@@ -5,7 +5,6 @@ import static org.firstinspires.ftc.teamcode.SharedHardware.turret;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp
 public class TurretBrokeTest2 extends LinearOpMode {

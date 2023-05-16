@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.lib;
 public final class returns2<A, B> {
     private final A a;
     private final B b;
+
     public returns2(A a, B b) {
         this.a = a;
         this.b = b;

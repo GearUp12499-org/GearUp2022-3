@@ -39,7 +39,8 @@ public class JobManager {
         String targetClassName = "";
         Pattern pattern = Pattern.compile("\\.([A-Za-z0-9]+)(?:\\.\\$[A-Za-z0-9$]+)*$");
         for (StackTraceElement stackElement : thread.getStackTrace()) {
-            if (!inUserSpace && stackElement.getClassName().contains("lib.jobs")) inUserSpace = true;
+            if (!inUserSpace && stackElement.getClassName().contains("lib.jobs"))
+                inUserSpace = true;
             if (!inUserSpace) continue;
             if (stackElement.getClassName().contains("lib.jobs")) {
                 if (relevant.isEmpty()) continue;
@@ -67,6 +68,7 @@ public class JobManager {
 
     /**
      * INTERNAL USE ONLY!! If you call this method on a job, it will be registered twice.
+     *
      * @param job Job to register.
      * @return new ID of the job.
      */
@@ -123,6 +125,7 @@ public class JobManager {
 
     /**
      * Check if all jobs are done.
+     *
      * @return True if all jobs are done, false otherwise.
      */
     public boolean isDone() {
@@ -136,6 +139,7 @@ public class JobManager {
 
     /**
      * Get a job by ID.
+     *
      * @param id ID of the job.
      * @return Job with the specified ID, or null.
      */
@@ -145,6 +149,7 @@ public class JobManager {
 
     /**
      * Job that finishes after a certain amount of time.
+     *
      * @param millis Time in milliseconds.
      * @return Job that finishes after the specified time.
      */
@@ -156,7 +161,7 @@ public class JobManager {
                 .onStart(timer::reset)
                 .completeCondition(() -> timer.milliseconds() > millis)
                 .build();
-        RobotLog.ii("JobManager", j.id + " is delay("+millis+")");
+        RobotLog.ii("JobManager", j.id + " is delay(" + millis + ")");
         return j;
     }
 

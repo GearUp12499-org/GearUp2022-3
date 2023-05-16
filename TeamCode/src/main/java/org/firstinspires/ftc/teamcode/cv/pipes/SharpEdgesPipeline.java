@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SharpEdgesPipeline extends OpenCvPipeline {
-    private int THRESHOLD = 180;
+    private final int THRESHOLD = 180;
 
     private static class Pair<A, B> {
         public final A a;
@@ -103,12 +103,11 @@ public class SharpEdgesPipeline extends OpenCvPipeline {
             Imgproc.rectangle(input, new org.opencv.core.Point(topLeftCorner.b, topLeftCorner.a), new org.opencv.core.Point(bottomRightCorner.b, bottomRightCorner.a), new Scalar(128, 0, 0), 2);
         }
 
-        StringBuilder status = new StringBuilder();
-        status.append("S: ").append(bestSize)
-                .append(" TL: ").append(topLeftCorner.b).append(", ").append(topLeftCorner.a)
-                .append(" BR: ").append(bottomRightCorner.b).append(", ").append(bottomRightCorner.a);
+        String status = "S: " + bestSize +
+                " TL: " + topLeftCorner.b + ", " + topLeftCorner.a +
+                " BR: " + bottomRightCorner.b + ", " + bottomRightCorner.a;
 //        Imgproc.Sobel(input, input, -1, 0, 1);
-        Imgproc.putText(input, status.toString(), new org.opencv.core.Point(10, 20), 0, 0.5, new Scalar(255, 255, 255));
+        Imgproc.putText(input, status, new org.opencv.core.Point(10, 20), 0, 0.5, new Scalar(255, 255, 255));
         return input;
     }
 }

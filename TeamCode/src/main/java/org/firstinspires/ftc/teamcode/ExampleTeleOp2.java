@@ -9,7 +9,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class ExampleTeleOp2 extends LinearOpMode {
     /**
      * Set power of a group of motors.
-     * @param power power to set the motors to
+     *
+     * @param power    power to set the motors to
      * @param dcMotors motors to set the powers
      */
     public void setPowers(double power, DcMotor... dcMotors) {

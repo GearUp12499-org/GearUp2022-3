@@ -9,7 +9,8 @@ public class DurationFormatter {
         double seconds = ms / 1000.0;
         if (seconds < 60) return String.format("%.2fs", seconds);
         double minutes = seconds / 60.0;
-        if (minutes < 60) return String.format("%dm %.2fs", (int) Math.floor(minutes), seconds % 60);
+        if (minutes < 60)
+            return String.format("%dm %.2fs", (int) Math.floor(minutes), seconds % 60);
         double hours = minutes / 60.0;
         return String.format("%dh %dm %.2fs", (int) Math.floor(hours), (int) Math.floor(minutes % 60), seconds % 60);
     }
@@ -20,7 +21,8 @@ public class DurationFormatter {
         double seconds = ms / 1000.0;
         if (seconds < 60) return String.format("%.2fs", seconds);
         double minutes = seconds / 60.0;
-        if (minutes < 60) return String.format("%dm %.2fs", (int) Math.floor(minutes), seconds % 60);
+        if (minutes < 60)
+            return String.format("%dm %.2fs", (int) Math.floor(minutes), seconds % 60);
         double hours = minutes / 60.0;
         return String.format("%dh %dm %.2fs", (int) Math.floor(hours), (int) Math.floor(minutes % 60), seconds % 60);
     }

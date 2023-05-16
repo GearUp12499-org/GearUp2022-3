@@ -72,7 +72,6 @@ public class TrigCalcAuto extends LinearOpMode {
         lift.setHorizontalTargetManual(225);
 
         sleep(10000);
-        return;
 
         /*
         // turn turret to stack

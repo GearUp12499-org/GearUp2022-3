@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.lib.Consumer;
-import org.firstinspires.ftc.teamcode.lib.Function;
 
 public class ToggleableJob extends Job {
     /**
@@ -17,10 +16,10 @@ public class ToggleableJob extends Job {
      * concurrency is possible. DO NOT BLOCK IN TASKS, as this will cause the entire program
      * to wait.
      *
-     * @param mgr               Job manager to add this job to.
-     * @param onStart           Runnable to run when the job starts.
-     * @param task              Runnable to run every tick.
-     * @param onComplete        Runnable to run when the job is complete.
+     * @param mgr        Job manager to add this job to.
+     * @param onStart    Runnable to run when the job starts.
+     * @param task       Runnable to run every tick.
+     * @param onComplete Runnable to run when the job is complete.
      */
     public ToggleableJob(@NonNull JobManager mgr, @Nullable Consumer<Job> onStart, @Nullable Consumer<Job> task, @Nullable Consumer<Job> onComplete) {
         super(mgr, onStart, task, ignore -> false, onComplete, new int[]{});

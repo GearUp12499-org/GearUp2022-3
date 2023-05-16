@@ -8,9 +8,10 @@ import org.firstinspires.ftc.teamcode.lib.Function;
 
 /**
  * Job that returns a value.
+ *
  * @param <T> The type of the value.
  */
-public class ResultJob<T> extends Job{
+public class ResultJob<T> extends Job {
     private T value;
 
     public T getResult() {

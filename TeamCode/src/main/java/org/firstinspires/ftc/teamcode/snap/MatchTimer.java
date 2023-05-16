@@ -7,7 +7,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class MatchTimer implements Snap {
     private final ElapsedTime timer = new ElapsedTime();
     public static final double MATCH_TIME = 120;
-    private Telemetry telemetry;
+    private final Telemetry telemetry;
 
     public MatchTimer(Telemetry telemetry) {
         this.telemetry = telemetry;

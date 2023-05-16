@@ -168,7 +168,7 @@ public class Teleop extends LinearCleanupOpMode {
 
     public void lift() {
         int hTargPos = 0;
-        if(gamepad1.start){
+        if (gamepad1.start) {
             hTargPos = liftHorizontal.getCurrentPosition();
         }
         if (gamepad2.back) {
@@ -187,12 +187,10 @@ public class Teleop extends LinearCleanupOpMode {
 
         if (gamepad2.back) return;
 
-        if (gamepad2.x){
-                l.setVerticalTarget(2); //2
-                l.update();
-        }
-
-        else if (gamepad2.b) {
+        if (gamepad2.x) {
+            l.setVerticalTarget(2); //2
+            l.update();
+        } else if (gamepad2.b) {
             l.setHorizontalTargetManual(5);
             l.retract();
             l.update();
@@ -214,25 +212,24 @@ public class Teleop extends LinearCleanupOpMode {
             l.setVerticalTarget(1); //2
 
             //l.setVerticalTarget(1);
-        else if (gamepad2.y){
+        else if (gamepad2.y) {
             //while(liftVertical1.getCurrentPosition()<4500){
-                l.setVerticalTarget(3); //2
-                l.update();
-        }
-        else if (gamepad2.dpad_up) {
+            l.setVerticalTarget(3); //2
+            l.update();
+        } else if (gamepad2.dpad_up) {
             l.comp = false;
             l.liftVertical1.setPower(Lift.POWER_UP * 0.8);
             l.liftVertical2.setPower(Lift.POWER_UP * 0.8);
-            int count = (int)(l.liftVertical1.getCurrentPosition());
+            int count = l.liftVertical1.getCurrentPosition();
             l.setVerticalTargetManual(count);
         } else if (gamepad2.dpad_down) {
             l.comp = false;
             l.liftVertical1.setPower(Lift.POWER_DOWN * 0.8);
             l.liftVertical2.setPower(Lift.POWER_DOWN * 0.8);
-            int count = (int)(l.liftVertical1.getCurrentPosition() * (384.5/537.7));
+            int count = (int) (l.liftVertical1.getCurrentPosition() * (384.5 / 537.7));
             l.setVerticalTargetManual(count);
         }
-       // l.comp = true;
+        // l.comp = true;
         if (!gamepad2.dpad_down && !gamepad2.dpad_up) {
             l.comp = true;
         }
@@ -245,19 +242,18 @@ public class Teleop extends LinearCleanupOpMode {
         last2DpadDown = gamepad2.dpad_down;
         if (gamepad2.right_bumper) {
             runtime.reset();
-            while(liftHorizontal.getCurrentPosition()>20 && runtime.seconds()<2) {
-                if(liftHorizontal.getCurrentPosition()<80){
+            while (liftHorizontal.getCurrentPosition() > 20 && runtime.seconds() < 2) {
+                if (liftHorizontal.getCurrentPosition() < 80) {
                     liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    liftHorizontal.setPower(-0.005*liftHorizontal.getCurrentPosition());
-                }
-                else{
+                    liftHorizontal.setPower(-0.005 * liftHorizontal.getCurrentPosition());
+                } else {
                     liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     liftHorizontal.setPower(-0.8);
                 }
             }
             liftHorizontal.setPower(0);
         } else if (gamepad2.left_bumper) {
-            while(liftHorizontal.getCurrentPosition()<hTargPos) {
+            while (liftHorizontal.getCurrentPosition() < hTargPos) {
                 liftHorizontal.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 liftHorizontal.setTargetPosition(hTargPos);
                 liftHorizontal.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -282,27 +278,26 @@ public class Teleop extends LinearCleanupOpMode {
             l.update();
         } else if (gamepad2.left_trigger > 0.2) {
             double x = liftHorizontal.getCurrentPosition();
-            double vLiftEti = 759/5.25;//encoder count to inch
+            double vLiftEti = 759 / 5.25;//encoder count to inch
             int targ = 0;
             liftHorizontal.setPower(0.2);
-            if(l.liftVertical1.getCurrentPosition()<500){
+            if (l.liftVertical1.getCurrentPosition() < 500) {
                 // sag correction
-                double h = (4.93 - 3.4 - 0.000658*(x)-0.00000324*(x)*(x));
-                targ = (int)((2.9-h)*vLiftEti);
+                double h = (4.93 - 3.4 - 0.000658 * (x) - 0.00000324 * (x) * (x));
+                targ = (int) ((2.9 - h) * vLiftEti);
                 l.setVerticalTargetManual(targ);
 
             }
             liftHorizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            if(gamepad2.left_trigger<0.9)
-                if(l.liftVertical1.getCurrentPosition()>1000){
+            if (gamepad2.left_trigger < 0.9)
+                if (l.liftVertical1.getCurrentPosition() > 1000) {
                     liftHorizontal.setPower(0.2);
-                }
-                else
+                } else
                     liftHorizontal.setPower(0.35);
-            else if(gamepad2.left_trigger>0.91)
+            else if (gamepad2.left_trigger > 0.91)
                 liftHorizontal.setPower(0.6);
             l.update();
-        }else{
+        } else {
             liftHorizontal.setPower(0);
         }
 
@@ -328,7 +323,7 @@ public class Teleop extends LinearCleanupOpMode {
     }
 
     ////////////////////////////////////////////////////////////////////
-    public void autoScore(){ //automating scoring
+    public void autoScore() { //automating scoring
         /*
         basically the way this is going to work is the following
         1. drivers score one manually
@@ -409,7 +404,7 @@ public class Teleop extends LinearCleanupOpMode {
 
     }
 
-    public void turretAuto(){
+    public void turretAuto() {
 
     }
 
@@ -428,7 +423,7 @@ public class Teleop extends LinearCleanupOpMode {
             l.setVerticalTargetManual(Math.max(l.liftVertical1.getCurrentPosition(), Lift.inEnc(14)));
             runtime.reset();
             //200
-            while (io.distSensorM.getDistance(DistanceUnit.MM) > 260 && Math.abs(turret.getCurrentPosition()) < 1200 && runtime.seconds()<2) {
+            while (io.distSensorM.getDistance(DistanceUnit.MM) > 260 && Math.abs(turret.getCurrentPosition()) < 1200 && runtime.seconds() < 2) {
                 turret.setPower(0.40); //0.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();
@@ -438,7 +433,7 @@ public class Teleop extends LinearCleanupOpMode {
         } else if (gamepad1.x) {
             l.setVerticalTargetManual(Math.max(l.liftVertical1.getCurrentPosition(), Lift.inEnc(14)));
             runtime.reset();
-            while (io.distSensorM.getDistance(DistanceUnit.MM) > 260 && Math.abs(turret.getCurrentPosition()) < 1200 && runtime.seconds()<2) {
+            while (io.distSensorM.getDistance(DistanceUnit.MM) > 260 && Math.abs(turret.getCurrentPosition()) < 1200 && runtime.seconds() < 2) {
                 turret.setPower(-0.40); //0.35
                 telemetry.addData("distance:", io.distSensorM.getDistance(DistanceUnit.CM));
                 telemetry.update();

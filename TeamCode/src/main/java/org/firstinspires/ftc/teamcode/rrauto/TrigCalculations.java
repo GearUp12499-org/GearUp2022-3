@@ -43,17 +43,18 @@ public class TrigCalculations {
     }
 
     public static double poleAngle(double x, double y) {
-        double deltaX = poleDiffX - x/encToDist;
-        double deltaY = poleDiffY + y/encToDist;
+        double deltaX = poleDiffX - x / encToDist;
+        double deltaY = poleDiffY + y / encToDist;
 
-        return (90-Math.toDegrees(Math.atan2(deltaX, Math.abs(deltaY))))*encToAngle;
+        return (90 - Math.toDegrees(Math.atan2(deltaX, Math.abs(deltaY)))) * encToAngle;
 
     }
-    public static double poleAngleShort(double x, double y) {
-        double deltaX = x/encToDist-37;
-        double deltaY = 12 + y/encToDist;
 
-        return (180-Math.toDegrees(Math.atan2(Math.abs(deltaX), Math.abs(deltaY))))*encToAngle;
+    public static double poleAngleShort(double x, double y) {
+        double deltaX = x / encToDist - 37;
+        double deltaY = 12 + y / encToDist;
+
+        return (180 - Math.toDegrees(Math.atan2(Math.abs(deltaX), Math.abs(deltaY)))) * encToAngle;
     }
 
     public static double stackAngle(double x, double y) {
@@ -89,7 +90,7 @@ public class TrigCalculations {
         double yComponent = stackDiffY - y / encToDist;//9 inches is the distance from claw to center of turret
 
         double dist = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
-        return (dist-9) * 163 / 5.25;
+        return (dist - 9) * 163 / 5.25;
     }
 
     public static double distToPoleMed(double x, double y) {
@@ -98,8 +99,9 @@ public class TrigCalculations {
         double dist = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
         return (dist - 9) * 163 / 5.25;
     }
+
     public static double distToPoleHigh(double x, double y) {
-        double xComponent =(poleDiffX) - x / encToDist;
+        double xComponent = (poleDiffX) - x / encToDist;
         double yComponent = abs(poleDiffY - y / encToDist);//9 inches is the distance from claw to center of turret
         double dist = Math.sqrt(xComponent * xComponent + yComponent * yComponent);
         return (dist - 9) * 163 / 5.25;

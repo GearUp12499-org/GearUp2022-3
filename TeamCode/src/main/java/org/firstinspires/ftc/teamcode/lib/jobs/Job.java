@@ -97,6 +97,7 @@ public class Job {
 
         /**
          * 95th percentile task time, in milliseconds.
+         *
          * @return 95th percentile task time, in milliseconds.
          */
         public double p95TaskMs() {
@@ -130,8 +131,9 @@ public class Job {
 
         private int[] downstreamAtFinish = null;
 
-        private boolean sealed = false;
+        private final boolean sealed = false;
         private final ArrayList<Long> taskTimes = new ArrayList<>();
+
         private void notWhenSealed() {
             if (sealed) throw new IllegalStateException("Timings sealed");
         }
@@ -367,6 +369,7 @@ public class Job {
 
     /**
      * Invoke a Function in a way that looks nice
+     *
      * @param supplier function adding additional jobs in a chain
      * @return next job
      */
@@ -376,6 +379,7 @@ public class Job {
 
     /**
      * Run multiple jobs in parallel.
+     *
      * @param continuations Jobs to run in parallel after this one.
      * @return A wrapper job that will complete when all of the passed jobs complete.
      */
@@ -396,6 +400,7 @@ public class Job {
 
     /**
      * Run a one-shot function after this job.
+     *
      * @param oneShotFunc Function to run after this job.
      * @return The new job that will run the function.
      */
@@ -406,6 +411,7 @@ public class Job {
 
     /**
      * Run another Job after this Job, but don't return that one and keep working on this one.
+     *
      * @param b Job to run after this one.
      * @return This job
      */

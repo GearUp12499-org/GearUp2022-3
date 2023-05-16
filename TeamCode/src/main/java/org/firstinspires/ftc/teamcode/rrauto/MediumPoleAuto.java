@@ -335,6 +335,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
     /**
      * Attempt to keep the robot in the same position by adjusting the power of the motors
      * to compensate for unintentional movement.
+     *
      * @return Toggleable job that can be started and stopped.
      */
     @SuppressLint("DefaultLocale")
@@ -394,7 +395,7 @@ public class MediumPoleAuto extends LinearCleanupOpMode {
                         thresh.set(false);
                     }
                     telemetry.addData("lock", (thresh.get() ? "active" : "inactive") + " mag %.2f", magnitude);
-                    telemetry.addData("lock",  "x %.2f y %.2f", xDiff, yDiff);
+                    telemetry.addData("lock", "x %.2f y %.2f", xDiff, yDiff);
                     if (thresh.get()) {
                         // Create a normalized vector
                         double xNorm = xDiff / magnitude;

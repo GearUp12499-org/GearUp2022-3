@@ -25,7 +25,7 @@ public class Lift {
     }
 
     public int getFakedCurrentVerticalCounts() {
-        return (int) (liftVertical1.getCurrentPosition() / ( RATIO));
+        return (int) (liftVertical1.getCurrentPosition() / (RATIO));
     }
 
     public int currentHorizontalTarget = 0, targetHorizontalCount = HORIZONTAL_TARGETS[0];
@@ -124,8 +124,7 @@ public class Lift {
             } else if (liftVertical1.getCurrentPosition() < getFakedVerticalCount() - 30) {
                 liftVertical1.setPower(POWER_UP);
                 liftVertical2.setPower(POWER_UP);
-            }
-            else {
+            } else {
                 liftVertical1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
                 liftVertical2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

@@ -81,6 +81,7 @@ public abstract class LinearCleanupOpMode extends LinearOpMode {
     /**
      * Stop the op-mode immediately (by throwing StopOpMode) and invoke cleanup.
      * Generally don't use if you want to stop smoothly, try requestOpModeStop() for that.
+     *
      * @throws StopOpMode when invoked
      */
     @Contract("-> fail")

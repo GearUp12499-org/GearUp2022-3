@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public abstract class jjEncoderAuto extends LinearOpMode {
     /* Declare OpMode members. */
     GearUpHardware robot = new GearUpHardware();   // Use GearUp hardware
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
 
     static final double COUNTS_PER_MOTOR_REV = 537;    // eg: Neverest 40
     static final double DRIVE_GEAR_REDUCTION = 0.707;     // This is < 1.0 if geared UP

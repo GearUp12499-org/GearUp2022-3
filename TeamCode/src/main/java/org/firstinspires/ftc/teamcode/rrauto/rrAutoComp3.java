@@ -120,6 +120,7 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
                     telemetry.addLine("Camera is live.");
                     telemetry.update();
                 }
+
                 @Override
                 public void onError(int errorCode) {
                     cameraFailed[0] = true;
@@ -192,7 +193,7 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
 
     //--------------------------------------------------------------
     @SuppressLint("DefaultLocale")
-    void PIDTest(double distance, double speed, String side){
+    void PIDTest(double distance, double speed, String side) {
 
         PID compensator = new PID(0);
 
@@ -215,7 +216,7 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
                 turrDrive(-250);
             else
                 turrDrive(250);
-            if(proportionTraveled>0.7)
+            if (proportionTraveled > 0.7)
                 speed = 0.2;
 
 
@@ -246,27 +247,25 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
         telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", Math.toDegrees(detection.pose.pitch)));
         telemetry.addLine(String.format("Rotation Roll: %.2f degrees", Math.toDegrees(detection.pose.roll)));
     }
-    void turr(double speed, double position){
+
+    void turr(double speed, double position) {
         turret.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         runtime.reset();
-        if (position>0){
-            while(turret.getCurrentPosition()<position){
+        if (position > 0) {
+            while (turret.getCurrentPosition() < position) {
                 stopMaybe();
-                if(turret.getCurrentPosition()>position-300){
+                if (turret.getCurrentPosition() > position - 300) {
                     turret.setPower(0.2);
-                }
-                else
+                } else
                     turret.setPower(speed);
                 l.update();
             }
-        }
-        else{
-            while(turret.getCurrentPosition()>position){
+        } else {
+            while (turret.getCurrentPosition() > position) {
                 stopMaybe();
-                if(turret.getCurrentPosition()<position+300){
+                if (turret.getCurrentPosition() < position + 300) {
                     turret.setPower(-0.2);
-                }
-                else
+                } else
                     turret.setPower(speed);
                 l.update();
             }
@@ -277,25 +276,23 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
     void straight(double speed, double distance) { // distance is in inches
         //1700 encoder counts to 1 inch.
         double adjust = 0.05;
-        while ((encoderLeft.getCurrentPosition())/ (1700.0) <= distance) {
+        while ((encoderLeft.getCurrentPosition()) / (1700.0) <= distance) {
             stopMaybe();
-            if(encoderLeft.getCurrentPosition()/1700>41){
+            if (encoderLeft.getCurrentPosition() / 1700 > 41) {
                 speed = 0.2;
             }
 
-            if(encoderLeft.getCurrentPosition()> encoderRight.getCurrentPosition()){//power per inches 0.05 power per inch
-                frontLeft.setPower(speed-adjust);
+            if (encoderLeft.getCurrentPosition() > encoderRight.getCurrentPosition()) {//power per inches 0.05 power per inch
+                frontLeft.setPower(speed - adjust);
                 frontRight.setPower(speed);
-                rearLeft.setPower(speed-adjust);
+                rearLeft.setPower(speed - adjust);
                 rearRight.setPower(speed);
-            }
-            else if(encoderLeft.getCurrentPosition()< encoderRight.getCurrentPosition()){//power per inches 0.05 power per inch
-                frontLeft.setPower(speed+adjust);
+            } else if (encoderLeft.getCurrentPosition() < encoderRight.getCurrentPosition()) {//power per inches 0.05 power per inch
+                frontLeft.setPower(speed + adjust);
                 frontRight.setPower(speed);
-                rearLeft.setPower(speed+adjust);
+                rearLeft.setPower(speed + adjust);
                 rearRight.setPower(speed);
-            }
-            else if(encoderLeft.getCurrentPosition()== encoderRight.getCurrentPosition()){//power per inches 0.05 power per inch
+            } else if (encoderLeft.getCurrentPosition() == encoderRight.getCurrentPosition()) {//power per inches 0.05 power per inch
                 frontLeft.setPower(speed);
                 frontRight.setPower(speed);
                 rearLeft.setPower(speed);
@@ -306,7 +303,7 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
 
 
         }
-        telemetry.addData("distance:", encoderLeft.getCurrentPosition()/1500.0);
+        telemetry.addData("distance:", encoderLeft.getCurrentPosition() / 1500.0);
         telemetry.update();
         frontLeft.setPower(0);
         frontRight.setPower(0);
@@ -314,13 +311,14 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
         rearRight.setPower(0);
 
     }
+
     void strafe(double speed, double distance) { // distance is in inches
         // 1700 encoder counts to 1 inch.
         // left = negative. checks distance in the correct direction.
-        if(distance > 0){
-            while ((encoderRear.getCurrentPosition() / 1700.0 <= distance)){
+        if (distance > 0) {
+            while ((encoderRear.getCurrentPosition() / 1700.0 <= distance)) {
                 stopMaybe();
-                telemetry.addData("current data", encoderRear.getCurrentPosition()/ 1700.0);
+                telemetry.addData("current data", encoderRear.getCurrentPosition() / 1700.0);
                 telemetry.addData("distance provided", distance);
                 telemetry.update();
 
@@ -330,11 +328,10 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
                 rearRight.setPower(speed);
                 l.update();
             }
-        }
-        else if(distance < 0){
-            while ((encoderRear.getCurrentPosition() / 1700.0 >= distance)){
+        } else if (distance < 0) {
+            while ((encoderRear.getCurrentPosition() / 1700.0 >= distance)) {
                 stopMaybe();
-                telemetry.addData("current data", encoderRear.getCurrentPosition()/ 1700.0);
+                telemetry.addData("current data", encoderRear.getCurrentPosition() / 1700.0);
                 telemetry.addData("distance provided", distance);
                 telemetry.update();
 
@@ -351,15 +348,17 @@ public abstract class rrAutoComp3 extends LinearCleanupOpMode {
         rearLeft.setPower(0);
         rearRight.setPower(0);
     }
-    public void turrDrive(int goal){
-        if(turret.getCurrentPosition()>goal+5)
+
+    public void turrDrive(int goal) {
+        if (turret.getCurrentPosition() > goal + 5)
             turret.setPower(-0.2);
-        else if (turret.getCurrentPosition()<goal-5)
+        else if (turret.getCurrentPosition() < goal - 5)
             turret.setPower(0.2);
-        else{
+        else {
             turret.setPower(0);
         }
     }
+
     public void driveStraight(double lf, double lb,
                               double rf, double rb, double distance) { //leftFront leftBack etc
         // sets power for all drive motors

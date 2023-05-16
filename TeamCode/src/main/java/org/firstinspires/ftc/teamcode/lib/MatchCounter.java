@@ -20,6 +20,7 @@ public class MatchCounter {
     public static final String FILENAME = "match_counter.txt";
     public static final File FILE;
     private static int matchNumber;
+
     static {
         Context context = AppUtil.getInstance().getApplication();
         FILE = new File(context.getFilesDir(), FILENAME);
@@ -28,7 +29,7 @@ public class MatchCounter {
 
     public static int newMatch() {
         writeMatchNumber(++matchNumber);
-        RobotLog.ii("MatchCounter", "Starting match #"+matchNumber);
+        RobotLog.ii("MatchCounter", "Starting match #" + matchNumber);
         return matchNumber;
     }
 

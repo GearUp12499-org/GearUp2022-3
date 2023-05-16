@@ -48,12 +48,25 @@ import java.util.List;
 /**
  * This 2020-2021 OpMode illustrates the basics of using the TensorFlow Object Detection API to
  * determine the position of the Ultimate Goal game elements.
- *
+ * <p>
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
- *
+ * <p>
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
+ * <p>
+ * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+ * localization engine.
+ * <p>
+ * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
+ * Detection engine.
+ * <p>
+ * Activate TensorFlow Object Detection before we wait for the start command.
+ * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
+ * Wait for the game to begin
+ * Initialize the Vuforia localization engine.
+ * <p>
+ * Initialize the TensorFlow Object Detection engine.
  *//*
 
 @TeleOp(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
@@ -67,17 +80,17 @@ public class MachineLearning extends LinearOpMode {
 
     */
 /*
-     * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-     * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
-     * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
-     * web site at https://developer.vuforia.com/license-manager.
-     *
-     * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-     * random data. As an example, here is a example of a fragment of a valid key:
-     *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-     * Once you've obtained a license key, copy the string from the Vuforia web site
-     * and paste it in to your code on the next line, between the double quotes.
-     *//*
+ * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
+ * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
+ * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
+ * web site at https://developer.vuforia.com/license-manager.
+ *
+ * Vuforia license keys are always 380 characters long, and look as if they contain mostly
+ * random data. As an example, here is a example of a fragment of a valid key:
+ *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
+ * Once you've obtained a license key, copy the string from the Vuforia web site
+ * and paste it in to your code on the next line, between the double quotes.
+ *//*
 
     @SuppressWarnings("SpellCheckingInspection")
     private static final String VUFORIA_KEY =
@@ -85,17 +98,17 @@ public class MachineLearning extends LinearOpMode {
 
     */
 /**
-     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
-     * localization engine.
-     *//*
+ * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
+ * localization engine.
+ *//*
 
     private VuforiaLocalizer vuforia;
 
     */
 /**
-     * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
-     * Detection engine.
-     *//*
+ * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
+ * Detection engine.
+ *//*
 
     private TFObjectDetector tfod;
 
@@ -108,9 +121,9 @@ public class MachineLearning extends LinearOpMode {
 
         */
 /**
-         * Activate TensorFlow Object Detection before we wait for the start command.
-         * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
-         **//*
+ * Activate TensorFlow Object Detection before we wait for the start command.
+ * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
+ **//*
 
         if (tfod != null) {
             tfod.activate();
@@ -161,14 +174,14 @@ public class MachineLearning extends LinearOpMode {
 
     */
 /**
-     * Initialize the Vuforia localization engine.
-     *//*
+ * Initialize the Vuforia localization engine.
+ *//*
 
     private void initVuforia() {
         */
 /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         *//*
+ * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+ *//*
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
@@ -183,8 +196,8 @@ public class MachineLearning extends LinearOpMode {
 
     */
 /**
-     * Initialize the TensorFlow Object Detection engine.
-     *//*
+ * Initialize the TensorFlow Object Detection engine.
+ *//*
 
     private void initTfod() {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(

@@ -16,7 +16,7 @@ public class PID {
     private double deltaError = 0;
     private double errorSum = 0;
 
-    private double target;
+    private final double target;
     private double theta;
 
     public PID(double target) {
@@ -41,7 +41,7 @@ public class PID {
         compensation += ki * errorSum;
 
         // enforce max change per iteration
-        if(compensation > maxCompensation) {
+        if (compensation > maxCompensation) {
             compensation = maxCompensation;
         } else if (compensation < -maxCompensation) {
             compensation = -maxCompensation;

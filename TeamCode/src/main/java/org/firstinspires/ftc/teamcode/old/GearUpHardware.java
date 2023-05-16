@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class GearUpHardware {
-    public HardwareMap hwMap =  null;
+    public HardwareMap hwMap = null;
 
     //initializing motors,sensors, and servos
     public DcMotor leftFront = null;
@@ -33,7 +33,7 @@ public class GearUpHardware {
     public NormalizedColorSensor floorColor = null;
     //public NormalizedColorSensor jj = null;
 
-    private float gain = 4;
+    private final float gain = 4;
 
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
@@ -42,12 +42,12 @@ public class GearUpHardware {
         hwMap = ahwMap;
 
         // Define and Initialize Motors and servos and sensors
-        leftFront  = hwMap.get(DcMotor.class, "leftFront");
+        leftFront = hwMap.get(DcMotor.class, "leftFront");
         leftBack = hwMap.get(DcMotor.class, "leftBack");
         rightFront = hwMap.get(DcMotor.class, "rightFront");
-        rightBack= hwMap.get(DcMotor.class, "rightBack");
-        duck= hwMap.get(DcMotor.class, "duck");
-        lift= hwMap.get(DcMotor.class, "lift");
+        rightBack = hwMap.get(DcMotor.class, "rightBack");
+        duck = hwMap.get(DcMotor.class, "duck");
+        lift = hwMap.get(DcMotor.class, "lift");
         intake = hwMap.get(DcMotor.class, "intake");
         gripperArm = hwMap.get(DcMotor.class, "gripperArm");
 

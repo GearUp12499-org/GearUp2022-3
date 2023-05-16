@@ -4,6 +4,7 @@ public final class returns3<A, B, C> {
     private final A a;
     private final B b;
     private final C c;
+
     public returns3(A a, B b, C c) {
         this.a = a;
         this.b = b;
